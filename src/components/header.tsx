@@ -9,11 +9,14 @@ function Header() {
         </Link>
 
         <div className="flex gap-6 text-neutral-300">
-          <Link to="/about" className="hover:text-white">
-            About
-          </Link>
-          <Link to="/designers" className="hover:text-white">
+          <Link to="/designer" className="hover:text-white">
             Designers
+          </Link>
+          <Link to="/project" className="hover:text-white">
+            Projects
+          </Link>
+          <Link to="/behind" className="hover:text-white">
+            Behind
           </Link>
           <Link to="/guestbook" className="hover:text-white">
             Guestbook
