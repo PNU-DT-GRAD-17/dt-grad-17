@@ -131,7 +131,7 @@ export default function Guestbook() {
               >
                 {designers.map((name) => (
                   <option key={name} value={name}>
-                    {name === "ALL" ? "전체 방명록" : `${name}`}
+                    {name === "ALL" ? "ALL" : `${name}`}
                   </option>
                 ))}
               </select>
