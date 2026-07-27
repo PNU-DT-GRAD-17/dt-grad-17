@@ -99,14 +99,6 @@ export default function Guestbook() {
         designer.id === formToId
     ) ?? designers[0];
 
-  /*
-   * 방명록 확인 필터에서 선택된 디자이너
-   */
-  const selectedFilterDesigner =
-    designers.find(
-      (designer) =>
-        designer.id === selectedToId
-    );
 
   useEffect(() => {
     const guestbookQuery = query(
