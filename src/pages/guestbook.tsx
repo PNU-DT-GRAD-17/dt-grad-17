@@ -543,12 +543,12 @@ export default function Guestbook() {
                 />
 
                 {/* 카드 안의 실제 내용 */}
-                <div className="absolute inset-0 z-10 px-[14%] py-[13%]">
-                  <p className="mb-10 text-xl font-bold">
+                <div className="absolute inset-0 z-10 flex min-h-0 flex-col overflow-hidden px-[14%] py-[13%]">
+                  <p className="relative z-10 mb-6 shrink-0 text-xl font-bold">
                     TO. {item.recipientName}
                   </p>
 
-                  <p className="whitespace-pre-wrap text-lg font-normal leading-7">
+                  <p className="guestbook-scroll relative z-10 min-h-0 flex-1 overflow-y-auto overscroll-contain whitespace-pre-wrap break-words pr-0 text-lg font-normal leading-7">
                     {item.message}
                   </p>
 
@@ -571,7 +571,7 @@ export default function Guestbook() {
                     />
                   )}
 
-                  <p className="absolute bottom-[11%] right-[14%] text-xl font-bold">
+                  <p className="relative z-10 mt-6 shrink-0 self-end text-xl font-bold">
                     FROM. {item.from}
                   </p>
                 </div>

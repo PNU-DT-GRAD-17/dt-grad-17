@@ -1,1 +1,19 @@
 @import "tailwindcss";
+
+.guestbook-scroll {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
+}
+
+.guestbook-scroll::-webkit-scrollbar {
+  width: 4px; /* 스크롤바 굵기 */
+}
+
+.guestbook-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.guestbook-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.25);
+  border-radius: 9999px;
+}
