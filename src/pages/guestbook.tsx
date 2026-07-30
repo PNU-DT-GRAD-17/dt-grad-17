@@ -48,6 +48,31 @@ const randomNames = [
   "푸제르",
 ];
 
+const objectLayouts = [
+  { left: 10, top: 18},
+  { left: 24, top: 5},
+  { left: 37, top: 17},
+  { left: 51, top: 6},
+  { left: 64, top: 18},
+  { left: 77, top: 5},
+  { left: 90, top: 17},
+
+  { left: 3,  top: 45},
+  { left: 22, top: 44},
+  { left: 75, top: 45},
+  { left: 95, top: 44},
+
+  { left: 11, top: 70},
+  { left: 35, top: 61},
+  { left: 63, top: 66},
+  { left: 91, top: 70},
+
+  { left: 25, top: 84},
+  { left: 50, top: 83},
+  { left: 74, top: 83},
+  { left: 50, top: 45}, // 000.png 위치
+];
+
 function getRandomName() {
   const randomIndex = Math.floor(
     Math.random() * randomNames.length
@@ -63,6 +88,9 @@ export default function Guestbook() {
     */
   const guestbookCardsRef =
     useRef<HTMLElement>(null);
+
+  const guestbookFormRef =
+  useRef<HTMLElement>(null);
 
   const [
     isGoTopVisible,
@@ -261,6 +289,11 @@ export default function Guestbook() {
     designerId: string
   ) => {
     setFormToId(designerId);
+
+    guestbookFormRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   };
 
   /*
@@ -330,6 +363,36 @@ export default function Guestbook() {
     }
   };
 
+  const orderedDesigners = useMemo(() => {
+    const targetIndex = designers.findIndex(
+      (designer) =>
+        designer.objectImage
+          .split("?")[0]
+          .endsWith("/000.png")
+    );
+
+    // 000.png를 찾지 못하면 기존 순서 유지
+    if (targetIndex === -1) {
+      return designers;
+    }
+
+    const targetDesigner = designers[targetIndex];
+
+    // 원본 배열을 변경하지 않고 000.png만 제외
+    const remainingDesigners = designers.filter(
+      (_, index) => index !== targetIndex
+    );
+
+    // 10번째 자리이므로 배열 index는 9
+    remainingDesigners.splice(
+      18,
+      0,
+      targetDesigner
+    );
+
+    return remainingDesigners;
+  }, []);
+
   return (
   <main
     className="min-h-screen bg-repeat-y bg-top text-neutral-900"
@@ -340,12 +403,18 @@ export default function Guestbook() {
   >
     <section className="mx-auto w-full max-w-[1440px] px-8 pb-24 pt-28">
       {/* 상단 오브제 영역 */}
-      <section className="min-h-[600px]">
+      <section className="min-h-[600px] pt-8">
         <div className="relative mx-auto h-[520px] max-w-[1280px]">
-          {designers.map((designer, index) => {
+          {orderedDesigners.map((designer, index) => {
+            const is000Image =
+              designer.objectImage
+                .split("?")[0]
+                .endsWith("/000.png");
+
+            const objectScale = is000Image ? 1.4 : 1;
             const isSelected =
               formToId === designer.id;
-
+            
             return (
               <button
                 key={designer.id}
@@ -372,13 +441,36 @@ export default function Guestbook() {
                 onMouseLeave={() => {
                   setHoveredDesignerName("");
                 }}
-                className="absolute flex items-center justify-center"
+                className={`absolute flex items-center justify-center border-0 bg-transparent p-0
+                  ${
+                    isSelected
+                      ? ""
+                      : "mix-blend-hard-light"
+                  }
+                `}
+                //기존 그리드배열 방식(이후 수정해야 함)
+                // style={{
+                //   left: `${8 + (index % 6) * 16}%`,
+                //   top: `${
+                //     8 +
+                //     Math.floor(index / 6) * 24
+                //   }%`,
+                // }}
+                
+                //2차 수정
+                // style={{
+                //   left: `${objectLayouts[index]?.left ?? 50}%`,
+                //   top: `${objectLayouts[index]?.top ?? 50}%`,
+                //   width: `${objectLayouts[index]?.size ?? 110}px`,
+                //   height: `${objectLayouts[index]?.size ?? 110}px`,
+                //   transform: "translate(-50%, -50%)",
+                // }}
                 style={{
-                  left: `${8 + (index % 6) * 16}%`,
-                  top: `${
-                    8 +
-                    Math.floor(index / 6) * 24
-                  }%`,
+                  left: `${objectLayouts[index]?.left ?? 50}%`,
+                  top: `${objectLayouts[index]?.top ?? 50}%`,
+                  width: `${110 * objectScale}px`,
+                  height: `${110 * objectScale}px`,
+                  transform: "translate(-50%, -50%)",
                 }}
               >
                 <img
@@ -389,14 +481,9 @@ export default function Guestbook() {
                   }
                   alt={`${designer.name} 오브제`}
                   className={`
-                    h-24 w-24 object-contain
+                    h-full w-full object-contain
                     transition-transform duration-200
                     hover:scale-110
-                    ${
-                      isSelected
-                        ? ""
-                        : "mix-blend-hard-light"
-                    }
                   `}
                 />
               </button>
@@ -406,7 +493,8 @@ export default function Guestbook() {
       </section>
 
       {/* 작성 폼 */}
-      <section className="mb-20 border border-[#BCBCBC] bg-[#f9f9f9] p-8">
+      <section ref={guestbookFormRef}
+        className="mb-20 scroll-mt-32 border border-[#BCBCBC] bg-[#f9f9f9] p-8">
         <form
           onSubmit={handleSubmit}
           className="grid min-h-[360px] grid-cols-1 md:grid-cols-[420px_1fr]"
