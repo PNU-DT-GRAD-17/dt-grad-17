@@ -2,6 +2,7 @@ import {
   useEffect,
   useMemo,
   useState,
+  useRef,
 } from "react";
 
 import {
@@ -56,6 +57,17 @@ function getRandomName() {
 }
 
 export default function Guestbook() {
+   /*
+    * 방명록 카드 영역과
+    * GO TO TOP 버튼 표시 여부
+    */
+  const guestbookCardsRef =
+    useRef<HTMLElement>(null);
+
+  const [
+    isGoTopVisible,
+    setIsGoTopVisible,
+  ] = useState(false);
   /*
    * view-all: 모든 방명록을 확인하는 필터
    * all: 전체 디자이너에게 보내는 실제 수신인
@@ -162,6 +174,72 @@ export default function Guestbook() {
     return () => unsubscribe();
   }, []);
 
+    /*
+   * 방명록 카드 영역에 도달하면
+   * GO TO TOP 버튼을 보여줍니다.
+   */
+  useEffect(() => {
+    const handleScroll = () => {
+      const cardsSection =
+        guestbookCardsRef.current;
+
+      if (!cardsSection) {
+        return;
+      }
+
+      /*
+       * 방명록 카드 영역이 화면 아래쪽에
+       * 들어오기 시작하는 위치입니다.
+       */
+      const showButtonPosition =
+        cardsSection.offsetTop -
+        window.innerHeight * 0.85;
+
+      setIsGoTopVisible(
+        window.scrollY >= showButtonPosition
+      );
+    };
+
+    /*
+     * 페이지를 처음 열었을 때도
+     * 현재 스크롤 위치를 확인합니다.
+     */
+    handleScroll();
+
+    window.addEventListener(
+      "scroll",
+      handleScroll,
+      { passive: true }
+    );
+
+    window.addEventListener(
+      "resize",
+      handleScroll
+    );
+
+    return () => {
+      window.removeEventListener(
+        "scroll",
+        handleScroll
+      );
+
+      window.removeEventListener(
+        "resize",
+        handleScroll
+      );
+    };
+  }, []);
+
+  /*
+   * 페이지 맨 위로 이동합니다.
+   */
+  const handleGoToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   /*
    * 상단 방명록 확인 필터
    */
@@ -198,7 +276,7 @@ export default function Guestbook() {
 
     if (!message.trim()) {
       alert(
-        "남기고 싶은 내용을 입력해주세요."
+        "남기고 싶은 내용을 입력해주세요 :)"
       );
 
       return;
@@ -437,6 +515,7 @@ export default function Guestbook() {
       </section>
 
       {/* 방명록 카드 */}
+      <section ref={guestbookCardsRef}>
       {filteredMessages.length === 0 ? (
         <div className="py-20 text-center text-neutral-500">
           아직 남겨진 방명록이 없습니다.
@@ -502,6 +581,7 @@ export default function Guestbook() {
         </ul>
       )}
     </section>
+    </section>
     {hoveredDesignerName && (
 
       <div
@@ -516,8 +596,25 @@ export default function Guestbook() {
       >
         {hoveredDesignerName}
       </div>
-
     )}
+    <button
+      type="button"
+      onClick={handleGoToTop}
+      aria-label="페이지 맨 위로 이동"
+      className={`fixed bottom-6 left-1/2 z-[9998] -translate-x-1/2 transition-all duration-400 hover:-translate-y-1
+        ${
+          isGoTopVisible
+            ? "visible translate-y-0 opacity-100"
+            : "pointer-events-none invisible translate-y-4 opacity-0"
+        }
+      `}
+    >
+      {/* 실제 버튼 이미지 */}
+      <img
+        src="/images/btn:gototop.png"
+        className="relative block h-auto w-16 drop-shadow-[0_0_8px_rgba(0,73,123,0.3)]"
+      />
+    </button>
   </main>
 );
 }
