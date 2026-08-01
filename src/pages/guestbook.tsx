@@ -396,12 +396,9 @@ export default function Guestbook() {
   return (
   <main
     className="min-h-screen bg-repeat-y bg-top text-neutral-900"
-    style={{
-      backgroundImage: "url('/images/background.png')",
-      backgroundSize: "100% auto",
-    }}
+    
   >
-    <section className="mx-auto w-full max-w-[1440px] px-8 pb-24 pt-28">
+    <section className="mx-auto w-full max-w-[1440px] px-8 pb-24 pt-16">
       {/* 상단 오브제 영역 */}
       <section className="min-h-[600px] pt-8">
         <div className="relative mx-auto h-[520px] max-w-[1280px]">

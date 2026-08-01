@@ -1,30 +1,80 @@
-import { Link } from 'react-router-dom'
+import { NavLink } from "react-router-dom";
 
 function Header() {
-  return (
-    <header className="fixed left-0 top-0 z-50 w-full border-b border-white/10 bg-black/60 backdrop-blur">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 text-sm text-white">
-        <Link to="/" className="font-semibold tracking-wide">
-          DT GRAD 17
-        </Link>
+  const menuClass = ({ isActive }: { isActive: boolean }) =>
+    `
+      transition-all
+      duration-200
+      ${isActive ? "font-bold" : "font-normal hover:font-bold"}
+    `;
 
-        <div className="flex gap-6 text-neutral-300">
-          <Link to="/designer" className="hover:text-white">
-            Designers
-          </Link>
-          <Link to="/project" className="hover:text-white">
-            Projects
-          </Link>
-          <Link to="/behind" className="hover:text-white">
-            Behind
-          </Link>
-          <Link to="/guestbook" className="hover:text-white">
-            Guestbook
-          </Link>
-        </div>
-      </nav>
+  return (
+    <header className="sticky top-0 z-50 w-full">
+      <div
+        className="
+          relative
+          mx-auto
+          aspect-[1750/180]
+          w-full
+          max-w-[1750px]
+          bg-[url('/navBar_background.png')]
+          bg-[length:100%_100%]
+          bg-top
+          bg-no-repeat
+        "
+      >
+        <nav
+          className="
+            flex
+            h-[58.33%]
+            items-center
+            justify-between
+            px-[clamp(40px,4vw,70px)]
+          "
+        >
+          <NavLink to="/" end className="shrink-0">
+            <img
+              src="/navBar_logo.png"
+              alt="잔향 로고"
+              className="
+                h-[clamp(12px,3.15vw,55px)]
+                w-auto
+                object-contain
+              "
+            />
+          </NavLink>
+
+          <div
+            className="
+              flex
+              shrink-0
+              items-center
+              gap-[clamp(16px,4vw,70px)]
+              whitespace-nowrap
+              text-[clamp(12px,1.15vw,20px)]
+              text-[#000101]
+            "
+          >
+            <NavLink to="/designer" className={menuClass}>
+              디자이너
+            </NavLink>
+
+            <NavLink to="/project" className={menuClass}>
+              프로젝트
+            </NavLink>
+
+            <NavLink to="/behind" className={menuClass}>
+              비하인드
+            </NavLink>
+
+            <NavLink to="/guestbook" className={menuClass}>
+              방명록
+            </NavLink>
+          </div>
+        </nav>
+      </div>
     </header>
-  )
+  );
 }
 
-export default Header
+export default Header;
