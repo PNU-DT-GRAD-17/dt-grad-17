@@ -1,4 +1,5 @@
 import { designers } from "../data/designers";
+import Footer from "../components/Footer";
 
 const Designer = () => {
   // ALL 제외
@@ -53,6 +54,7 @@ const Designer = () => {
           })}
         </div>
       </section>
+      <Footer />
     </main>
   );
 };
