@@ -17,7 +17,7 @@ function Header() {
           aspect-[1750/180]
           w-full
           max-w-[1750px]
-          bg-[url('/navBar_background.png')]
+          bg-[url('/images/navBar_background.png')]
           bg-[length:100%_100%]
           bg-top
           bg-no-repeat
@@ -34,7 +34,7 @@ function Header() {
         >
           <NavLink to="/" end className="shrink-0">
             <img
-              src="/navBar_logo.png"
+              src="/images/navBar_logo.png"
               alt="잔향 로고"
               className="
                 h-[clamp(12px,3.15vw,55px)]

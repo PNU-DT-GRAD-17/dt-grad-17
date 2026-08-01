@@ -18,6 +18,7 @@ import {
 import { db } from "../firebase/firebase";
 import { designers } from "../data/designers";
 
+
 type GuestbookMessage = {
   id: string;
   recipientId: string;
@@ -97,11 +98,10 @@ export default function Guestbook() {
     setIsGoTopVisible,
   ] = useState(false);
   /*
-   * view-all: 모든 방명록을 확인하는 필터
    * all: 전체 디자이너에게 보내는 실제 수신인
    */
   const [selectedToId, setSelectedToId] =
-    useState("view-all");
+    useState("all");
 
   const [formToId, setFormToId] =
     useState("all");
@@ -202,6 +202,10 @@ export default function Guestbook() {
     return () => unsubscribe();
   }, []);
 
+  const [
+  isRecipientDropdownOpen,
+  setIsRecipientDropdownOpen,
+] = useState(false);
     /*
    * 방명록 카드 영역에 도달하면
    * GO TO TOP 버튼을 보여줍니다.
@@ -267,15 +271,13 @@ export default function Guestbook() {
       behavior: "smooth",
     });
   };
+  
+  const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
 
   /*
    * 상단 방명록 확인 필터
    */
   const filteredMessages = useMemo(() => {
-    if (selectedToId === "view-all") {
-      return messages;
-    }
-
     return messages.filter(
       (item) =>
         item.recipientId === selectedToId
@@ -502,27 +504,75 @@ export default function Guestbook() {
               <p className="text-lg font-semibold">
                 TO. 
               </p>
+              <div className="relative w-full">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setIsRecipientDropdownOpen(
+                      (previous) => !previous
+                    )
+                  }
+                  aria-haspopup="listbox"
+                  aria-expanded={isRecipientDropdownOpen}
+                  className={`flex w-full items-center justify-between border-b border-neutral-300 bg-transparent px-2 py-3 text-left text-lg font-semibold outline-none ${
+                    formToId === "all"
+                      ? "text-neutral-900"
+                      : "text-[#45BFE6]"
+                  }`}
+                >
+                  <span>{selectedDesigner.name}</span>
 
-              <select
-                value={formToId}
-                onChange={(event) =>
-                  setFormToId(event.target.value)
-                }
-                className="border-b border-neutral-300 bg-transparent px-2 py-3 outline-none"
-              >
-                {designers.map((designer) => (
-                  <option
-                    key={designer.id}
-                    value={designer.id}
+                  <img
+                    src={
+                      formToId === "all"
+                        ? "/images/arrowDown.png"
+                        : "/images/arrowDownSelected.png"
+                    }
+                    alt=""
+                    className={`pointer-events-none h-6 w-6 object-contain ${
+                      isRecipientDropdownOpen
+                        ? "rotate-180"
+                        : "rotate-0"
+                    }`}
+                  />
+                </button>
+
+                {isRecipientDropdownOpen && (
+                  <ul
+                    role="listbox"
+                    className="absolute left-0 top-full z-50 max-h-[220px] w-full overflow-y-auto bg-white shadow-md [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                   >
-                    {designer.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+                    {designers.map((designer) => {
+                      const isCurrent =
+                        designer.id === formToId;
 
+                      return (
+                        <li key={designer.id}>
+                          <button
+                            type="button"
+                            role="option"
+                            aria-selected={isCurrent}
+                            onClick={() => {
+                              setFormToId(designer.id);
+                              setIsRecipientDropdownOpen(false);
+                            }}
+                            className={`w-full border border-[#BCBCBC] px-4 py-2 text-left text-md font-medium last:border-b-0 ${
+                              isCurrent
+                                ? "bg-[#FFFFFF] text-[#000101]"
+                                : "bg-white hover:bg-[#DFDFDF]"
+                            }`}
+                          >
+                            {designer.name}
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
+            </div>
             <div className="mb-8 grid grid-cols-[70px_1fr] items-center gap-4">
-              <p className="text-lg font-semibold">
+              <p className="text-lg font-semibold text-[#000101]">
                 FROM.
               </p>
 
@@ -532,7 +582,7 @@ export default function Guestbook() {
                   setFrom(event.target.value)
                 }
                 placeholder={randomPlaceholderName}
-                className="border-b border-neutral-300 bg-transparent px-2 py-3 outline-none"
+                className="border-b border-neutral-300 bg-transparent px-2 py-3 outline-none text-lg font-semibold placeholder:text-lg placeholder:text-[#bcbcbc] placeholder:font-medium"
               />
             </div>
 
@@ -580,23 +630,69 @@ export default function Guestbook() {
 
       {/* 필터 */}
       <section className="mb-10">
-        <select
-          value={selectedToId}
-          onChange={(event) =>
-            setSelectedToId(event.target.value)
-          }
-          className="border-b border-neutral-700 bg-transparent px-1 py-2 text-sm outline-none"
-        >
+        <div className="relative w-[240px]">
+          <button
+            type="button"
+            onClick={() =>
+              setIsFilterDropdownOpen(
+                (previous) => !previous
+              )
+            }
+            aria-haspopup="listbox"
+            aria-expanded={isFilterDropdownOpen}
+            className="flex w-full items-center justify-between border-b border-neutral-300 bg-transparent px-2 py-3 text-left text-lg font-semibold text-neutral-900 outline-none"
+          >
+            <span>
+              {designers.find(
+                (designer) =>
+                  designer.id === selectedToId
+              )?.name ?? "ALL"}
+            </span>
 
-          {designers.map((designer) => (
-            <option
-              key={designer.id}
-              value={designer.id}
+            <img
+              src="/images/arrowDown.png"
+              alt=""
+              className={`pointer-events-none h-6 w-6 object-contain ${
+                isFilterDropdownOpen
+                  ? "rotate-180"
+                  : "rotate-0"
+              }`}
+            />
+          </button>
+
+          {isFilterDropdownOpen && (
+            <ul
+              role="listbox"
+              className="absolute left-0 top-full z-50 max-h-[220px] w-full overflow-y-auto bg-white shadow-md [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
-              {designer.name}
-            </option>
-          ))}
-        </select>
+              {designers.map((designer) => {
+                const isCurrent =
+                  designer.id === selectedToId;
+
+                return (
+                  <li key={designer.id}>
+                    <button
+                      type="button"
+                      role="option"
+                      aria-selected={isCurrent}
+                      onClick={() => {
+                        setSelectedToId(
+                          designer.id
+                        );
+                        setIsFilterDropdownOpen(
+                          false
+                        );
+                      }}
+                      className="block w-full border border-[#BCBCBC] bg-white px-4 py-3 text-left text-md font-medium leading-none text-[#000101] last:border-b-0 hover:bg-[#DFDFDF]"
+                    >
+                      {designer.name}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
       </section>
 
       {/* 방명록 카드 */}
