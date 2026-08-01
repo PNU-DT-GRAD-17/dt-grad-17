@@ -278,6 +278,9 @@ export default function Guestbook() {
    * 상단 방명록 확인 필터
    */
   const filteredMessages = useMemo(() => {
+    if (selectedToId === "all") {
+      return messages;
+    }
     return messages.filter(
       (item) =>
         item.recipientId === selectedToId
