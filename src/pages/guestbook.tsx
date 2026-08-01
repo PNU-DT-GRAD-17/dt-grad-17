@@ -636,7 +636,7 @@ export default function Guestbook() {
                     TO. {item.recipientName}
                   </p>
 
-                  <p className="guestbook-scroll relative z-10 min-h-0 flex-1 overflow-y-auto overscroll-contain whitespace-pre-wrap break-words pr-0 text-lg font-normal leading-7">
+                  <p className="guestbook-scroll relative z-10 min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden [overflow-wrap:anywhere] overscroll-contain whitespace-pre-wrap break-words pr-0 text-lg font-normal leading-7">
                     {item.message}
                   </p>
 
