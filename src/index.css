@@ -30,3 +30,14 @@ html, body, #root{
   background-image: url("/images/background.png");
 
 }
+
+.grid-border {
+  border-top: 1px solid transparent;
+  border-left: 1px solid transparent;
+  border-image: repeating-linear-gradient(
+      to right,
+      #bcbcbc 0 12px,
+      transparent 12px 20px
+    )
+    1;
+}

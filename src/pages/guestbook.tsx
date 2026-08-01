@@ -413,7 +413,7 @@ export default function Guestbook() {
                 .split("?")[0]
                 .endsWith("/000.png");
 
-            const objectScale = is000Image ? 1.4 : 1;
+            const objectScale = is000Image ? 1.7 : 1.4;
             const isSelected =
               formToId === designer.id;
             
