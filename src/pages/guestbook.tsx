@@ -398,7 +398,7 @@ export default function Guestbook() {
     className="min-h-screen bg-repeat-y bg-top text-neutral-900"
     
   >
-    <section className="mx-auto w-full max-w-[1440px] px-8 pb-24 pt-16">
+    <section className="mx-auto w-full max-w-[1440px] px-8 pb-24">
       {/* 상단 오브제 영역 */}
       <section className="min-h-[600px] pt-8">
         <div className="relative mx-auto h-[520px] max-w-[1280px]">
@@ -547,7 +547,7 @@ export default function Guestbook() {
                   selectedDesigner.selectedObjectImage
                 }
                 alt="선택된 오브제"
-                className="absolute left-1/2 top-1/2 h-[55%] w-[55%] -translate-x-1/2 -translate-y-1/2 object-contain opacity-50"
+                className="absolute left-1/2 top-1/2 h-[70%] -translate-x-1/2 -translate-y-1/2 object-contain opacity-50"
               />
             </div>
           </div>
@@ -646,8 +646,7 @@ export default function Guestbook() {
                         absolute
                         left-1/2
                         top-[50%]
-                        h-[34%]
-                        w-[60%]
+                        h-[60%]
                         -translate-x-1/2
                         -translate-y-1/2
                         object-contain
