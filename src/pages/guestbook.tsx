@@ -225,7 +225,7 @@ export default function Guestbook() {
        */
       const showButtonPosition =
         cardsSection.offsetTop -
-        window.innerHeight * 0.85;
+        window.innerHeight * 1;
 
       setIsGoTopVisible(
         window.scrollY >= showButtonPosition
@@ -294,7 +294,13 @@ export default function Guestbook() {
     designerId: string
   ) => {
     setFormToId(designerId);
+  };
 
+  /*
+   * 엽서의 메시지 입력 영역을 클릭하면
+   * 작성 엽서가 보이는 위치로 이동합니다.
+   */
+  const handleMessageClick = () => {
     guestbookFormRef.current?.scrollIntoView({
       behavior: "smooth",
       block: "start",
@@ -401,8 +407,10 @@ export default function Guestbook() {
   return (
   <main
     className="min-h-screen bg-repeat-y bg-top text-neutral-900"
-    
   >
+    {/* <div className="text-2xl font-semibold text-center py-4">
+      감사합니다!
+    </div> */}
     <section className="mx-auto w-full max-w-[1440px] px-8 pb-24">
       {/* 상단 오브제 영역 */}
       <section className="min-h-[600px] pt-8">
@@ -496,7 +504,7 @@ export default function Guestbook() {
 
       {/* 작성 폼 */}
       <section ref={guestbookFormRef}
-        className="mb-20 scroll-mt-32 border border-[#BCBCBC] bg-[#f9f9f9] p-8">
+        className="mb-20 scroll-mt-48 border border-[#BCBCBC] bg-[#f9f9f9] p-8">
         <form
           onSubmit={handleSubmit}
           className="grid min-h-[360px] grid-cols-1 md:grid-cols-[420px_1fr]"
@@ -612,6 +620,7 @@ export default function Guestbook() {
               onChange={(event) =>
                 setMessage(event.target.value)
               }
+              onClick={handleMessageClick}
               placeholder="상단의 오브젝트를 선택하여 응원의 한마디를 남겨주세요."
               className="min-h-[220px] flex-1 resize-none bg-transparent text-medium outline-none placeholder:text-neutral-300"
             />
