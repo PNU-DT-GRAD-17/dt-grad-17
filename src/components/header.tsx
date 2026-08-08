@@ -14,19 +14,16 @@ function Header() {
         className="
           relative
           mx-auto
-          aspect-[1750/180]
+          p-5
           w-full
-          max-w-[1750px]
-          bg-[url('/images/navBar_background.png')]
-          bg-[length:100%_100%]
           bg-top
-          bg-no-repeat
+          bg-white
         "
       >
         <nav
           className="
             flex
-            h-[58.33%]
+            h-full
             items-center
             justify-between
             px-[clamp(40px,4vw,70px)]
@@ -37,7 +34,7 @@ function Header() {
               src="/images/navBar_logo.png"
               alt="잔향 로고"
               className="
-                h-[clamp(12px,3.15vw,55px)]
+                h-[clamp(32px,3.15vw,55px)]
                 w-auto
                 object-contain
               "
@@ -51,7 +48,7 @@ function Header() {
               items-center
               gap-[clamp(16px,4vw,70px)]
               whitespace-nowrap
-              text-[clamp(12px,1.15vw,20px)]
+              text-[clamp(16px,1.15vw,20px)]
               text-[#000101]
             "
           >

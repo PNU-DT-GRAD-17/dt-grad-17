@@ -82,6 +82,61 @@ function getRandomName() {
   return randomNames[randomIndex];
 }
 
+function PostcardMessage({
+  message,
+}: {
+  message: string;
+}) {
+  const messageRef =
+    useRef<HTMLParagraphElement>(null);
+
+  const [canScroll, setCanScroll] =
+    useState(false);
+
+  useEffect(() => {
+    const element = messageRef.current;
+
+    if (!element) {
+      return;
+    }
+
+    const checkOverflow = () => {
+      const isOverflowing =
+        element.scrollHeight >
+        element.clientHeight + 1;
+
+      setCanScroll(isOverflowing);
+
+      if (!isOverflowing) {
+        element.scrollTop = 0;
+      }
+    };
+
+    checkOverflow();
+
+    const observer = new ResizeObserver(
+      checkOverflow
+    );
+
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  }, [message]);
+
+  return (
+    <p
+      ref={messageRef}
+      className={`guestbook-scroll relative z-10 min-h-0 min-w-0 flex-1 overflow-x-hidden [overflow-wrap:anywhere] whitespace-pre-wrap break-words pr-0 text-lg font-normal leading-7 ${
+        canScroll
+          ? "overflow-y-auto overscroll-contain"
+          : "overflow-y-hidden"
+      }`}
+    >
+      {message}
+    </p>
+  );
+}
+
 export default function Guestbook() {
    /*
     * 방명록 카드 영역과
@@ -121,15 +176,148 @@ export default function Guestbook() {
     setRandomPlaceholderName,
   ] = useState(getRandomName());
 
-  const [hoveredDesignerName, setHoveredDesignerName] =
-  useState("");
+  const objectTooltipRef =
+    useRef<HTMLDivElement>(null);
 
-  const [tooltipPosition, setTooltipPosition] =
-    useState({
-      x: 0,
-      y: 0,
-    });
-  
+  /*
+   * 오브제들이 들어있는 컨테이너.
+   * 호버 이벤트를 이 영역으로 한정해서
+   * 불필요한 전역 이벤트 처리를 줄입니다.
+   */
+  const objectsContainerRef =
+    useRef<HTMLDivElement>(null);
+
+  // 현재 호버 중인 오브제 이름 (리렌더 없이 추적)
+  const hoveredNameRef = useRef<string | null>(null);
+
+  /*
+   * 오브제 컨테이너 안에서만 호버를 감지해
+   * 툴팁의 이름/표시 여부를 갱신합니다.
+   *
+   * pointermove에서 툴팁 위치를 즉시 반영해
+   * 버튼을 누르지 않은 일반 hover도 지연되지 않게 합니다.
+   */
+  useEffect(() => {
+    const container = objectsContainerRef.current;
+    const tooltip = objectTooltipRef.current;
+
+    if (!container || !tooltip) {
+      return;
+    }
+
+    const handlePointerOver = (
+      event: PointerEvent
+    ) => {
+      if (!(event.target instanceof Element)) {
+        return;
+      }
+
+      const objectButton = event.target.closest<HTMLElement>(
+        "[data-object-name]"
+      );
+
+      if (!objectButton) {
+        return;
+      }
+
+      const name = objectButton.dataset.objectName ?? "";
+
+      hoveredNameRef.current = name;
+      tooltip.textContent = name;
+      tooltip.style.transform = `translate3d(${event.clientX + 14}px, ${event.clientY + 14}px, 0)`;
+      tooltip.style.opacity = "1";
+    };
+
+    const handlePointerMove = (
+      event: PointerEvent
+    ) => {
+      if (hoveredNameRef.current) {
+        tooltip.style.transform = `translate3d(${event.clientX + 14}px, ${event.clientY + 14}px, 0)`;
+      }
+    };
+
+    const handlePointerOut = (
+      event: PointerEvent
+    ) => {
+      if (!(event.target instanceof Element)) {
+        return;
+      }
+
+      const objectButton = event.target.closest<HTMLElement>(
+        "[data-object-name]"
+      );
+
+      if (!objectButton) {
+        return;
+      }
+
+      const nextObject =
+        event.relatedTarget instanceof Element
+          ? event.relatedTarget.closest(
+              "[data-object-name]"
+            )
+          : null;
+
+      if (nextObject) {
+        return;
+      }
+
+      hoveredNameRef.current = null;
+      tooltip.style.opacity = "0";
+    };
+
+    const handlePointerLeave = () => {
+      hoveredNameRef.current = null;
+      tooltip.style.opacity = "0";
+    };
+
+    container.addEventListener(
+      "pointerover",
+      handlePointerOver,
+      { passive: true }
+    );
+
+    container.addEventListener(
+      "pointermove",
+      handlePointerMove,
+      { passive: true }
+    );
+
+    container.addEventListener(
+      "pointerout",
+      handlePointerOut,
+      { passive: true }
+    );
+
+    container.addEventListener(
+      "pointerleave",
+      handlePointerLeave,
+      { passive: true }
+    );
+
+    return () => {
+      container.removeEventListener(
+        "pointerover",
+        handlePointerOver
+      );
+
+      container.removeEventListener(
+        "pointermove",
+        handlePointerMove
+      );
+
+      container.removeEventListener(
+        "pointerout",
+        handlePointerOut
+      );
+
+      container.removeEventListener(
+        "pointerleave",
+        handlePointerLeave
+      );
+    };
+  }, []);
+
   /*
    * 현재 방명록 작성 폼에서 선택된 수신인
    */
@@ -233,7 +421,7 @@ export default function Guestbook() {
     };
 
     /*
-     * 페이지를 처음 열었을 때도
+     * 페이지를 ㅜ처음 열었을 때도
      * 현재 스크롤 위치를 확인합니다.
      */
     handleScroll();
@@ -412,9 +600,15 @@ export default function Guestbook() {
       감사합니다!
     </div> */}
     <section className="mx-auto w-full max-w-[1440px] px-8 pb-24">
+      <span className="text-lg font-medium text-[#6A6A6A] text-center block mt-12">
+        제17회 졸업전시회를 찾아주신 여러분께 진심으로 감사드립니다!
+      </span>
       {/* 상단 오브제 영역 */}
-      <section className="min-h-[600px] pt-8">
-        <div className="relative mx-auto h-[520px] max-w-[1280px]">
+      <section className="min-h-[600px] pt-12">
+        <div
+          ref={objectsContainerRef}
+          className="relative mx-auto h-[520px] max-w-[1280px]"
+        >
           {orderedDesigners.map((designer, index) => {
             const is000Image =
               designer.objectImage
@@ -432,49 +626,15 @@ export default function Guestbook() {
                 onClick={() =>
                   handleObjectClick(designer.id)
                 }
-                onMouseEnter={(event) => {
-                  setHoveredDesignerName(
-                    designer.name
-                  );
-
-                  setTooltipPosition({
-                    x: event.clientX,
-                    y: event.clientY,
-                  });
-                }}
-                onMouseMove={(event) => {
-                  setTooltipPosition({
-                    x: event.clientX,
-                    y: event.clientY,
-                  });
-                }}
-                onMouseLeave={() => {
-                  setHoveredDesignerName("");
-                }}
-                className={`absolute flex items-center justify-center border-0 bg-transparent p-0
+                data-object-name={designer.name}
+                aria-label={`${designer.name} 선택`}
+                className={`group absolute flex items-center justify-center border-0 bg-transparent p-0
                   ${
                     isSelected
                       ? ""
                       : "mix-blend-hard-light"
                   }
                 `}
-                //기존 그리드배열 방식(이후 수정해야 함)
-                // style={{
-                //   left: `${8 + (index % 6) * 16}%`,
-                //   top: `${
-                //     8 +
-                //     Math.floor(index / 6) * 24
-                //   }%`,
-                // }}
-                
-                //2차 수정
-                // style={{
-                //   left: `${objectLayouts[index]?.left ?? 50}%`,
-                //   top: `${objectLayouts[index]?.top ?? 50}%`,
-                //   width: `${objectLayouts[index]?.size ?? 110}px`,
-                //   height: `${objectLayouts[index]?.size ?? 110}px`,
-                //   transform: "translate(-50%, -50%)",
-                // }}
                 style={{
                   left: `${objectLayouts[index]?.left ?? 50}%`,
                   top: `${objectLayouts[index]?.top ?? 50}%`,
@@ -491,9 +651,9 @@ export default function Guestbook() {
                   }
                   alt={`${designer.name} 오브제`}
                   className={`
-                    h-full w-full object-contain
+                    pointer-events-none h-full w-full object-contain
                     transition-transform duration-200
-                    hover:scale-110
+                    group-hover:scale-110
                   `}
                 />
               </button>
@@ -558,7 +718,10 @@ export default function Guestbook() {
                         designer.id === formToId;
 
                       return (
-                        <li key={designer.id}>
+                        <li
+                          key={designer.id}
+                          className="border-x border-t border-[#BCBCBC] last:border-b"
+                        >
                           <button
                             type="button"
                             role="option"
@@ -567,7 +730,7 @@ export default function Guestbook() {
                               setFormToId(designer.id);
                               setIsRecipientDropdownOpen(false);
                             }}
-                            className={`w-full border border-[#BCBCBC] px-4 py-2 text-left text-md font-medium last:border-b-0 ${
+                            className={`w-full px-4 py-2 text-left text-md font-medium ${
                               isCurrent
                                 ? "bg-[#FFFFFF] text-[#000101]"
                                 : "bg-white hover:bg-[#DFDFDF]"
@@ -642,7 +805,7 @@ export default function Guestbook() {
 
       {/* 필터 */}
       <section className="mb-10">
-        <div className="relative w-[240px]">
+        <div className="relative w-[160px]">
           <button
             type="button"
             onClick={() =>
@@ -652,7 +815,7 @@ export default function Guestbook() {
             }
             aria-haspopup="listbox"
             aria-expanded={isFilterDropdownOpen}
-            className="flex w-full items-center justify-between border-b border-neutral-300 bg-transparent px-2 py-3 text-left text-lg font-semibold text-neutral-900 outline-none"
+            className="flex w-full items-center justify-between border-b border-[#000101] bg-transparent px-2 py-3 text-left text-lg font-semibold text-neutral-900 outline-none"
           >
             <span>
               {designers.find(
@@ -682,7 +845,10 @@ export default function Guestbook() {
                   designer.id === selectedToId;
 
                 return (
-                  <li key={designer.id}>
+                  <li
+                    key={designer.id}
+                    className="border-x border-t border-[#BCBCBC] last:border-b"
+                  >
                     <button
                       type="button"
                       role="option"
@@ -695,7 +861,7 @@ export default function Guestbook() {
                           false
                         );
                       }}
-                      className="block w-full border border-[#BCBCBC] bg-white px-4 py-3 text-left text-md font-medium leading-none text-[#000101] last:border-b-0 hover:bg-[#DFDFDF]"
+                      className="block w-full bg-white px-4 py-3 text-left text-md font-medium leading-none text-[#000101] hover:bg-[#DFDFDF]"
                     >
                       {designer.name}
                     </button>
@@ -741,9 +907,9 @@ export default function Guestbook() {
                     TO. {item.recipientName}
                   </p>
 
-                  <p className="guestbook-scroll relative z-10 min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden [overflow-wrap:anywhere] overscroll-contain whitespace-pre-wrap break-words pr-0 text-lg font-normal leading-7">
-                    {item.message}
-                  </p>
+                  <PostcardMessage
+                    message={item.message}
+                  />
 
                   {messageDesigner && (
                     <img
@@ -774,21 +940,11 @@ export default function Guestbook() {
       )}
     </section>
     </section>
-    {hoveredDesignerName && (
-
-      <div
-
-        className="pointer-events-none fixed z-[9999] whitespace-nowrap bg-[#000101]
-          px-2 py-1 text-medium font-bold text-white"
-
-        style={{
-          left: tooltipPosition.x + 14,
-          top:tooltipPosition.y + 14,
-        }}
-      >
-        {hoveredDesignerName}
-      </div>
-    )}
+    <div
+      ref={objectTooltipRef}
+      className="pointer-events-none fixed left-0 top-0 z-[9999] whitespace-nowrap bg-[#000101] px-2 py-1 text-sm font-bold text-white opacity-0 transition-none will-change-transform"
+      aria-hidden="true"
+    />
     <button
       type="button"
       onClick={handleGoToTop}
