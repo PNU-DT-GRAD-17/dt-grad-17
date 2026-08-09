@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { type MouseEvent, useEffect, useRef, useState } from "react";
 
 import { designers } from "../data/designers";
 import { teamProjects } from "../data/team";
@@ -114,6 +114,7 @@ const Project = () => {
   const [activeCategory, setActiveCategory] = useState<Category>("ALL");
   const [hoveredCategory, setHoveredCategory] = useState<Category | null>(null);
   const [isProjectLabelVisible, setIsProjectLabelVisible] = useState(true);
+  const [activePreviewId, setActivePreviewId] = useState<string | null>(null);
 
   useEffect(() => {
     const projectLabel = projectLabelRef.current;
@@ -194,6 +195,15 @@ const Project = () => {
       behavior: "smooth",
       block: "start",
     });
+  };
+
+  const handleCardTap = (event: MouseEvent<HTMLAnchorElement>, previewId: string) => {
+    if (!window.matchMedia("(hover: none), (pointer: coarse)").matches) return;
+
+    if (activePreviewId !== previewId) {
+      event.preventDefault();
+      setActivePreviewId(previewId);
+    }
   };
 
   return (
@@ -376,6 +386,7 @@ const Project = () => {
                     >
                       <a
                         href={teamProject.link}
+                        onClick={(event) => handleCardTap(event, `team-${category}`)}
                         className="group relative block h-full w-full overflow-hidden"
                         aria-label={`${teamProject.title}, ${category} 팀 프로젝트`}
                       >
@@ -385,10 +396,16 @@ const Project = () => {
                           onError={(event) => {
                             event.currentTarget.style.display = "none";
                           }}
-                          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          className={`h-full w-full object-cover transition-transform duration-700 group-hover:scale-105 ${
+                            activePreviewId === `team-${category}` ? "scale-105" : ""
+                          }`}
                         />
 
-                        <div className="pointer-events-none absolute inset-0 z-10 opacity-100 transition-opacity duration-300 group-hover:opacity-0 group-focus-visible:opacity-0">
+                        <div
+                          className={`pointer-events-none absolute inset-0 z-10 transition-opacity duration-300 group-hover:opacity-0 group-focus-visible:opacity-0 ${
+                            activePreviewId === `team-${category}` ? "opacity-0" : "opacity-100"
+                          }`}
+                        >
                           <img
                             src="/images/team_bd_gradient.png"
                             alt=""
@@ -404,9 +421,19 @@ const Project = () => {
                           {category}
                         </p>
 
-                        <div className="absolute inset-0 z-20 bg-[#252525] opacity-0 transition-opacity duration-300 group-hover:opacity-60 group-focus-visible:opacity-60" />
+                        <div
+                          className={`absolute inset-0 z-20 bg-[#252525] transition-opacity duration-300 group-hover:opacity-60 group-focus-visible:opacity-60 ${
+                            activePreviewId === `team-${category}` ? "opacity-60" : "opacity-0"
+                          }`}
+                        />
 
-                        <div className="absolute inset-0 z-30 flex translate-y-3 flex-col justify-between overflow-hidden p-[clamp(24px,4vw,36px)] pt-[clamp(76px,8vw,104px)] text-white opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">
+                        <div
+                          className={`absolute inset-0 z-30 flex flex-col justify-between overflow-hidden p-[clamp(24px,4vw,36px)] pt-[clamp(76px,8vw,104px)] text-white transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100 ${
+                            activePreviewId === `team-${category}`
+                              ? "translate-y-0 opacity-100"
+                              : "translate-y-3 opacity-0"
+                          }`}
+                        >
                           <div>
                             <p className="break-words text-[clamp(18px,2vw,28px)] font-medium leading-snug [overflow-wrap:anywhere]">
                               {teamProject.conceptName}
@@ -486,18 +513,31 @@ const Project = () => {
                         >
                           <a
                             href={`#${project.id}`}
+                            onClick={(event) => handleCardTap(event, project.id)}
                             className="group relative block h-full w-full overflow-hidden"
                             aria-label={`${project.conceptName}, ${project.designer}`}
                           >
                             <img
                               src={project.objectImage}
                               alt=""
-                              className="absolute inset-0 m-auto h-1/2 w-3/4 object-contain transition-transform duration-500 group-hover:scale-110"
+                              className={`absolute inset-0 m-auto h-1/2 w-3/4 object-contain transition-transform duration-500 group-hover:scale-110 ${
+                                activePreviewId === project.id ? "scale-110" : ""
+                              }`}
                             />
 
-                            <div className="absolute inset-0 z-10 bg-[#252525] opacity-0 transition-opacity duration-300 group-hover:opacity-60 group-focus-visible:opacity-60" />
+                            <div
+                              className={`absolute inset-0 z-10 bg-[#252525] transition-opacity duration-300 group-hover:opacity-60 group-focus-visible:opacity-60 ${
+                                activePreviewId === project.id ? "opacity-60" : "opacity-0"
+                              }`}
+                            />
 
-                            <div className="absolute inset-0 z-20 flex translate-y-2 flex-col justify-between overflow-hidden p-[clamp(14px,1.5vw,22px)] opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">
+                            <div
+                              className={`absolute inset-0 z-20 flex flex-col justify-between overflow-hidden p-[clamp(14px,1.5vw,22px)] transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100 ${
+                                activePreviewId === project.id
+                                  ? "translate-y-0 opacity-100"
+                                  : "translate-y-2 opacity-0"
+                              }`}
+                            >
                               <div>
                                 <p className="w-full whitespace-normal break-words text-[clamp(24px,1.5vw,28px)] font-bold leading-snug tracking-tight text-white [overflow-wrap:anywhere]">
                                   {project.conceptName || "UNTITLED"}
