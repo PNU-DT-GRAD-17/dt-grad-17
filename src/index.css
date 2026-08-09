@@ -45,3 +45,86 @@ html, body, #root{
     )
     1;
 }
+
+.designer-grid,
+.designer-card {
+  --designer-dash-length: 14px;
+  --designer-dash-gap: 10px;
+  --designer-dash-color: #bcbcbc;
+}
+
+.designer-grid {
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      var(--designer-dash-color) 0 var(--designer-dash-length),
+      transparent var(--designer-dash-length)
+        calc(var(--designer-dash-length) + var(--designer-dash-gap))
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      var(--designer-dash-color) 0 var(--designer-dash-length),
+      transparent var(--designer-dash-length)
+        calc(var(--designer-dash-length) + var(--designer-dash-gap))
+    );
+  background-position: left top, left top;
+  background-repeat: repeat-x, repeat-y;
+  background-size: 100% 1px, 1px 100%;
+}
+
+.designer-card {
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      var(--designer-dash-color) 0 var(--designer-dash-length),
+      transparent var(--designer-dash-length)
+        calc(var(--designer-dash-length) + var(--designer-dash-gap))
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      var(--designer-dash-color) 0 var(--designer-dash-length),
+      transparent var(--designer-dash-length)
+        calc(var(--designer-dash-length) + var(--designer-dash-gap))
+    );
+  background-position: left bottom, right top;
+  background-repeat: repeat-x, repeat-y;
+  background-size: 100% 1px, 1px 100%;
+}
+
+@media (min-width: 1280px) {
+  .designer-card-last-row-start::before {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 1px;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      var(--designer-dash-color) 0 var(--designer-dash-length),
+      transparent var(--designer-dash-length)
+        calc(var(--designer-dash-length) + var(--designer-dash-gap))
+    );
+    content: "";
+  }
+}
+
+@keyframes designer-original-to-paper {
+  0% {
+    opacity: 0;
+  }
+  8%,
+  45% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.group:hover .designer-hover-original {
+  animation: designer-original-to-paper 1.2s ease-in-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .group:hover .designer-hover-original {
+    animation-duration: 0.01ms;
+  }
+}

@@ -9,7 +9,7 @@ const Designer = () => {
 
   return (
     <main
-      className="min-h-screen bg-cover bg-center bg-no-repeat"
+      className="min-h-screen"
       style={{
         backgroundImage:
           "url('/images/background.png')",
@@ -18,36 +18,53 @@ const Designer = () => {
       <img
         src="/images/label-designer.png"
         alt="label"
-        className="absolute top-52 left-1/2 w-[300px] -translate-x-1/2"
+        className="mx-auto mt-28 mb-24 w-[clamp(280px,20vw,400px)] object-contain"
       />
 
-      <section className="mx-auto max-w-[1440px] px-12 pt-[200px] pb-24">
-        <div className="grid grid-cols-5 border-l border-t border-dashed border-[#BCBCBC]">
+      <section className="mx-auto max-w-[1540px] px-2 pt-2 pb-24 md:px-4">
+        <div className="designer-grid grid grid-cols-2 xl:grid-cols-10">
           {designerList.map((designer, index) => {
-            const isTop =
-              index % 2 === 0;
+            const imageNumber = String(index + 1).padStart(2, "0");
+            const imageClassName =
+              "pointer-events-none absolute left-1/2 top-1/2 h-[72%] w-[78%] -translate-x-1/2 -translate-y-1/2 object-contain";
+            const namePositionClassName = [
+              "left-4 top-4 md:left-6 md:top-6",
+              "right-4 top-4 md:right-6 md:top-6",
+              "bottom-4 left-4 md:bottom-6 md:left-6",
+              "bottom-4 right-4 md:bottom-6 md:right-6",
+            ][index % 4];
 
             return (
               <div
                 key={designer.id}
-                className="relative h-[300px] w-auto border-r border-b border-dashed border-[#BCBCBC]"
+                className={`designer-card group relative aspect-[5/6] w-auto xl:col-span-2 ${
+                  index === designerList.length - 3
+                    ? "designer-card-last-row-start xl:col-start-3"
+                    : ""
+                }`}
               >
-                {isTop ? (
-                  <p className="absolute left-6 top-6 text-lg font-semibold">
-                    {designer.name}
-                  </p>
-                ) : (
-                  <p className="absolute bottom-6 right-6 text-lg font-semibold">
-                    {designer.name}
-                  </p>
-                )}
+                <p
+                  className={`absolute z-40 text-base font-semibold md:text-lg ${namePositionClassName}`}
+                >
+                  {designer.name}
+                </p>
 
                 <img
-                  src={
-                    designer.selectedObjectImage
-                  }
-                  alt={designer.name}
-                  className="absolute left-1/2 top-1/2 h-[65%] w-[70%] -translate-x-1/2 -translate-y-1/2 object-contain"
+                  src={`/images/object/paper/${imageNumber}.png`}
+                  alt={`${designer.name} 오브제`}
+                  className={`${imageClassName} mix-blend-hard-light`}
+                />
+                <img
+                  src={`/images/object/paper/${imageNumber}_paper.png`}
+                  alt=""
+                  aria-hidden="true"
+                  className={`${imageClassName} z-10 transition-opacity duration-300 group-hover:opacity-0`}
+                />
+                <img
+                  src={`/images/object/original/${imageNumber}_ori.png`}
+                  alt=""
+                  aria-hidden="true"
+                  className={`${imageClassName} designer-hover-original z-20 opacity-0`}
                 />
               </div>
             );
