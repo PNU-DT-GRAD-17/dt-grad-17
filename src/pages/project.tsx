@@ -279,8 +279,8 @@ const Project = () => {
                                 className="
                                   group flex items-center
                                   text-md leading-5 text-[#777]
-                                  transition-colors hover:text-[#0096FF]
-                                  focus-visible:text-[#0096FF]
+                                  transition-colors hover:text-[#45BFE6]
+                                  focus-visible:text-[#45BFE6]
                                 "
                               >
                                 {/* 기본으로 표시 */}
