@@ -1,6 +1,32 @@
-import { NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 
 function Header() {
+  const location = useLocation();
+  const [isProjectLabelVisible, setIsProjectLabelVisible] = useState(true);
+
+  useEffect(() => {
+    if (location.pathname !== "/project") {
+      return;
+    }
+
+    const projectLabel = document.querySelector<HTMLElement>("[data-project-label]");
+
+    if (!projectLabel) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsProjectLabelVisible(entry.isIntersecting),
+      { threshold: 0 },
+    );
+
+    observer.observe(projectLabel);
+
+    return () => observer.disconnect();
+  }, [location.pathname]);
+
+  const isProjectPage = location.pathname === "/project";
+  const shouldAutoHide = isProjectPage && !isProjectLabelVisible;
+
   const menuClass = ({ isActive }: { isActive: boolean }) =>
     `
       transition-all
@@ -9,16 +35,35 @@ function Header() {
     `;
 
   return (
-    <header className="sticky top-0 z-50 w-full">
+    <header
+      className={`group sticky top-0 z-50 h-[72px] w-full ${
+        isProjectPage
+          ? shouldAutoHide
+            ? "lg:fixed lg:inset-x-0 lg:h-3 lg:hover:h-[var(--header-height)] lg:focus-within:h-[var(--header-height)]"
+            : "lg:fixed lg:inset-x-0 lg:h-[var(--header-height)]"
+          : "lg:sticky lg:h-[var(--header-height)]"
+      }`}
+    >
       <div
-        className="
-          relative
+        className={`
+          absolute
+          inset-x-0
+          top-0
           mx-auto
           p-5
           w-full
           bg-top
           bg-white
-        "
+          shadow-[0_8px_24px_rgba(0,0,0,0.08)]
+          transition-transform
+          duration-300
+          ease-out
+          ${
+            shouldAutoHide
+              ? "lg:-translate-y-full lg:group-hover:translate-y-0 lg:group-focus-within:translate-y-0"
+              : "lg:translate-y-0"
+          }
+        `}
       >
         <nav
           className="
