@@ -447,18 +447,18 @@ const Project = () => {
 
                           <div className="flex flex-col gap-[clamp(20px,2.5vw,36px)]">
                             <div>
-                              <p className="text-[clamp(14px,1.4vw,22px)] font-semibold text-[#45BFE6]">
+                              <p className="text-[clamp(14px,1.4vw,18px)] font-semibold text-[#45BFE6]">
                                 • video
                               </p>
-                              <p className="mt-1 break-words text-[clamp(16px,1.7vw,26px)] font-medium leading-snug text-white [overflow-wrap:anywhere]">
+                              <p className="mt-1 break-words text-[clamp(16px,1.7vw,20px)] font-medium leading-snug text-white [overflow-wrap:anywhere]">
                                 {teamProject.videoTitle || "팀 영상 제목"}
                               </p>
                             </div>
                             <div>
-                              <p className="text-[clamp(14px,1.4vw,22px)] font-semibold text-[#45BFE6]">
+                              <p className="text-[clamp(14px,1.4vw,18px)] font-semibold text-[#45BFE6]">
                                 • interaction
                               </p>
-                              <p className="mt-1 break-words text-[clamp(16px,1.7vw,26px)] font-medium leading-snug text-white [overflow-wrap:anywhere]">
+                              <p className="mt-1 break-words text-[clamp(16px,1.7vw,20px)] font-medium leading-snug text-white [overflow-wrap:anywhere]">
                                 {teamProject.interactionTitle || "팀 인터 제목"}
                               </p>
                             </div>

@@ -1,5 +1,6 @@
 import { designers } from "../data/designers";
 import Footer from "../components/Footer";
+import { Link } from "react-router-dom";
 
 const Designer = () => {
   // ALL 제외
@@ -35,8 +36,10 @@ const Designer = () => {
             ][index % 4];
 
             return (
-              <div
+              <Link
                 key={designer.id}
+                to={`/designer/${designer.id}`}
+                aria-label={`${designer.name} 디자이너 상세 페이지로 이동`}
                 className={`designer-card group relative aspect-[5/6] w-auto xl:col-span-2 ${
                   index === designerList.length - 3
                     ? "designer-card-last-row-start xl:col-start-3"
@@ -44,7 +47,7 @@ const Designer = () => {
                 }`}
               >
                 <p
-                  className={`absolute z-40 text-base font-semibold md:text-lg ${namePositionClassName}`}
+                  className={`absolute z-40 text-base font-semibold text-[#000101] md:text-2xl ${namePositionClassName}`}
                 >
                   {designer.name}
                 </p>
@@ -66,7 +69,7 @@ const Designer = () => {
                   aria-hidden="true"
                   className={`${imageClassName} designer-hover-original z-20 opacity-0`}
                 />
-              </div>
+              </Link>
             );
           })}
         </div>

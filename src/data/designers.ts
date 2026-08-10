@@ -7,6 +7,17 @@ export type Designer = {
         conceptName: string;
         motionPosterTitle: string;
         interactionTitle: string;
+        detail?: {
+                nameEn?: string;
+                profileImage?: string;
+                email?: string;
+                instagram?: URL;
+                portfolio?: URL;
+                phone?: string;
+                teamFilm?: string;
+                teamInteraction?: string;
+                individualInteraction?: string;
+        };
 }
 
 export const designers: Designer[] = [
@@ -148,7 +159,7 @@ export const designers: Designer[] = [
                 selectedObjectImage: "/images/object/color/013.png",
                 conceptName: "ㅇㅇㅇㅇ",
                 motionPosterTitle: "-motion-poster-013",
-                interactionTitle: "ㅇㅇㅇㅇㅇㅇ"
+                interactionTitle: "양자여동"
         },
         {
                 id: "jeon-subean",

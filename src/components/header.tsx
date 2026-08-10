@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { type MouseEvent, useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 
 function Header() {
@@ -10,18 +10,34 @@ function Header() {
       return;
     }
 
-    const projectLabel = document.querySelector<HTMLElement>("[data-project-label]");
+    let observer: IntersectionObserver | null = null;
+    let animationFrameId: number | null = null;
 
-    if (!projectLabel) return;
+    const observeProjectLabel = () => {
+      const projectLabel = document.querySelector<HTMLElement>("[data-project-label]");
 
-    const observer = new IntersectionObserver(
-      ([entry]) => setIsProjectLabelVisible(entry.isIntersecting),
-      { threshold: 0 },
-    );
+      // Header and the routed page are siblings. During client-side navigation,
+      // the location effect can run before the project page is available in the DOM.
+      if (!projectLabel) {
+        animationFrameId = window.requestAnimationFrame(observeProjectLabel);
+        return;
+      }
 
-    observer.observe(projectLabel);
+      observer = new IntersectionObserver(
+        ([entry]) => setIsProjectLabelVisible(entry.isIntersecting),
+        { threshold: 0 },
+      );
+      observer.observe(projectLabel);
+    };
 
-    return () => observer.disconnect();
+    observeProjectLabel();
+
+    return () => {
+      if (animationFrameId !== null) {
+        window.cancelAnimationFrame(animationFrameId);
+      }
+      observer?.disconnect();
+    };
   }, [location.pathname]);
 
   const isProjectPage = location.pathname === "/project";
@@ -33,6 +49,15 @@ function Header() {
       duration-200
       ${isActive ? "font-bold" : "font-normal hover:font-bold"}
     `;
+
+  const releasePointerFocus = (event: MouseEvent<HTMLAnchorElement>) => {
+    // A clicked navigation link otherwise keeps :focus-within active after
+    // the route changes, preventing the auto-hidden project header from closing.
+    // Keep focus for keyboard activation (detail === 0).
+    if (event.detail > 0) {
+      event.currentTarget.blur();
+    }
+  };
 
   return (
     <header
@@ -97,19 +122,19 @@ function Header() {
               text-[#000101]
             "
           >
-            <NavLink to="/designer" className={menuClass}>
+            <NavLink to="/designer" className={menuClass} onClick={releasePointerFocus}>
               디자이너
             </NavLink>
 
-            <NavLink to="/project" className={menuClass}>
+            <NavLink to="/project" className={menuClass} onClick={releasePointerFocus}>
               프로젝트
             </NavLink>
 
-            <NavLink to="/behind" className={menuClass}>
+            <NavLink to="/behind" className={menuClass} onClick={releasePointerFocus}>
               비하인드
             </NavLink>
 
-            <NavLink to="/guestbook" className={menuClass}>
+            <NavLink to="/guestbook" className={menuClass} onClick={releasePointerFocus}>
               방명록
             </NavLink>
           </div>
