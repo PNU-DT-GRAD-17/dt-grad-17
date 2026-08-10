@@ -696,8 +696,8 @@ export default function Guestbook() {
                   <img
                     src={
                       formToId === "all"
-                        ? "/images/arrowDown.png"
-                        : "/images/arrowDownSelected.png"
+                        ? "/images/icon/arrowDown.png"
+                        : "/images/icon/arrowDownSelected.png"
                     }
                     alt=""
                     className={`pointer-events-none h-6 w-6 object-contain ${
@@ -825,7 +825,7 @@ export default function Guestbook() {
             </span>
 
             <img
-              src="/images/arrowDown.png"
+              src="/images/icon/arrowDown.png"
               alt=""
               className={`pointer-events-none h-6 w-6 object-contain ${
                 isFilterDropdownOpen
