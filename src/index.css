@@ -128,3 +128,23 @@ html, body, #root{
     animation-duration: 0.01ms;
   }
 }
+
+@keyframes main-scroll-cue-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(7px);
+  }
+}
+
+.main-scroll-cue {
+  animation: main-scroll-cue-float 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .main-scroll-cue {
+    animation: none;
+  }
+}
