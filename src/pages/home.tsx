@@ -7,6 +7,8 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 
+import Footer from "../components/Footer";
+
 type Position = { x: number; y: number };
 type Size = { width: number; height: number };
 
@@ -22,6 +24,27 @@ type BannerObject = {
 const ASSET_ROOT = "/images/main_banner";
 const CURSOR_ASPECT_RATIO = 339 / 509;
 const DRAG_CURSOR_SCALE = 0.4;
+
+// 전달받은 유튜브 영상 주소로 교체하면 됩니다.
+// 예: https://www.youtube.com/watch?v=dQw4w9WgXcQ
+const OPENING_YOUTUBE_URL = "";
+
+const getYoutubeEmbedUrl = (url: string) => {
+  if (!url) return "";
+
+  try {
+    const parsedUrl = new URL(url);
+    const videoId = parsedUrl.hostname.includes("youtu.be")
+      ? parsedUrl.pathname.slice(1)
+      : parsedUrl.searchParams.get("v") ?? parsedUrl.pathname.split("/").pop();
+
+    return videoId
+      ? `https://www.youtube-nocookie.com/embed/${videoId}`
+      : "";
+  } catch {
+    return "";
+  }
+};
 
 const BANNER_OBJECTS: BannerObject[] = [
   { id: "key", file: "dp.png", x: 14, y: 22, rotate: 0, scale: 1.2 },
@@ -62,6 +85,7 @@ function ObjectLayer({ color }: { color: boolean }) {
 
 function Home() {
   const sceneRef = useRef<HTMLElement>(null);
+  const overviewRef = useRef<HTMLElement>(null);
   const blackCanvasRef = useRef<HTMLCanvasElement>(null);
   const eraseImageRef = useRef<HTMLImageElement | null>(null);
   const lastErasePointRef = useRef<Position | null>(null);
@@ -73,6 +97,7 @@ function Home() {
   const [isErasing, setIsErasing] = useState(false);
   const [isScrollCueHovered, setIsScrollCueHovered] = useState(false);
   const [cursorScale, setCursorScale] = useState(1);
+  const openingEmbedUrl = getYoutubeEmbedUrl(OPENING_YOUTUBE_URL);
 
   const baseCursorSize = getCursorSize(sceneSize.width);
   const activeCursorSize = {
@@ -196,12 +221,31 @@ function Home() {
     };
 
     void drawBlackObjects();
-    const observer = new ResizeObserver(() => void drawBlackObjects());
-    observer.observe(scene);
+    const resizeObserver = new ResizeObserver(() => void drawBlackObjects());
+    resizeObserver.observe(scene);
+
+    let hasLeftScene = false;
+    const visibilityObserver = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) {
+        hasLeftScene = true;
+        return;
+      }
+
+      if (hasLeftScene) {
+        hasLeftScene = false;
+        setIsErasing(false);
+        setPointerPosition(null);
+        eraseReadyRef.current = false;
+        lastErasePointRef.current = null;
+        void drawBlackObjects();
+      }
+    });
+    visibilityObserver.observe(scene);
 
     return () => {
       cancelled = true;
-      observer.disconnect();
+      resizeObserver.disconnect();
+      visibilityObserver.disconnect();
     };
   }, []);
 
@@ -287,15 +331,7 @@ function Home() {
   };
 
   const scrollBelowBanner = () => {
-    const banner = sceneRef.current;
-    const nextSection = banner?.nextElementSibling as HTMLElement | null;
-
-    if (nextSection) {
-      nextSection.scrollIntoView({ behavior: "smooth", block: "start" });
-      return;
-    }
-
-    window.scrollBy({ top: window.innerHeight, behavior: "smooth" });
+    overviewRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   const revealMaskStyle: CSSProperties = visibleCursorPosition
@@ -316,7 +352,7 @@ function Home() {
     : {};
 
   return (
-    <main className="relative h-[calc(100svh-var(--header-height))] min-h-[540px] w-full overflow-hidden">
+    <main className="relative min-h-screen w-full bg-[url('/images/background.png')] bg-cover bg-center bg-no-repeat text-[#111]">
       <section
         ref={sceneRef}
         aria-label="파란 종이를 움직여 색을 발견하는 메인 배너"
@@ -325,7 +361,7 @@ function Home() {
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
         onPointerLeave={() => setPointerPosition(null)}
-        className="relative isolate h-full w-full cursor-none touch-none overflow-hidden bg-[url('/images/background.png')] bg-[length:100%_auto] bg-top"
+        className="relative isolate h-[calc(100svh-var(--header-height))] min-h-[540px] w-full cursor-none touch-none overflow-hidden"
       >
         <h1 className="sr-only">잔향 — 부산대학교 디자인앤테크놀로지 졸업전시</h1>
 
@@ -382,6 +418,60 @@ function Home() {
           />
         </button>
       </section>
+
+      <section
+        ref={overviewRef}
+        className="relative flex min-h-[calc(100svh-var(--header-height))] scroll-mt-[var(--header-height)] flex-col items-center justify-center px-6 py-20 text-center"
+      >
+        <div className="mx-auto max-w-[1100px]">
+          <h2 className="text-[clamp(28px,2.4vw,42px)] font-bold tracking-[-0.04em]">
+            전시 개요
+          </h2>
+
+          <p className="mt-[clamp(60px,10vw,92px)] text-[clamp(17px,1.7vw,20px)] leading-[1.5] tracking-[-0.03em]">
+            사라짐으로부터 발생되는 ‘잔향’은 우리에게 다음과 같은 질문들을 던진다.
+            <br className="hidden md:block" /><br/>
+            우리는 무엇을 남길 것인가.
+            <br className="hidden md:block" />
+            우리는 무엇을 기억할 것인가.
+            <br className="hidden md:block" /><br/>
+            이번 전시를 준비하며 사라짐이 남기는 울림을 각자의 시선으로 해석하고, 그 자취를 오브제로 표현하였다.
+            <br className="hidden md:block" /><br/>
+            본 전시는 마지막과 처음의 경계에서 우리가 마주한 잔향의 의미를 선보인다.
+            <br className="hidden md:block" />
+            지금 나는 어떤 마지막과 처음 위에 서있는가.
+          </p>
+        </div>
+
+      </section>
+
+      <section
+        id="opening"
+        className="scroll-mt-[var(--header-height)] px-6 py-[clamp(64px,8vw,120px)] sm:px-10 lg:px-[clamp(80px,13vw,200px)]"
+      >
+        <h2 className="text-center text-[clamp(24px,2.2vw,36px)] font-bold tracking-[-0.03em]">
+          OPENING
+        </h2>
+
+        <div className="mx-auto mt-8 aspect-video w-full max-w-[1200px] overflow-hidden border border-[#8d8d8d] bg-[#d9d9d9]">
+          {openingEmbedUrl ? (
+            <iframe
+              className="h-full w-full"
+              src={openingEmbedUrl}
+              title="OPENING 영상"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center text-center text-sm font-medium text-[#777] sm:text-base">
+              OPENING VIDEO
+            </div>
+          )}
+        </div>
+      </section>
+
+      <Footer />
     </main>
   );
 }

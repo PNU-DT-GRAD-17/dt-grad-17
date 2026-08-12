@@ -166,7 +166,11 @@ const DesignerDetail = () => {
 
       <nav
         aria-label="디자이너 상세 페이지 이동"
-        className="grid min-h-16 grid-cols-3 items-center bg-[#0875b9] px-5 text-white sm:px-[clamp(32px,6vw,90px)]"
+        className="grid min-h-16 grid-cols-3 items-center bg-cover bg-center bg-no-repeat px-5 text-white sm:px-[clamp(32px,6vw,90px)]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(0, 102, 173, 0.3), rgba(0, 102, 173, 0.3)), url('/images/navigator_bg.png')",
+        }}
       >
         <Link
           to={`/designer/${previousDesigner.id}`}
