@@ -9,6 +9,7 @@ import {
 import { Link } from "react-router-dom";
 
 import Footer from "../components/Footer";
+import KakaoMap from "../components/KakaoMap";
 import { designers } from "../data/designers";
 
 type Position = { x: number; y: number };
@@ -25,7 +26,11 @@ type BannerObject = {
 
 const ASSET_ROOT = "/images/main_banner";
 const CURSOR_ASPECT_RATIO = 339 / 509;
-const DRAG_CURSOR_SCALE = 0.4;
+const DRAG_CURSOR_SCALE = 0.2;
+const CURSOR_IMAGE_SCALE = 0.8;
+const CURSOR_FOLLOW_EASING = 0.18;
+const ERASER_STRENGTH = 0.06;
+const ERASER_ALPHA_CUTOFF = 12;
 
 // 전달받은 유튜브 영상 주소로 교체하면 됩니다.
 // 예: https://www.youtube.com/watch?v=dQw4w9WgXcQ
@@ -66,14 +71,14 @@ const BANNER_OBJECTS: BannerObject[] = [
   { id: "spider-web", file: "web.png", x: 90, y: 16, rotate: 0, scale: 1.2 },
   { id: "flower", file: "branding.png", x: 8, y: 84, rotate: 0, scale: 1.2 },
   { id: "hourglass", file: "opening.png", x: 88, y: 80, rotate: 10, scale: 1.2 },
-  { id: "logo", file: "logo.png", x: 49, y: 50, rotate: 0, scale: 1.5 },
+  { id: "logo", file: "logo.png", x: 49, y: 50, rotate: 0, scale: 1.2 },
 ];
 
 const getObjectSize = (sceneWidth: number) =>
   Math.min(462, Math.max(264, sceneWidth * 0.28));
 
 const getCursorSize = (sceneWidth: number): Size => {
-  const width = Math.min(509, Math.max(270, sceneWidth * 0.31));
+  const width = Math.min(509, Math.max(270, sceneWidth * 0.31)) * CURSOR_IMAGE_SCALE;
   return { width, height: width * CURSOR_ASPECT_RATIO };
 };
 
@@ -106,6 +111,8 @@ function Home() {
   const lastErasePointRef = useRef<Position | null>(null);
   const cursorScaleRef = useRef(1);
   const eraseReadyRef = useRef(false);
+  const pointerTargetRef = useRef<Position | null>(null);
+  const pointerPositionRef = useRef<Position | null>(null);
 
   const [sceneSize, setSceneSize] = useState<Size>({ width: 0, height: 0 });
   const [pointerPosition, setPointerPosition] = useState<Position | null>(null);
@@ -163,6 +170,34 @@ function Home() {
     animationFrame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationFrame);
   }, [isErasing]);
+
+  useEffect(() => {
+    let animationFrame = 0;
+
+    const followPointer = () => {
+      const target = pointerTargetRef.current;
+      const current = pointerPositionRef.current;
+
+      if (target && current) {
+        const deltaX = target.x - current.x;
+        const deltaY = target.y - current.y;
+
+        if (Math.abs(deltaX) > 0.1 || Math.abs(deltaY) > 0.1) {
+          const nextPosition = {
+            x: current.x + deltaX * CURSOR_FOLLOW_EASING,
+            y: current.y + deltaY * CURSOR_FOLLOW_EASING,
+          };
+          pointerPositionRef.current = nextPosition;
+          setPointerPosition(nextPosition);
+        }
+      }
+
+      animationFrame = requestAnimationFrame(followPointer);
+    };
+
+    animationFrame = requestAnimationFrame(followPointer);
+    return () => cancelAnimationFrame(animationFrame);
+  }, []);
 
   useLayoutEffect(() => {
     const scene = sceneRef.current;
@@ -249,6 +284,8 @@ function Home() {
       if (hasLeftScene) {
         hasLeftScene = false;
         setIsErasing(false);
+        pointerTargetRef.current = null;
+        pointerPositionRef.current = null;
         setPointerPosition(null);
         eraseReadyRef.current = false;
         lastErasePointRef.current = null;
@@ -279,9 +316,33 @@ function Home() {
     const distance = Math.hypot(to.x - from.x, to.y - from.y);
     const step = Math.max(8, eraseSize.width * 0.08);
     const count = Math.max(1, Math.ceil(distance / step));
+    const scaleX = canvas.width / canvas.clientWidth;
+    const scaleY = canvas.height / canvas.clientHeight;
+    const left = Math.max(
+      0,
+      Math.floor((Math.min(from.x, to.x) - eraseSize.width / 2) * scaleX),
+    );
+    const top = Math.max(
+      0,
+      Math.floor((Math.min(from.y, to.y) - eraseSize.height / 2) * scaleY),
+    );
+    const right = Math.min(
+      canvas.width,
+      Math.ceil((Math.max(from.x, to.x) + eraseSize.width / 2) * scaleX),
+    );
+    const bottom = Math.min(
+      canvas.height,
+      Math.ceil((Math.max(from.y, to.y) + eraseSize.height / 2) * scaleY),
+    );
+    const affectedWidth = right - left;
+    const affectedHeight = bottom - top;
+    const beforeErase = affectedWidth > 0 && affectedHeight > 0
+      ? context.getImageData(left, top, affectedWidth, affectedHeight)
+      : null;
 
     context.save();
     context.globalCompositeOperation = "destination-out";
+    context.globalAlpha = ERASER_STRENGTH;
     for (let index = 0; index <= count; index += 1) {
       const progress = index / count;
       const x = from.x + (to.x - from.x) * progress;
@@ -295,6 +356,19 @@ function Home() {
       );
     }
     context.restore();
+
+    if (beforeErase) {
+      const afterErase = context.getImageData(left, top, affectedWidth, affectedHeight);
+
+      for (let index = 3; index < afterErase.data.length; index += 4) {
+        const alphaWasReduced = afterErase.data[index] < beforeErase.data[index];
+        if (alphaWasReduced && afterErase.data[index] <= ERASER_ALPHA_CUTOFF) {
+          afterErase.data[index] = 0;
+        }
+      }
+
+      context.putImageData(afterErase, left, top);
+    }
   };
 
   const getPointerPosition = (event: ReactPointerEvent<HTMLElement>): Position => {
@@ -302,9 +376,18 @@ function Home() {
     return { x: event.clientX - rect.left, y: event.clientY - rect.top };
   };
 
+  const updatePointerTarget = (position: Position) => {
+    pointerTargetRef.current = position;
+
+    if (!pointerPositionRef.current) {
+      pointerPositionRef.current = position;
+      setPointerPosition(position);
+    }
+  };
+
   const handlePointerMove = (event: ReactPointerEvent<HTMLElement>) => {
     const position = getPointerPosition(event);
-    setPointerPosition(position);
+    updatePointerTarget(position);
 
     if (isErasing) {
       const eraseSize = {
@@ -330,7 +413,7 @@ function Home() {
     const boundedPosition = keepInside(position, eraseSize);
 
     event.currentTarget.setPointerCapture(event.pointerId);
-    setPointerPosition(position);
+    updatePointerTarget(position);
     setIsErasing(true);
     eraseReadyRef.current = false;
     lastErasePointRef.current = boundedPosition;
@@ -343,6 +426,12 @@ function Home() {
     setIsErasing(false);
     eraseReadyRef.current = false;
     lastErasePointRef.current = null;
+  };
+
+  const handlePointerLeave = () => {
+    pointerTargetRef.current = null;
+    pointerPositionRef.current = null;
+    setPointerPosition(null);
   };
 
   const scrollBelowBanner = () => {
@@ -375,7 +464,7 @@ function Home() {
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
-        onPointerLeave={() => setPointerPosition(null)}
+        onPointerLeave={handlePointerLeave}
         className="relative isolate h-[calc(100svh-var(--header-height))] min-h-[540px] w-full cursor-none touch-none overflow-hidden"
       >
         <h1 className="sr-only">잔향 — 부산대학교 디자인앤테크놀로지 졸업전시</h1>
@@ -532,6 +621,41 @@ function Home() {
                 </ul>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section
+        aria-labelledby="offline-information-title"
+        className="px-6 pb-[clamp(96px,12vw,180px)] pt-[clamp(64px,8vw,120px)] sm:px-10 lg:px-[clamp(80px,13vw,200px)]"
+      >
+        <h2
+          id="offline-information-title"
+          className="text-center text-[clamp(28px,2.4vw,42px)] font-bold tracking-[-0.04em]"
+        >
+          오프라인 정보
+        </h2>
+
+        <div className="mx-auto mt-[clamp(56px,8vw,112px)] grid w-full max-w-[1280px] gap-12 lg:grid-cols-[minmax(300px,0.85fr)_minmax(420px,1.15fr)] lg:items-center lg:gap-[clamp(64px,9vw,144px)]">
+          <div className="min-w-0">
+            <div className="text-[clamp(13px,1.15vw,16px)] tracking-[-0.025em]">
+              <div className="pb-6">
+                <h3 className="font-semibold text-[24px]">부산디자인진흥원 1층 전시실</h3>
+                <p className="mt-2 leading-relaxed">부산광역시 해운대구 센텀동로 57</p>
+              </div>
+
+              <div className="py-6">
+                <h3 className="font-semibold text-[20px]">DESIGN CENTER BUSAN 1F Exhibition Hall</h3>
+                <p className="mt-2 leading-relaxed">57, Centum dong-ro, Haeundae-gu, Busan</p>
+              </div>
+
+              <p className="pt-6 font-semibold text-[24px]">2026/11/06(FRI) - 11/08(SUN)</p>
+              <p>10am - 6pm</p>
+            </div>
+          </div>
+
+          <div className="aspect-square w-full min-w-0 border border-[#bcbcbc] sm:aspect-[4/3] lg:aspect-square">
+            <KakaoMap />
           </div>
         </div>
       </section>

@@ -1,7 +1,8 @@
-import { type MouseEvent, useEffect, useState } from "react";
+import { type MouseEvent, useEffect, useRef, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 
 function Header() {
+  const headerRef = useRef<HTMLElement>(null);
   const location = useLocation();
   const [isProjectLabelVisible, setIsProjectLabelVisible] = useState(true);
 
@@ -25,7 +26,10 @@ function Header() {
 
       observer = new IntersectionObserver(
         ([entry]) => setIsProjectLabelVisible(entry.isIntersecting),
-        { threshold: 0 },
+        {
+          rootMargin: `-${headerRef.current?.getBoundingClientRect().height ?? 0}px 0px 0px 0px`,
+          threshold: 0,
+        },
       );
       observer.observe(projectLabel);
     };
@@ -61,6 +65,7 @@ function Header() {
 
   return (
     <header
+      ref={headerRef}
       className={`group sticky top-0 z-50 h-[72px] w-full ${
         isProjectPage
           ? shouldAutoHide
@@ -104,7 +109,7 @@ function Header() {
               src="/images/navBar_logo.png"
               alt="잔향 로고"
               className="
-                h-[clamp(32px,3.15vw,55px)]
+                h-[clamp(32px,3.15vw,40px)]
                 w-auto
                 object-contain
               "
@@ -130,13 +135,14 @@ function Header() {
               프로젝트
             </NavLink>
 
+            <NavLink to="/guestbook" className={menuClass} onClick={releasePointerFocus}>
+              방명록
+            </NavLink>
+
             <NavLink to="/behind" className={menuClass} onClick={releasePointerFocus}>
               비하인드
             </NavLink>
 
-            <NavLink to="/guestbook" className={menuClass} onClick={releasePointerFocus}>
-              방명록
-            </NavLink>
           </div>
         </nav>
       </div>

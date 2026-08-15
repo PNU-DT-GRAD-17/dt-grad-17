@@ -2,7 +2,7 @@
 @import "tailwindcss";
 
 :root {
-  --header-height: clamp(72px, calc(3.15vw + 40px), 95px);
+  --header-height: clamp(72px, calc(3.15vw + 40px), 80px);
 }
 
 .guestbook-scroll {

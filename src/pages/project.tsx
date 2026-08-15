@@ -121,6 +121,9 @@ const Project = () => {
 
     if (!projectLabel) return;
 
+    const headerHeight =
+      document.querySelector<HTMLElement>("header")?.getBoundingClientRect().height ?? 0;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         setIsProjectLabelVisible(entry.isIntersecting);
@@ -130,8 +133,8 @@ const Project = () => {
         }
       },
       {
-        // 헤더가 오버레이로 숨겨지므로 화면 최상단을 기준으로 계산합니다.
-        rootMargin: "0px",
+        // 라벨이 실제 헤더 아래의 가시 영역을 벗어나는 순간 전환합니다.
+        rootMargin: `-${headerHeight}px 0px 0px 0px`,
         threshold: 0,
       },
     );
