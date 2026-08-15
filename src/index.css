@@ -148,3 +148,61 @@ html, body, #root{
     animation: none;
   }
 }
+
+.exhibition-member-link {
+  position: relative;
+  isolation: isolate;
+  text-decoration: none;
+  transition: color 180ms ease, transform 180ms ease;
+}
+
+.exhibition-member-link::before {
+  position: absolute;
+  inset: -2px -5px;
+  z-index: -1;
+  background-image: url("/images/navigator_bg.png");
+  background-position: center;
+  background-size: cover;
+  content: "";
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.exhibition-member-link:hover,
+.exhibition-member-link:focus-visible {
+  font-weight: 400;
+  color: white;
+  transform: scale(1.0);
+}
+
+.exhibition-member-link:hover::before,
+.exhibition-member-link:focus-visible::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.exhibition-member-link:focus-visible {
+  outline: 2px solid #0066ad;
+  outline-offset: 4px;
+}
+
+@keyframes exhibition-member-preview-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.exhibition-member-preview {
+  animation: exhibition-member-preview-in 250ms ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .exhibition-member-link,
+  .exhibition-member-link::before {
+    transition-duration: 0.01ms;
+  }
+
+  .exhibition-member-preview {
+    animation-duration: 0.01ms;
+  }
+}

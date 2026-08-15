@@ -6,8 +6,10 @@ import {
   type CSSProperties,
   type PointerEvent as ReactPointerEvent,
 } from "react";
+import { Link } from "react-router-dom";
 
 import Footer from "../components/Footer";
+import { designers } from "../data/designers";
 
 type Position = { x: number; y: number };
 type Size = { width: number; height: number };
@@ -28,6 +30,19 @@ const DRAG_CURSOR_SCALE = 0.4;
 // 전달받은 유튜브 영상 주소로 교체하면 됩니다.
 // 예: https://www.youtube.com/watch?v=dQw4w9WgXcQ
 const OPENING_YOUTUBE_URL = "";
+
+const EXHIBITION_MEMBER_GROUPS = [
+  { label: "위원장", members: ["김예원"] },
+  { label: "부위원장", members: ["이수현"] },
+  { label: "BRANDING", members: ["황혜정", "박건희", "박보은", "안선주"] },
+  { label: "DP", members: ["배명환", "이수현", "전수빈", "정미연", "정성현"] },
+  { label: "OPENING", members: ["박지수", "윤서현", "이현지", "장재원"] },
+  { label: "WEB", members: ["최양진", "강예주", "김예원", "박수민", "이은솔"] },
+] as const;
+
+const exhibitionDesigners = new Map(
+  designers.filter((designer) => designer.id !== "all").map((designer) => [designer.name, designer]),
+);
 
 const getYoutubeEmbedUrl = (url: string) => {
   if (!url) return "";
@@ -468,6 +483,56 @@ function Home() {
               OPENING VIDEO
             </div>
           )}
+        </div>
+      </section>
+
+      <section
+        aria-labelledby="exhibition-members-title"
+        className="px-6 pb-[clamp(96px,12vw,180px)] pt-[clamp(48px,7vw,100px)] sm:px-10 lg:px-[clamp(80px,10vw,160px)]"
+      >
+        <h2 className="text-center text-[clamp(28px,2.4vw,42px)] font-bold tracking-[-0.04em]">
+            전시 인원 소개
+          </h2>
+
+        <div className="mx-auto mt-[clamp(48px,7vw,56px)] grid w-full max-w-[1280px] gap-10 xl:grid-cols-[minmax(0,1.05fr)_minmax(420px,0.95fr)] xl:items-center xl:gap-[clamp(56px,7vw,112px)]">
+          <div className="aspect-[3/2] min-w-0 w-full overflow-hidden">
+            <img
+              src="/images/footer_background.png"
+              alt="전시 참여 인원 단체사진"
+              className="block h-full w-full object-cover"
+            />
+          </div>
+
+          <div className="min-w-0 flex flex-col justify-center">
+            {EXHIBITION_MEMBER_GROUPS.map((group) => (
+              <div
+                key={group.label}
+                className="grid grid-cols-[92px_1fr] items-center gap-4 py-3 sm:grid-cols-[120px_1fr] sm:gap-7 sm:py-3"
+              >
+                <h3 className="text-base font-bold leading-none tracking-[-0.02em]">
+                  {group.label}
+                </h3>
+                <ul className="grid min-w-0 w-full list-none grid-cols-5 items-center p-0">
+                  {group.members.map((name) => {
+                    const designer = exhibitionDesigners.get(name);
+                    if (!designer) return null;
+
+                    return (
+                      <li key={`${group.label}-${name}`} className="min-w-0 whitespace-nowrap">
+                        <Link
+                          to={`/designer/${designer.id}`}
+                          className="exhibition-member-link inline-flex items-center text-[clamp(12px,1.5vw,16px)] font-medium tracking-[-0.035em] text-[#000101]"
+                          aria-label={`${name} 디자이너 상세 페이지로 이동`}
+                        >
+                          <span>{name}</span>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
