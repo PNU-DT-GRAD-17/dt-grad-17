@@ -1,3 +1,4 @@
+import { useLayoutEffect } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import Footer from "../components/Footer";
 
@@ -9,11 +10,11 @@ type MediaPanelProps = {
 };
 
 const MediaPanel = ({ label, src }: MediaPanelProps) => (
-  <section>
-    <h2 className="mb-2 text-xs font-bold uppercase tracking-[-0.02em] sm:text-sm">
+  <section className="xl:flex xl:min-h-0 xl:flex-col">
+    <h2 className="mb-2 text-xs font-bold uppercase tracking-[-0.02em] sm:text-sm xl:mb-3 xl:text-[clamp(18px,1.15vw,22px)]">
       {label}
     </h2>
-    <div className="aspect-video w-full overflow-hidden border border-[#9d9d9d] bg-[#d9d9d9]">
+    <div className="aspect-video w-full overflow-hidden border border-[#9d9d9d] bg-[#d9d9d9] xl:min-h-0 xl:flex-1 xl:aspect-auto">
       {src ? (
         <video
           className="h-full w-full object-cover"
@@ -41,6 +42,11 @@ const getEnglishName = (designer: Designer) =>
 
 const DesignerDetail = () => {
   const { designerId } = useParams();
+
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, [designerId]);
+
   const designerList = designers.filter((designer) => designer.id !== "all");
   const currentIndex = designerList.findIndex(
     (designer) => designer.id === designerId,
@@ -51,54 +57,53 @@ const DesignerDetail = () => {
   }
 
   const designer = designerList[currentIndex];
-  const previousDesigner =
-    designerList[(currentIndex - 1 + designerList.length) % designerList.length];
-  const nextDesigner = designerList[(currentIndex + 1) % designerList.length];
   const detail = designer.detail;
   const imageNumber = String(currentIndex + 1).padStart(2, "0");
 
   return (
-    <main className="min-h-[calc(100svh-var(--header-height))] bg-[url('/images/background.png')] text-[#111]">
-      <div className="mx-auto flex min-h-[calc(100svh-var(--header-height)-64px)] max-w-[1540px] flex-col px-6 pb-12 pt-8 sm:px-10 lg:px-[clamp(48px,6.25vw,96px)] lg:pb-16 lg:pt-12">
-        <Link
-          to="/designer"
-          className="group mb-8 inline-flex w-fit items-center gap-1 text-lg font-semibold text-[#a7adb1] transition-colors hover:text-[#000101] focus-visible:text-[#000101] lg:mb-10 lg:text-2xl"
-        >
-          <span
-            className="relative h-7 w-7 shrink-0 lg:h-9 lg:w-9"
-            aria-hidden="true"
-          >
-            <img
-              src="/images/icon/arrowLeftGray.png"
-              alt=""
-              className="absolute inset-0 h-full w-full object-contain transition-opacity group-hover:opacity-0 group-focus-visible:opacity-0"
-            />
-            <img
-              src="/images/icon/arrowLeftBlack.png"
-              alt=""
-              className="absolute inset-0 h-full w-full object-contain opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
-            />
-          </span>
-          <span>BACK</span>
-        </Link>
+    <main className="bg-[url('/images/background.png')] text-[#111]">
+      <div className="relative mx-auto flex min-h-[calc(100svh-72px)] max-w-[2100px] flex-col px-6 pb-12 pt-8 sm:px-10 lg:min-h-[calc(100svh-var(--header-height))] lg:px-[clamp(40px,2.5vw,52px)] lg:pb-12 lg:pt-12 xl:max-w-none xl:px-0 xl:pb-[clamp(48px,6svh,72px)] xl:pt-[clamp(56px,7svh,80px)]">
+        <div className="grid min-h-0 flex-1 items-start gap-10 lg:grid-cols-2 xl:mx-auto xl:w-[calc(100%_-_104px)] xl:max-w-[1962px] xl:grid-cols-[minmax(0,1.45fr)_clamp(64px,4vw,84px)_minmax(0,1.25fr)_clamp(120px,9vw,190px)_clamp(320px,21.5vw,450px)] xl:items-stretch xl:gap-0">
+          <div className="flex w-full flex-col justify-end xl:col-start-1 xl:min-h-0">
+            <Link
+              to="/designer"
+              className="group z-20 mb-4 inline-flex w-fit items-center gap-1 text-lg font-semibold text-[#a7adb1] transition-colors hover:text-[#000101] focus-visible:text-[#000101] lg:text-2xl xl:mb-12"
+            >
+              <span
+                className="relative h-7 w-7 shrink-0 lg:h-9 lg:w-9"
+                aria-hidden="true"
+              >
+                <img
+                  src="/images/icon/arrowLeftGray.png"
+                  alt=""
+                  className="absolute inset-0 h-full w-full object-contain transition-opacity group-hover:opacity-0 group-focus-visible:opacity-0"
+                />
+                <img
+                  src="/images/icon/arrowLeftBlack.png"
+                  alt=""
+                  className="absolute inset-0 h-full w-full object-contain opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
+                />
+              </span>
+              <span>BACK</span>
+            </Link>
 
-        <div className="grid flex-1 items-start gap-10 lg:grid-cols-2 xl:grid-cols-[minmax(300px,1.25fr)_minmax(320px,1.35fr)_minmax(248px,0.74fr)] xl:gap-[clamp(36px,4vw,72px)]">
-          <section className="overflow-hidden bg-[#dedede] lg:self-stretch">
-            {detail?.profileImage ? (
-              <img
-                src={detail.profileImage}
-                alt={`${designer.name} 디자이너 프로필`}
-                className="h-full min-h-[420px] w-full object-cover object-center"
-              />
-            ) : (
-              <div className="flex aspect-[3/4] min-h-[420px] items-center justify-center bg-[#dedede] text-sm font-semibold text-[#777] lg:h-full lg:aspect-auto">
-                PROFILE IMAGE
-              </div>
-            )}
-          </section>
+            <section className="aspect-[3/4] w-full overflow-hidden bg-[#dedede]">
+              {detail?.profileImage ? (
+                <img
+                  src={detail.profileImage}
+                  alt={`${designer.name} 디자이너 프로필`}
+                  className="h-full w-full object-cover object-center"
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center bg-[#dedede] text-sm font-semibold text-[#777]">
+                  PROFILE IMAGE
+                </div>
+              )}
+            </section>
+          </div>
 
-          <section className="relative flex min-h-[520px] flex-col justify-end pb-2 lg:min-h-0 lg:self-stretch">
-            <div className="absolute left-0 top-0 h-[clamp(90px,10vw,150px)] w-[clamp(90px,10vw,150px)]">
+          <section className="relative flex min-h-[520px] flex-col justify-end lg:min-h-0 lg:self-stretch xl:col-start-3">
+            <div className="absolute left-0 top-0 h-[clamp(90px,8vw,150px)] w-[clamp(90px,8vw,150px)] xl:top-[52px]">
               <img
                 src={`/images/object/paper/${imageNumber}.png`}
                 alt={`${designer.name} 디자이너 오브제`}
@@ -113,106 +118,58 @@ const DesignerDetail = () => {
             </div>
 
             <div>
-              <h1 className="flex flex-wrap items-baseline gap-x-4 gap-y-1 tracking-[-0.04em] text-[#000101]">
-                <span className="text-[clamp(24px,2vw,34px)] font-bold">{designer.name}</span>
-                <span className="text-md text-2xl font-medium">{getEnglishName(designer)}</span>
+              <h1 className="flex flex-wrap items-baseline gap-x-6 gap-y-1 tracking-[-0.04em] text-[#000101]">
+                <span className="text-[clamp(24px,2vw,40px)] font-bold">{designer.name}</span>
+                <span className="text-[clamp(24px,2vw,40px)] font-medium">{getEnglishName(designer)}</span>
               </h1>
 
-              <dl className="mt-8 grid max-w-[470px] grid-cols-1 gap-x-12 gap-y-6 text-sm sm:grid-cols-2">
+              <dl className="mt-8 grid max-w-[570px] grid-cols-1 gap-x-12 gap-y-6 text-sm sm:grid-cols-2 xl:mt-12 xl:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] xl:gap-x-[clamp(72px,6.2vw,130px)] xl:gap-y-10 xl:text-[clamp(16px,1.05vw,20px)]">
                 <div className="sm:col-span-2">
                   <dt className="mb-1">team</dt>
-                  <dd className="font-bold text-lg">{designer.team}</dd>
+                  <dd className="text-lg font-bold xl:text-[clamp(17px,1.15vw,22px)]">{designer.team}</dd>
                 </div>
 
                 <div>
                   <dt className="mb-1">e-mail</dt>
-                  <dd className="break-all font-bold text-lg">
+                  <dd className="break-all text-lg font-bold xl:text-[clamp(17px,1.15vw,22px)]">
                     {detail?.email ?? "-"}
                   </dd>
                 </div>
                 <div>
                   <dt className="mb-1">instagram</dt>
-                  <dd className="break-all font-bold">
+                  <dd className="break-all font-bold xl:text-[clamp(17px,1.15vw,22px)]">
                     {detail?.instagram?.toString() ?? "-"}
                   </dd>
                 </div>
                 <div>
                   <dt className="mb-1">portfolio</dt>
-                  <dd className="break-all font-bold">
+                  <dd className="break-all font-bold xl:text-[clamp(17px,1.15vw,22px)]">
                     {detail?.portfolio?.toString() ?? "-"}
                   </dd>
                 </div>
                 <div>
                   <dt className="mb-1">phone number</dt>
-                  <dd className="font-bold">{detail?.phone ?? "-"}</dd>
+                  <dd className="font-bold xl:text-[clamp(17px,1.15vw,22px)]">{detail?.phone ?? "-"}</dd>
                 </div>
               </dl>
             </div>
           </section>
 
-          <div className="grid gap-2 ssm:grid-cols-3 lg:col-span-2 xl:col-span-1 xl:grid-cols-1 xl:gap-3">
-            <MediaPanel
-              label="INDIVIDUAL INTERACTION"
-              src={detail?.individualInteraction}
-            />
+          <div className="grid gap-2 text-[#000101] ssm:grid-cols-3 lg:col-span-2 xl:col-span-1 xl:col-start-5 xl:h-full xl:min-h-0 xl:grid-cols-1 xl:grid-rows-3 xl:gap-5 xl:self-stretch">
             <MediaPanel label="TEAM FILM" src={detail?.teamFilm} />
             <MediaPanel
               label="TEAM INTERACTION"
               src={detail?.teamInteraction}
             />
+            <MediaPanel
+              label="INDIVIDUAL INTERACTION"
+              src={detail?.individualInteraction}
+            />
           </div>
         </div>
       </div>
 
-      <nav
-        aria-label="디자이너 상세 페이지 이동"
-        className="grid min-h-16 grid-cols-3 items-center bg-cover bg-center bg-no-repeat px-5 text-white sm:px-[clamp(32px,6vw,90px)]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(0, 102, 173, 0.3), rgba(0, 102, 173, 0.3)), url('/images/navigator_bg.png')",
-        }}
-      >
-        <Link
-          to={`/designer/${previousDesigner.id}`}
-          className="flex items-center gap-2 justify-self-start text-base font-semibold opacity-40 transition-opacity hover:opacity-100 focus-visible:opacity-100 sm:text-xl"
-        >
-          <img
-            src="/images/icon/arrowLeft.png"
-            alt=""
-            aria-hidden="true"
-            className="h-6 w-6 shrink-0 object-contain"
-          />
-          <span>{previousDesigner.name}</span>
-        </Link>
-
-        <Link
-          to="/designer"
-          aria-label="디자이너 전체 목록"
-          className="grid grid-cols-2 gap-1 justify-self-center opacity-40 transition-opacity hover:opacity-100 focus-visible:opacity-100"
-        >
-          {Array.from({ length: 4 }).map((_, index) => (
-            <span
-              key={index}
-              aria-hidden="true"
-              className="h-2 w-2 border border-white"
-            />
-          ))}
-        </Link>
-
-        <Link
-          to={`/designer/${nextDesigner.id}`}
-          className="flex items-center gap-2 justify-self-end text-base font-semibold opacity-40 transition-opacity hover:opacity-100 focus-visible:opacity-100 sm:text-xl"
-        >
-          <span>{nextDesigner.name}</span>
-          <img
-            src="/images/icon/arrowRight.png"
-            alt=""
-            aria-hidden="true"
-            className="h-6 w-6 shrink-0 object-contain sm:h-9 sm:w-9"
-          />
-        </Link>
-      </nav>
-       <Footer />
+      <Footer />
     </main>
   );
 };

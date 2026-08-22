@@ -600,11 +600,11 @@ export default function Guestbook() {
       감사합니다!
     </div> */}
     <section className="mx-auto w-full max-w-[1440px] px-8 pb-24">
-      <span className="text-lg font-medium text-[#6A6A6A] text-center block mt-12">
+      <span className="text-lg font-medium text-[#6A6A6A] text-center block mt-20">
         제17회 졸업전시회를 찾아주신 여러분께 진심으로 감사드립니다!
       </span>
       {/* 상단 오브제 영역 */}
-      <section className="min-h-[600px] pt-12">
+      <section className="min-h-[600px] pt-16">
         <div
           ref={objectsContainerRef}
           className="relative mx-auto h-[520px] max-w-[1280px]"

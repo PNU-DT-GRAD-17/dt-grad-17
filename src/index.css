@@ -35,6 +35,28 @@ html, body, #root{
 
 }
 
+.project-detail__poster {
+  filter: blur(7px);
+  transform: scale(1.035);
+}
+
+.project-detail__veil {
+  background:
+    linear-gradient(rgba(4, 18, 25, 0.76), rgba(4, 18, 25, 0.82)),
+    radial-gradient(circle at 30% 28%, transparent 0, rgba(2, 12, 18, 0.28) 70%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .project-detail__poster {
+    animation: project-poster-drift 18s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes project-poster-drift {
+  from { transform: scale(1.035) translate3d(-0.5%, -0.4%, 0); }
+  to { transform: scale(1.08) translate3d(0.7%, 0.5%, 0); }
+}
+
 .grid-border {
   border-top: 1px solid transparent;
   border-left: 1px solid transparent;
@@ -151,35 +173,31 @@ html, body, #root{
 
 .exhibition-member-link {
   position: relative;
-  isolation: isolate;
   text-decoration: none;
-  transition: color 180ms ease, transform 180ms ease;
 }
 
-.exhibition-member-link::before {
+.exhibition-member-link::after {
   position: absolute;
-  inset: -2px -5px;
-  z-index: -1;
-  background-image: url("/images/navigator_bg.png");
-  background-position: center;
-  background-size: cover;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  background-color: #0066ad;
   content: "";
-  opacity: 0;
-  transform: scale(0.7);
-  transition: opacity 180ms ease, transform 180ms ease;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 280ms ease;
+}
+
+.exhibition-member-link:hover::after,
+.exhibition-member-link:focus-visible::after {
+  transform: scaleX(1);
 }
 
 .exhibition-member-link:hover,
 .exhibition-member-link:focus-visible {
-  font-weight: 400;
-  color: white;
-  transform: scale(1.0);
-}
-
-.exhibition-member-link:hover::before,
-.exhibition-member-link:focus-visible::before {
-  opacity: 1;
-  transform: scale(1);
+  font-weight: 600;
+  color: #0066ad;
 }
 
 .exhibition-member-link:focus-visible {
@@ -198,7 +216,7 @@ html, body, #root{
 
 @media (prefers-reduced-motion: reduce) {
   .exhibition-member-link,
-  .exhibition-member-link::before {
+  .exhibition-member-link::after {
     transition-duration: 0.01ms;
   }
 

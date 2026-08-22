@@ -27,7 +27,7 @@ type BannerObject = {
 const ASSET_ROOT = "/images/main_banner";
 const CURSOR_ASPECT_RATIO = 339 / 509;
 const DRAG_CURSOR_SCALE = 0.2;
-const CURSOR_IMAGE_SCALE = 0.8;
+const CURSOR_IMAGE_SCALE = 1;
 const CURSOR_FOLLOW_EASING = 0.18;
 const ERASER_STRENGTH = 0.06;
 const ERASER_ALPHA_CUTOFF = 12;
@@ -67,10 +67,10 @@ const getYoutubeEmbedUrl = (url: string) => {
 };
 
 const BANNER_OBJECTS: BannerObject[] = [
-  { id: "key", file: "dp.png", x: 14, y: 22, rotate: 0, scale: 1.2 },
+  { id: "key", file: "dp.png", x: 20, y: 28, rotate: 0, scale: 1.3 },
   { id: "spider-web", file: "web.png", x: 90, y: 16, rotate: 0, scale: 1.2 },
   { id: "flower", file: "branding.png", x: 8, y: 84, rotate: 0, scale: 1.2 },
-  { id: "hourglass", file: "opening.png", x: 88, y: 80, rotate: 10, scale: 1.2 },
+  { id: "hourglass", file: "opening.png", x: 72, y: 70, rotate: 10, scale: 1.2 },
   { id: "logo", file: "logo.png", x: 49, y: 50, rotate: 0, scale: 1.2 },
 ];
 
@@ -598,7 +598,7 @@ function Home() {
                 key={group.label}
                 className="grid grid-cols-[92px_1fr] items-center gap-4 py-3 sm:grid-cols-[120px_1fr] sm:gap-7 sm:py-3"
               >
-                <h3 className="text-base font-bold leading-none tracking-[-0.02em]">
+                <h3 className="text-base text-[18px] font-bold leading-none tracking-[-0.02em]">
                   {group.label}
                 </h3>
                 <ul className="grid min-w-0 w-full list-none grid-cols-5 items-center p-0">
@@ -610,7 +610,7 @@ function Home() {
                       <li key={`${group.label}-${name}`} className="min-w-0 whitespace-nowrap">
                         <Link
                           to={`/designer/${designer.id}`}
-                          className="exhibition-member-link inline-flex items-center text-[clamp(12px,1.5vw,16px)] font-medium tracking-[-0.035em] text-[#000101]"
+                          className="exhibition-member-link inline-flex items-center text-[clamp(12px,1.5vw,18px)] font-medium tracking-[-0.035em] text-[#000101]"
                           aria-label={`${name} 디자이너 상세 페이지로 이동`}
                         >
                           <span>{name}</span>

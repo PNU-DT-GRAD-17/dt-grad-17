@@ -7,6 +7,13 @@ export type Designer = {
         conceptName: string;
         motionPosterTitle: string;
         interactionTitle: string;
+        projectDetail?: {
+                /** 개인 프로젝트 페이지 전체 배경으로 사용하는 모션 포스터 이미지 */
+                motionPosterImage?: string;
+                description?: string;
+                scenarioUrl?: string;
+                interactionImages?: string[];
+        };
         detail?: {
                 nameEn?: string;
                 profileImage?: string;

@@ -287,7 +287,7 @@ const Project = () => {
                           {categoryProjects.map((project) => (
                             <li key={project.id}>
                               <a
-                                href={`#${project.id}`}
+                                href={`/project/${project.id}`}
                                 onClick={() => setActiveCategory(category)}
                                 className="
                                   group flex items-center
@@ -515,7 +515,7 @@ const Project = () => {
                           className="aspect-[9/16] min-w-0 scroll-mt-0 overflow-hidden bg-white"
                         >
                           <a
-                            href={`#${project.id}`}
+                            href={`/project/${project.id}`}
                             onClick={(event) => handleCardTap(event, project.id)}
                             className="group relative block h-full w-full overflow-hidden"
                             aria-label={`${project.conceptName}, ${project.designer}`}
