@@ -46,6 +46,19 @@ html, body, #root{
     radial-gradient(circle at 30% 28%, transparent 0, rgba(2, 12, 18, 0.28) 70%);
 }
 
+.team-detail__backdrop {
+  background-color: #17232a;
+  background-size: min(1160px, 112vw) auto;
+  filter: blur(7px) saturate(0.85);
+  transform: scale(1.045);
+}
+
+.team-detail__veil {
+  background:
+    linear-gradient(rgba(10, 17, 20, 0.76), rgba(18, 13, 9, 0.82)),
+    radial-gradient(circle at 36% 33%, transparent 0, rgba(6, 12, 15, 0.35) 74%);
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .project-detail__poster {
     animation: project-poster-drift 18s ease-in-out infinite alternate;

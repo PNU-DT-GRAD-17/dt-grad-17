@@ -1,4 +1,5 @@
 import { type MouseEvent, useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 import { designers } from "../data/designers";
 import { teamProjects } from "../data/team";
@@ -387,8 +388,8 @@ const Project = () => {
                           : "lg:col-start-1 lg:row-start-1"
                       }`}
                     >
-                      <a
-                        href={teamProject.link}
+                      <Link
+                        to={teamProject.link}
                         onClick={(event) => handleCardTap(event, `team-${category}`)}
                         className="group relative block h-full w-full overflow-hidden"
                         aria-label={`${teamProject.title}, ${category} 팀 프로젝트`}
@@ -467,7 +468,7 @@ const Project = () => {
                             </div>
                           </div>
                         </div>
-                      </a>
+                      </Link>
                     </article>
 
                     {projectSlots.map((slot, slotIndex) => {
