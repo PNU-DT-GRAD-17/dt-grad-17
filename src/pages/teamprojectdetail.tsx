@@ -173,7 +173,9 @@ const TeamProjectDetail = () => {
   const project = teamProjects[category];
   const previous = categories[(currentIndex - 1 + categories.length) % categories.length];
   const next = categories[(currentIndex + 1) % categories.length];
-  const description = project.description || defaultDescription;
+  const conceptDescription = project.conceptDescription || project.description || defaultDescription;
+  const videoDescription = project.videoDescription || defaultDescription;
+  const interactionDescription = project.interactionDescription || defaultDescription;
   const backgroundImage = `/images/team-object/teamObject_${category}.png`;
 
   return (
@@ -228,7 +230,7 @@ const TeamProjectDetail = () => {
               {project.conceptName || "컨셉"}
               <span className="text-sm font-medium text-[#45BFE6]">Team Concept</span>
             </h1>
-            <p className="mt-4 max-w-[980px] text-sm leading-7 text-white/85">{description}</p>
+            <p className="mt-4 max-w-[980px] whitespace-pre-line text-sm leading-7 text-white/85">{conceptDescription}</p>
           </section>
         </div>
       </section>
@@ -244,7 +246,7 @@ const TeamProjectDetail = () => {
               {project.videoTitle || "영상 제목"}
               <span className="text-sm font-medium text-[#45BFE6]">Team Film</span>
             </h3>
-            <p className="mt-5 text-sm leading-7 text-white/85">{description}</p>
+            <p className="mt-5 whitespace-pre-line text-sm leading-7 text-white/85">{videoDescription}</p>
           </section>
         </div>
       </section>
@@ -269,7 +271,7 @@ const TeamProjectDetail = () => {
               {project.interactionTitle || "인터 제목"}
               <span className="text-sm font-medium text-[#45BFE6]">Team Interaction</span>
             </h3>
-            <p className="mt-5 text-sm leading-7 text-white/85">{description}</p>
+            <p className="mt-5 whitespace-pre-line text-sm leading-7 text-white/85">{interactionDescription}</p>
           </section>
         </div>
 

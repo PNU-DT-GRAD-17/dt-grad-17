@@ -45,6 +45,13 @@ const EXHIBITION_MEMBER_GROUPS = [
   { label: "WEB", members: ["최양진", "강예주", "김예원", "박수민", "이은솔"] },
 ] as const;
 
+const PROFESSORS = [
+  { id: "professor-1", name: "이화세 교수님", field: "HCI" },
+  { id: "professor-2", name: "김철기 교수님", field: "UX / AI / 감성공학" },
+  { id: "professor-3", name: "김태완 교수님", field: "DIGITAL CONTENT DESIGN" },
+  { id: "professor-4", name: "홍동진 교수님", field: "IMAGE PROCESSING / ML" },
+] as const;
+
 const exhibitionDesigners = new Map(
   designers.filter((designer) => designer.id !== "all").map((designer) => [designer.name, designer]),
 );
@@ -113,6 +120,7 @@ function Home() {
   const eraseReadyRef = useRef(false);
   const pointerTargetRef = useRef<Position | null>(null);
   const pointerPositionRef = useRef<Position | null>(null);
+  const hasInitializedCursorRef = useRef(false);
 
   const [sceneSize, setSceneSize] = useState<Size>({ width: 0, height: 0 });
   const [pointerPosition, setPointerPosition] = useState<Position | null>(null);
@@ -206,6 +214,14 @@ function Home() {
     const measure = () => {
       const rect = scene.getBoundingClientRect();
       setSceneSize({ width: rect.width, height: rect.height });
+
+      if (!hasInitializedCursorRef.current) {
+        const centerPosition = { x: rect.width / 2, y: rect.height / 2 };
+        pointerTargetRef.current = centerPosition;
+        pointerPositionRef.current = centerPosition;
+        setPointerPosition(centerPosition);
+        hasInitializedCursorRef.current = true;
+      }
     };
 
     measure();
@@ -283,10 +299,12 @@ function Home() {
 
       if (hasLeftScene) {
         hasLeftScene = false;
+        const rect = scene.getBoundingClientRect();
+        const centerPosition = { x: rect.width / 2, y: rect.height / 2 };
         setIsErasing(false);
-        pointerTargetRef.current = null;
-        pointerPositionRef.current = null;
-        setPointerPosition(null);
+        pointerTargetRef.current = centerPosition;
+        pointerPositionRef.current = centerPosition;
+        setPointerPosition(centerPosition);
         eraseReadyRef.current = false;
         lastErasePointRef.current = null;
         void drawBlackObjects();
@@ -553,7 +571,7 @@ function Home() {
         id="opening"
         className="scroll-mt-[var(--header-height)] px-6 py-[clamp(64px,8vw,120px)] sm:px-10 lg:px-[clamp(80px,13vw,200px)]"
       >
-        <h2 className="text-center text-[clamp(24px,2.2vw,36px)] font-bold tracking-[-0.03em]">
+        <h2 className="text-center text-[clamp(28px,2.4vw,42px)] font-bold]">
           OPENING
         </h2>
 
@@ -631,14 +649,14 @@ function Home() {
       >
         <h2
           id="offline-information-title"
-          className="text-center text-[clamp(28px,2.4vw,42px)] font-bold tracking-[-0.04em]"
+          className="text-center text-[clamp(28px,2.4vw,42px)] font-bold"
         >
           오프라인 정보
         </h2>
 
         <div className="mx-auto mt-[clamp(56px,8vw,112px)] grid w-full max-w-[1280px] gap-12 lg:grid-cols-[minmax(300px,0.85fr)_minmax(420px,1.15fr)] lg:items-center lg:gap-[clamp(64px,9vw,144px)]">
           <div className="min-w-0">
-            <div className="text-[clamp(13px,1.15vw,16px)] tracking-[-0.025em]">
+            <div className="text-[clamp(13px,1.15vw,16px)]">
               <div className="pb-6">
                 <h3 className="font-semibold text-[24px]">부산디자인진흥원 1층 전시실</h3>
                 <p className="mt-2 leading-relaxed">부산광역시 해운대구 센텀동로 57</p>
@@ -657,6 +675,35 @@ function Home() {
           <div className="aspect-square w-full min-w-0 border border-[#bcbcbc] sm:aspect-[4/3] lg:aspect-square">
             <KakaoMap />
           </div>
+        </div>
+      </section>
+
+      <section
+        aria-labelledby="professors-title"
+        className="px-6 pb-[clamp(112px,14vw,220px)] pt-[clamp(64px,8vw,120px)] sm:px-10 lg:px-[clamp(64px,7vw,140px)]"
+      >
+        <h2
+          id="professors-title"
+          className="text-center text-[clamp(28px,2.4vw,42px)] font-bold"
+        >
+          교수님 소개
+        </h2>
+
+        <div className="mx-auto mt-[32px] grid w-full max-w-[1640px] grid-cols-1 gap-x-[clamp(28px,4vw,72px)] gap-y-16 sm:grid-cols-2 xl:grid-cols-4">
+          {PROFESSORS.map((professor) => (
+            <article key={professor.id} className="min-w-0 text-center">
+              <div
+                aria-hidden="true"
+                className="aspect-[2/3] w-full bg-[#d9d9d9]"
+              />
+              <h3 className="mt-[clamp(28px,3vw,52px)] text-[26px] font-semibold">
+                {professor.name}
+              </h3>
+              <p className="mt-[16px] text-[18px] font-medium text-[#888A96]">
+                {professor.field}
+              </p>
+            </article>
+          ))}
         </div>
       </section>
 

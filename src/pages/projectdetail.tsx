@@ -128,7 +128,9 @@ const ProjectDetail = () => {
   const next = projectDesigners[(currentIndex + 1) % projectDesigners.length];
   const detail = designer.projectDetail;
   const backgroundImage = detail?.motionPosterImage ?? designer.selectedObjectImage;
-  const description = detail?.description ?? defaultDescription;
+  const conceptDescription = designer.conceptDescription ?? defaultDescription;
+  const motionPosterDescription = designer.motionPosterDescription ?? defaultDescription;
+  const interactionDescription = designer.interactionDescription ?? defaultDescription;
 
   return (
     <main
@@ -177,7 +179,7 @@ const ProjectDetail = () => {
                   {designer.conceptName || "컨셉 제목"}
                   <span className="text-sm font-medium text-[#45BFE6]">concept</span>
                 </h1>
-                <p className="mt-4 max-w-[920px] text-sm leading-7 text-white/80">{description}</p>
+                <p className="mt-4 max-w-[920px] whitespace-pre-line text-sm leading-7 text-white/80">{conceptDescription}</p>
               </section>
 
               <section>
@@ -185,7 +187,7 @@ const ProjectDetail = () => {
                   {designer.motionPosterTitle || "포스터 제목"}
                   <span className="text-sm font-medium text-[#45BFE6]">poster</span>
                 </h2>
-                <p className="mt-4 max-w-[920px] text-sm leading-7 text-white">{description}</p>
+                <p className="mt-4 max-w-[920px] whitespace-pre-line text-sm leading-7 text-white">{motionPosterDescription}</p>
               </section>
             </div>
           </div>
@@ -212,7 +214,7 @@ const ProjectDetail = () => {
                 {designer.interactionTitle || "인터랙션 제목"}
                 <span className="text-sm font-medium text-[#45BFE6]">interaction</span>
               </h3>
-              <p className="mt-5 max-w-[650px] text-sm leading-7 text-white">{description}</p>
+              <p className="mt-5 max-w-[650px] whitespace-pre-line text-sm leading-7 text-white">{interactionDescription}</p>
             </section>
           </div>
 
