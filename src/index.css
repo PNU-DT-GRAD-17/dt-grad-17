@@ -209,7 +209,7 @@ html, body, #root{
 
 .exhibition-member-link:hover,
 .exhibition-member-link:focus-visible {
-  font-weight: 600;
+  font-weight: 700;
   color: #0066ad;
 }
 

@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 
+import Footer from "../components/Footer";
 import { designers } from "../data/designers";
 
 const defaultDescription =
@@ -18,6 +19,8 @@ const MediaPlaceholder = ({ src, alt }: { src?: string; alt: string }) => (
 
 const ProjectDetail = () => {
   const scrollContainerRef = useRef<HTMLElement>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
+  const navigatorRef = useRef<HTMLElement>(null);
   const snapAnimationRef = useRef<number | null>(null);
   const isSnappingRef = useRef(false);
   const { designerId } = useParams();
@@ -27,6 +30,32 @@ const ProjectDetail = () => {
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
     scrollContainerRef.current?.scrollTo(0, 0);
+  }, [designerId]);
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    const footer = footerRef.current;
+    const navigator = navigatorRef.current;
+
+    if (!container || !footer || !navigator) {
+      return;
+    }
+
+    const positionNavigator = () => {
+      const footerTop = footer.getBoundingClientRect().top;
+      const footerOverlap = Math.max(0, window.innerHeight - footerTop);
+      navigator.style.transform = `translateY(-${footerOverlap}px)`;
+    };
+
+    positionNavigator();
+    container.addEventListener("scroll", positionNavigator, { passive: true });
+    window.addEventListener("resize", positionNavigator);
+
+    return () => {
+      container.removeEventListener("scroll", positionNavigator);
+      window.removeEventListener("resize", positionNavigator);
+      navigator.style.transform = "";
+    };
   }, [designerId]);
 
   useEffect(() => {
@@ -83,7 +112,7 @@ const ProjectDetail = () => {
         return;
       }
 
-      const firstSectionHeight = container.clientHeight;
+      const firstSectionHeight = container.clientHeight - 64;
       const boundaryTolerance = 96;
       const isLeavingPoster = event.deltaY > 0 && container.scrollTop < boundaryTolerance;
       const isReturningToPoster =
@@ -135,7 +164,7 @@ const ProjectDetail = () => {
   return (
     <main
       ref={scrollContainerRef}
-      className="project-detail relative h-[calc(100svh-var(--header-height)-4rem)] snap-y snap-mandatory overflow-x-hidden overflow-y-auto overscroll-y-contain bg-[#0a171e] text-white"
+      className="project-detail relative h-[calc(100svh-var(--header-height))] snap-y snap-proximity overflow-x-hidden overflow-y-auto overscroll-y-contain bg-[#0a171e] text-white"
     >
       <div
         className="project-detail__poster fixed inset-0 bg-cover bg-center bg-no-repeat"
@@ -227,9 +256,13 @@ const ProjectDetail = () => {
             ))}
           </div>
         </section>
+
+        <div ref={footerRef}>
+          <Footer />
+        </div>
       </div>
 
-      <nav className="project-detail__navigator fixed inset-x-0 bottom-0 z-20 grid h-16 grid-cols-3 items-center bg-[#0066AD] px-5 text-base sm:px-10 lg:px-[clamp(56px,6.25vw,120px)]" aria-label="다른 개인 프로젝트">
+      <nav ref={navigatorRef} className="project-detail__navigator fixed inset-x-0 bottom-0 z-20 grid h-16 grid-cols-3 items-center bg-[#0066AD] px-5 text-base sm:px-10 lg:px-[clamp(56px,6.25vw,120px)]" aria-label="다른 개인 프로젝트">
         <Link to={`/project/${previous.id}`} className="group flex items-center gap-2 justify-self-start">
           <img
             src="/images/icon/arrowLeft.png"

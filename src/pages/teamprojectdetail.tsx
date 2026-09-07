@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 
+import Footer from "../components/Footer";
 import { teamProjects, type TeamCategory } from "../data/team";
 
 const categories: TeamCategory[] = ["BRANDING", "DP", "OPENING", "WEB"];
@@ -32,6 +33,8 @@ const SectionTitle = ({ children }: { children: string }) => (
 
 const TeamProjectDetail = () => {
   const scrollContainerRef = useRef<HTMLElement>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
+  const navigatorRef = useRef<HTMLElement>(null);
   const snapAnimationRef = useRef<number | null>(null);
   const isSnappingRef = useRef(false);
   const isWheelGestureLockedRef = useRef(false);
@@ -43,6 +46,32 @@ const TeamProjectDetail = () => {
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
     scrollContainerRef.current?.scrollTo(0, 0);
+  }, [categoryParam]);
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    const footer = footerRef.current;
+    const navigator = navigatorRef.current;
+
+    if (!container || !footer || !navigator) {
+      return;
+    }
+
+    const positionNavigator = () => {
+      const footerTop = footer.getBoundingClientRect().top;
+      const footerOverlap = Math.max(0, window.innerHeight - footerTop);
+      navigator.style.transform = `translateY(-${footerOverlap}px)`;
+    };
+
+    positionNavigator();
+    container.addEventListener("scroll", positionNavigator, { passive: true });
+    window.addEventListener("resize", positionNavigator);
+
+    return () => {
+      container.removeEventListener("scroll", positionNavigator);
+      window.removeEventListener("resize", positionNavigator);
+      navigator.style.transform = "";
+    };
   }, [categoryParam]);
 
   useEffect(() => {
@@ -122,18 +151,34 @@ const TeamProjectDetail = () => {
         return;
       }
 
-      event.preventDefault();
-
       if (isSnappingRef.current) {
+        event.preventDefault();
         return;
       }
 
-      const frameHeight = container.clientHeight;
-      const lastFrameIndex = 2;
-      const currentFrameIndex = Math.round(container.scrollTop / frameHeight);
+      const frameHeight = container.clientHeight - 64;
+      const lastFrameTop = frameHeight * 2;
+      const isEnteringFooter = event.deltaY > 0 && container.scrollTop >= lastFrameTop - 1;
+      const isLeavingFooter = event.deltaY < 0 && container.scrollTop > lastFrameTop + 1;
+
+      if (isEnteringFooter || isLeavingFooter) {
+        return;
+      }
+
+      event.preventDefault();
+
+      const snapPoints = [0, frameHeight, lastFrameTop];
+      const currentFrameIndex = snapPoints.reduce(
+        (closestIndex, point, index) =>
+          Math.abs(point - container.scrollTop) <
+          Math.abs(snapPoints[closestIndex] - container.scrollTop)
+            ? index
+            : closestIndex,
+        0,
+      );
       const direction = event.deltaY > 0 ? 1 : -1;
       const targetFrameIndex = Math.min(
-        lastFrameIndex,
+        snapPoints.length - 1,
         Math.max(0, currentFrameIndex + direction),
       );
 
@@ -142,7 +187,7 @@ const TeamProjectDetail = () => {
       }
 
       isWheelGestureLockedRef.current = true;
-      snapTo(targetFrameIndex * frameHeight);
+      snapTo(snapPoints[targetFrameIndex]);
     };
 
     container.addEventListener("wheel", handleWheel, { passive: false });
@@ -181,7 +226,7 @@ const TeamProjectDetail = () => {
   return (
     <main
       ref={scrollContainerRef}
-      className="team-detail relative isolate h-[calc(100svh-72px-4rem)] snap-y snap-mandatory overflow-x-hidden overflow-y-auto overscroll-y-contain bg-[#12191d] text-white lg:h-[calc(100svh-var(--header-height)-4rem)]"
+      className="team-detail relative isolate h-[calc(100svh-72px)] snap-y snap-proximity overflow-x-hidden overflow-y-auto overscroll-y-contain bg-[#12191d] text-white lg:h-[calc(100svh-var(--header-height))]"
     >
       <div
         className="team-detail__backdrop fixed inset-x-0 bottom-0 top-[var(--header-height)] -z-20 bg-center bg-no-repeat"
@@ -190,7 +235,7 @@ const TeamProjectDetail = () => {
       />
       <div className="team-detail__veil fixed inset-x-0 bottom-0 top-[var(--header-height)] -z-10" aria-hidden="true" />
 
-      <section className="relative mx-auto flex h-full max-w-[1920px] snap-start snap-always overflow-hidden">
+      <section className="relative mx-auto flex h-[calc(100svh-72px-4rem)] max-w-[1920px] snap-start snap-always overflow-hidden lg:h-[calc(100svh-var(--header-height)-4rem)]">
         <MediaPanel
           alt={`${project.title} 대표 영상`}
           className="absolute inset-y-0 left-0 aspect-[9/16] h-full shrink-0 md:relative"
@@ -235,7 +280,7 @@ const TeamProjectDetail = () => {
         </div>
       </section>
 
-      <section className="mx-auto h-full max-w-[1720px] snap-start snap-always overflow-hidden px-6 py-10 sm:px-10 md:py-[clamp(48px,6vw,96px)] lg:px-[clamp(56px,6.25vw,120px)]">
+      <section className="mx-auto h-[calc(100svh-72px-4rem)] max-w-[1720px] snap-start snap-always overflow-hidden px-6 py-10 sm:px-10 md:py-[clamp(48px,6vw,96px)] lg:h-[calc(100svh-var(--header-height)-4rem)] lg:px-[clamp(56px,6.25vw,120px)]">
         <SectionTitle>TEAM FILM</SectionTitle>
 
         <div className="mt-10 grid gap-8 md:grid-cols-[1.45fr_0.85fr] md:items-start md:gap-[clamp(20px,3vw,48px)]">
@@ -251,7 +296,7 @@ const TeamProjectDetail = () => {
         </div>
       </section>
 
-      <section className="mx-auto h-full max-w-[1720px] snap-start snap-always overflow-hidden px-6 py-9 sm:px-10 md:py-[clamp(40px,4vw,70px)] lg:px-[clamp(56px,6.25vw,120px)]">
+      <section className="mx-auto h-[calc(100svh-72px-4rem)] max-w-[1720px] snap-start snap-always overflow-hidden px-6 py-9 sm:px-10 md:py-[clamp(40px,4vw,70px)] lg:h-[calc(100svh-var(--header-height)-4rem)] lg:px-[clamp(56px,6.25vw,120px)]">
         <div className="flex flex-wrap items-end justify-between gap-5">
           <SectionTitle>INDIVIDUAL INTERACTION</SectionTitle>
           <span className="inline-flex items-center gap-2 border-b border-white/40 pb-1 text-sm text-white/65">
@@ -285,7 +330,12 @@ const TeamProjectDetail = () => {
         </div>
       </section>
 
+      <div ref={footerRef}>
+        <Footer />
+      </div>
+
       <nav
+        ref={navigatorRef}
         className="fixed inset-x-0 bottom-0 z-30 grid h-16 grid-cols-3 items-center bg-[#0871b8] px-5 text-base sm:px-10 lg:px-[clamp(56px,6.25vw,120px)]"
         aria-label="다른 팀 프로젝트"
       >

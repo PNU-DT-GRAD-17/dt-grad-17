@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
 import KakaoMap from "../components/KakaoMap";
 import { designers } from "../data/designers";
+import { motion, type Variants } from "framer-motion";
 
 type Position = { x: number; y: number };
 type Size = { width: number; height: number };
@@ -32,9 +33,27 @@ const CURSOR_FOLLOW_EASING = 0.18;
 const ERASER_STRENGTH = 0.06;
 const ERASER_ALPHA_CUTOFF = 12;
 
-// 전달받은 유튜브 영상 주소로 교체하면 됩니다.
-// 예: https://www.youtube.com/watch?v=dQw4w9WgXcQ
-const OPENING_YOUTUBE_URL = "";
+const container: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.3,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const item: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.7, ease: "easeOut" },
+  },
+};
+
+// 유튜브 영상 링크
+const OPENING_YOUTUBE_URL = "https://www.youtube.com/watch?v=SXdVfDNvYUk&t=640s";
 
 const EXHIBITION_MEMBER_GROUPS = [
   { label: "위원장", members: ["김예원"] },
@@ -546,23 +565,39 @@ function Home() {
         className="relative flex min-h-[calc(100svh-var(--header-height))] scroll-mt-[var(--header-height)] flex-col items-center justify-center px-6 py-20 text-center"
       >
         <div className="mx-auto max-w-[1100px]">
-          <h2 className="text-[clamp(28px,2.4vw,42px)] font-bold tracking-[-0.04em]">
+          <h2 className="text-[clamp(28px,2.4vw,32px)] font-semibold text-[#000101]">
             전시 개요
           </h2>
 
-          <p className="mt-[clamp(60px,10vw,92px)] text-[clamp(17px,1.7vw,20px)] leading-[1.5] tracking-[-0.03em]">
-            사라짐으로부터 발생되는 ‘잔향’은 우리에게 다음과 같은 질문들을 던진다.
-            <br className="hidden md:block" /><br/>
-            우리는 무엇을 남길 것인가.
-            <br className="hidden md:block" />
-            우리는 무엇을 기억할 것인가.
-            <br className="hidden md:block" /><br/>
-            이번 전시를 준비하며 사라짐이 남기는 울림을 각자의 시선으로 해석하고, 그 자취를 오브제로 표현하였다.
-            <br className="hidden md:block" /><br/>
-            본 전시는 마지막과 처음의 경계에서 우리가 마주한 잔향의 의미를 선보인다.
-            <br className="hidden md:block" />
-            지금 나는 어떤 마지막과 처음 위에 서있는가.
-          </p>
+          <motion.p
+            className="mt-16 text-[clamp(12px,1.7vw,20px)] text-[#000101] font-regular leading-[1.5] tracking-[-0.02em]"
+            variants={container}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, amount: 0.4 }} // 화면에 40% 보이면 실행
+          >
+            <motion.span variants={item} className="block">
+              사라짐으로부터 발생되는 ‘잔향’은 우리에게 다음과 같은 질문들을 던진다.
+            </motion.span>
+
+            <motion.span variants={item} className="block mt-6 md:mt-8">
+              우리는 무엇을 남길 것인가.
+              <br className="hidden md:block" />
+              우리는 무엇을 기억할 것인가.
+            </motion.span>
+
+            <motion.span variants={item} className="block mt-6 md:mt-8">
+              이번 전시를 준비하며 사라짐이 남기는 울림을 각자의 시선으로 해석하고, 그 자취를 오브제로 표현하였다.
+            </motion.span>
+
+            <motion.span variants={item} className="block mt-6 md:mt-8">
+              본 전시는 마지막과 처음의 경계에서 우리가 마주한 잔향의 의미를 선보인다.
+            </motion.span>
+
+            <motion.span variants={item} className="block mt-6 md:mt-8">
+              지금 나는 어떤 마지막과 처음 위에 서있는가.
+            </motion.span>
+          </motion.p>
         </div>
 
       </section>
@@ -571,11 +606,11 @@ function Home() {
         id="opening"
         className="scroll-mt-[var(--header-height)] px-6 py-[clamp(64px,8vw,120px)] sm:px-10 lg:px-[clamp(80px,13vw,200px)]"
       >
-        <h2 className="text-center text-[clamp(28px,2.4vw,42px)] font-bold]">
+        <h2 className="text-center text-[clamp(28px,2.4vw,32px)] font-semibold text-[#000101]">
           OPENING
         </h2>
 
-        <div className="mx-auto mt-8 aspect-video w-full max-w-[1200px] overflow-hidden border border-[#8d8d8d] bg-[#d9d9d9]">
+        <div className="mx-auto mt-16 aspect-video w-full max-w-[1300px] overflow-hidden bg-[#d9d9d9]">
           {openingEmbedUrl ? (
             <iframe
               className="h-full w-full"
@@ -595,13 +630,13 @@ function Home() {
 
       <section
         aria-labelledby="exhibition-members-title"
-        className="px-6 pb-[clamp(96px,12vw,180px)] pt-[clamp(48px,7vw,100px)] sm:px-10 lg:px-[clamp(80px,10vw,160px)]"
+        className="px-6 pb-[clamp(96px,12vw,180px)] pt-[clamp(48px,7vw,100px)] sm:px-10 lg:px-[clamp(80px,10vw,160px)] text-[#000101]"
       >
-        <h2 className="text-center text-[clamp(28px,2.4vw,42px)] font-bold tracking-[-0.04em]">
+        <h2 className="text-center text-[clamp(28px,2.4vw,32px)] font-semibold">
             전시 인원 소개
           </h2>
 
-        <div className="mx-auto mt-[clamp(48px,7vw,56px)] grid w-full max-w-[1280px] gap-10 xl:grid-cols-[minmax(0,1.05fr)_minmax(420px,0.95fr)] xl:items-center xl:gap-[clamp(56px,7vw,112px)]">
+        <div className="mx-auto mt-16 grid w-full max-w-[1280px] gap-10 xl:grid-cols-[minmax(0,1.05fr)_minmax(420px,0.95fr)] xl:items-center xl:gap-[clamp(56px,7vw,112px)]">
           <div className="aspect-[3/2] min-w-0 w-full overflow-hidden">
             <img
               src="/images/footer_background.png"
@@ -616,7 +651,7 @@ function Home() {
                 key={group.label}
                 className="grid grid-cols-[92px_1fr] items-center gap-4 py-3 sm:grid-cols-[120px_1fr] sm:gap-7 sm:py-3"
               >
-                <h3 className="text-base text-[18px] font-bold leading-none tracking-[-0.02em]">
+                <h3 className="text-base text-[18px] font-bold leading-none text-[#000101]">
                   {group.label}
                 </h3>
                 <ul className="grid min-w-0 w-full list-none grid-cols-5 items-center p-0">
@@ -649,16 +684,16 @@ function Home() {
       >
         <h2
           id="offline-information-title"
-          className="text-center text-[clamp(28px,2.4vw,42px)] font-bold"
+          className="text-center text-[clamp(28px,2.4vw,32px)] font-semibold"
         >
           오프라인 정보
         </h2>
 
-        <div className="mx-auto mt-[clamp(56px,8vw,112px)] grid w-full max-w-[1280px] gap-12 lg:grid-cols-[minmax(300px,0.85fr)_minmax(420px,1.15fr)] lg:items-center lg:gap-[clamp(64px,9vw,144px)]">
-          <div className="min-w-0">
-            <div className="text-[clamp(13px,1.15vw,16px)]">
+        <div className="mx-auto mt-12 grid w-full max-w-[1080px] items-center gap-12 lg:grid-cols-2 lg:gap-20">
+          <div className="w-full max-w-[500px] min-w-0 justify-self-center">
+            <div className="text-[clamp(13px,1.15vw,16px)] text-[#000101]">
               <div className="pb-6">
-                <h3 className="font-semibold text-[24px]">부산디자인진흥원 1층 전시실</h3>
+                <h3 className="font-semibold text-[20px]">부산디자인진흥원 1층 전시실</h3>
                 <p className="mt-2 leading-relaxed">부산광역시 해운대구 센텀동로 57</p>
               </div>
 
@@ -667,12 +702,12 @@ function Home() {
                 <p className="mt-2 leading-relaxed">57, Centum dong-ro, Haeundae-gu, Busan</p>
               </div>
 
-              <p className="pt-6 font-semibold text-[24px]">2026/11/06(FRI) - 11/08(SUN)</p>
-              <p>10am - 6pm</p>
+              <p className="pt-6 font-semibold text-[20px]">2026.11.06(FRI) - 11.08(SUN)</p>
+              <p className="mt-2">10AM - 6PM</p>
             </div>
           </div>
 
-          <div className="aspect-square w-full min-w-0 border border-[#bcbcbc] sm:aspect-[4/3] lg:aspect-square">
+          <div className="h-[500px] w-full max-w-[500px] justify-self-center">
             <KakaoMap />
           </div>
         </div>
