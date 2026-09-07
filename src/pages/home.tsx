@@ -52,6 +52,25 @@ const item: Variants = {
   },
 };
 
+const professorContainer: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const professorItem: Variants = {
+  hidden: { opacity: 0, y: 60 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 1, ease: [0, 0, 0.2, 1] },
+  },
+};
+
 // 유튜브 영상 링크
 const OPENING_YOUTUBE_URL = "https://www.youtube.com/watch?v=SXdVfDNvYUk&t=640s";
 
@@ -65,10 +84,30 @@ const EXHIBITION_MEMBER_GROUPS = [
 ] as const;
 
 const PROFESSORS = [
-  { id: "professor-1", name: "이화세 교수님", field: "HCI" },
-  { id: "professor-2", name: "김철기 교수님", field: "UX / AI / 감성공학" },
-  { id: "professor-3", name: "김태완 교수님", field: "DIGITAL CONTENT DESIGN" },
-  { id: "professor-4", name: "홍동진 교수님", field: "IMAGE PROCESSING / ML" },
+  {
+    id: "professor-1",
+    name: "이화세 교수님",
+    field: "HCI",
+    image: "/images/professor/hwaselee.webp",
+  },
+  {
+    id: "professor-2",
+    name: "김철기 교수님",
+    field: "UX / AI / 감성공학",
+    image: "/images/professor/chulkikim.webp",
+  },
+  {
+    id: "professor-3",
+    name: "김태완 교수님",
+    field: "DIGITAL CONTENT DESIGN",
+    image: "/images/professor/taiwankim.webp",
+  },
+  {
+    id: "professor-4",
+    name: "홍동진 교수님",
+    field: "IMAGE PROCESSING / ML",
+    image: "/images/professor/dongjinhong.webp",
+  },
 ] as const;
 
 const exhibitionDesigners = new Map(
@@ -689,7 +728,7 @@ function Home() {
           오프라인 정보
         </h2>
 
-        <div className="mx-auto mt-12 grid w-full max-w-[1080px] items-center gap-12 lg:grid-cols-2 lg:gap-20">
+        <div className="mx-auto mt-16 grid w-full max-w-[1080px] lg:items-end gap-12 lg:grid-cols-2 lg:gap-20">
           <div className="w-full max-w-[500px] min-w-0 justify-self-center">
             <div className="text-[clamp(13px,1.15vw,16px)] text-[#000101]">
               <div className="pb-6">
@@ -707,7 +746,7 @@ function Home() {
             </div>
           </div>
 
-          <div className="h-[500px] w-full max-w-[500px] justify-self-center">
+          <div className="h-[400px] w-full max-w-[600px] justify-self-center">
             <KakaoMap />
           </div>
         </div>
@@ -719,27 +758,42 @@ function Home() {
       >
         <h2
           id="professors-title"
-          className="text-center text-[clamp(28px,2.4vw,42px)] font-bold"
+          className="text-center text-[clamp(28px,2.4vw,32px)] font-bold"
         >
           교수님 소개
         </h2>
 
-        <div className="mx-auto mt-[32px] grid w-full max-w-[1640px] grid-cols-1 gap-x-[clamp(28px,4vw,72px)] gap-y-16 sm:grid-cols-2 xl:grid-cols-4">
+        <motion.div
+          className="mx-auto mt-16 grid w-full max-w-[1200px] grid-cols-1 gap-x-[clamp(28px,4vw,72px)] gap-y-16 sm:grid-cols-2 xl:grid-cols-4"
+          variants={professorContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.2 }}
+        >
           {PROFESSORS.map((professor) => (
-            <article key={professor.id} className="min-w-0 text-center">
-              <div
-                aria-hidden="true"
-                className="aspect-[2/3] w-full bg-[#d9d9d9]"
-              />
+            <motion.article
+              key={professor.id}
+              variants={professorItem}
+              className="min-w-0 text-center"
+            >
+              <div className="mx-auto aspect-[2/3] w-full max-w-[260px] overflow-hidden">
+                <img
+                  src={professor.image}
+                  alt={`${professor.name} 사진`}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-cover"
+                />
+              </div>
               <h3 className="mt-[clamp(28px,3vw,52px)] text-[26px] font-semibold">
                 {professor.name}
               </h3>
               <p className="mt-[16px] text-[18px] font-medium text-[#888A96]">
                 {professor.field}
               </p>
-            </article>
+            </motion.article>
           ))}
-        </div>
+        </motion.div>
       </section>
 
       <Footer />
