@@ -3,37 +3,50 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import Footer from "../components/Footer";
 
 import { designers, type Designer } from "../data/designers";
+import { teamProjects } from "../data/team";
 
 type MediaPanelProps = {
   label: string;
   src?: string;
+  hoverTitle: string;
+  to: string;
 };
 
-const MediaPanel = ({ label, src }: MediaPanelProps) => (
+const MediaPanel = ({ label, src, hoverTitle, to }: MediaPanelProps) => (
   <section className="xl:flex xl:min-h-0 xl:flex-col">
-    <h2 className="mb-2 text-xs font-bold uppercase tracking-[-0.02em] sm:text-sm xl:mb-3 xl:text-[clamp(18px,1.15vw,22px)]">
-      {label}
-    </h2>
-    <div className="aspect-video w-full overflow-hidden border border-[#9d9d9d] bg-[#d9d9d9] xl:min-h-0 xl:flex-1 xl:aspect-auto">
-      {src ? (
-        <video
-          className="h-full w-full object-cover"
-          controls
-          playsInline
-          preload="metadata"
-        >
-          <source src={src} />
-          브라우저에서 영상을 재생할 수 없습니다.
-        </video>
-      ) : (
-        <div
-          className="flex h-full items-center justify-center text-xs text-[#777]"
-          aria-label={`${label} 영상 준비 중`}
-        >
-          COMING SOON
+    <Link
+      to={to}
+      className="group flex min-h-0 flex-1 flex-col focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0066AD]"
+      aria-label={`${label}: ${hoverTitle} 상세 페이지로 이동`}
+    >
+      <h2 className="mb-1 text-xs font-bold uppercase sm:text-sm xl:mb-1 xl:text-[clamp(12px,1.15vw,18px)]">
+        {label}
+      </h2>
+      <div className="relative aspect-video w-full overflow-hidden bg-[#d9d9d9] xl:min-h-0 xl:flex-1 xl:aspect-auto">
+        {src ? (
+          <video
+            className="h-full w-full object-cover"
+            playsInline
+            preload="metadata"
+          >
+            <source src={src} />
+            브라우저에서 영상을 재생할 수 없습니다.
+          </video>
+        ) : (
+          <div
+            className="flex h-full items-center justify-center text-xs text-[#777]"
+            aria-label={`${label} 영상 준비 중`}
+          >
+            COMING SOON
+          </div>
+        )}
+        <div className="pointer-events-none absolute inset-0 flex items-end bg-gradient-to-b from-transparent via-black/10 to-black/75 p-[16px] opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
+          <p className="text-[clamp(12px,2.2vw,16px)] font-light text-white">
+            {hoverTitle}
+          </p>
         </div>
-      )}
-    </div>
+      </div>
+    </Link>
   </section>
 );
 
@@ -59,11 +72,14 @@ const DesignerDetail = () => {
   const designer = designerList[currentIndex];
   const detail = designer.detail;
   const imageNumber = String(currentIndex + 1).padStart(2, "0");
+  const teamProject = Object.values(teamProjects).find(
+    (project) => project.category === designer.team,
+  );
 
   return (
     <main className="bg-[url('/images/background.png')] text-[#111]">
-      <div className="relative mx-auto flex min-h-[calc(100svh-72px)] max-w-[2100px] flex-col px-6 pb-12 pt-8 sm:px-10 lg:min-h-[calc(100svh-var(--header-height))] lg:px-[clamp(40px,2.5vw,52px)] lg:pb-12 lg:pt-12 xl:max-w-none xl:px-0 xl:pb-[clamp(48px,6svh,72px)] xl:pt-[clamp(56px,7svh,80px)]">
-        <div className="grid min-h-0 flex-1 items-start gap-10 lg:grid-cols-2 xl:mx-auto xl:w-[calc(100%_-_104px)] xl:max-w-[1962px] xl:grid-cols-[minmax(0,1.45fr)_clamp(64px,4vw,84px)_minmax(0,1.25fr)_clamp(120px,9vw,190px)_clamp(320px,21.5vw,450px)] xl:items-stretch xl:gap-0">
+      <div className="relative mx-auto flex min-h-[calc(100svh-72px)] max-w-[2100px] flex-col px-6 pb-12 pt-4 sm:px-10 lg:min-h-[calc(100svh-var(--header-height))] lg:px-[clamp(40px,2.5vw,52px)] lg:pb-12 lg:pt-6 xl:max-w-none xl:px-0 xl:pb-[clamp(48px,6svh,72px)] xl:pt-[clamp(28px,3.5svh,40px)]">
+        <div className="grid min-h-0 flex-1 items-start gap-y-10 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1.25fr)] lg:gap-x-[clamp(28px,2.5vw,36px)] xl:mx-auto xl:w-[calc(100%_-_104px)] xl:max-w-[1962px] xl:grid-cols-[minmax(0,1.45fr)_clamp(28px,2.5vw,36px)_minmax(0,1.25fr)_clamp(120px,9vw,190px)_clamp(320px,21.5vw,450px)] xl:items-stretch xl:gap-0">
           <div className="flex w-full flex-col justify-end xl:col-start-1 xl:min-h-0">
             <Link
               to="/designer"
@@ -103,7 +119,7 @@ const DesignerDetail = () => {
           </div>
 
           <section className="relative flex min-h-[520px] flex-col justify-end lg:min-h-0 lg:self-stretch xl:col-start-3">
-            <div className="absolute left-0 top-0 h-[clamp(90px,8vw,150px)] w-[clamp(90px,8vw,150px)] xl:top-[52px]">
+            <div className="absolute left-[-28px] top-0 h-[clamp(200px,8vw,320px)] w-[clamp(200px,8vw,320px)] xl:top-[60px]">
               <img
                 src={`/images/object/paper/${imageNumber}.png`}
                 alt={`${designer.name} 디자이너 오브제`}
@@ -118,52 +134,73 @@ const DesignerDetail = () => {
             </div>
 
             <div>
-              <h1 className="flex flex-wrap items-baseline gap-x-6 gap-y-1 tracking-[-0.04em] text-[#000101]">
-                <span className="text-[clamp(24px,2vw,40px)] font-bold">{designer.name}</span>
-                <span className="text-[clamp(24px,2vw,40px)] font-medium">{getEnglishName(designer)}</span>
+              <h1 className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <span className="text-[clamp(24px,2vw,40px)] font-bold text-[#000101]">{designer.name}</span>
+                <span className="text-[clamp(16px,2vw,24px)] font-regular text-[#4A4B51] tracking-[-0.02em]">{getEnglishName(designer)}</span>
               </h1>
 
               <dl className="mt-8 grid max-w-[570px] grid-cols-1 gap-x-12 gap-y-6 text-sm sm:grid-cols-2 xl:mt-12 xl:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] xl:gap-x-[clamp(72px,6.2vw,130px)] xl:gap-y-10 xl:text-[clamp(16px,1.05vw,20px)]">
                 <div className="sm:col-span-2">
-                  <dt className="mb-1">team</dt>
-                  <dd className="text-lg font-bold xl:text-[clamp(17px,1.15vw,22px)]">{designer.team}</dd>
+                  <dt className="mb-1 text-[#888A96] text-[clamp(14px,1.15vw,16px)]">team</dt>
+                  <dd className="text-lg text-[#000101] font-semibold text-[clamp(18px,1.15vw,20px)]">
+                    {teamProject ? (
+                      <Link
+                        to={teamProject.link}
+                        className="exhibition-member-link designer-team-link inline-flex"
+                        aria-label={`${designer.team} 팀 프로젝트 상세 페이지로 이동`}
+                      >
+                        {designer.team}
+                      </Link>
+                    ) : (
+                      designer.team
+                    )}
+                  </dd>
                 </div>
 
                 <div>
-                  <dt className="mb-1">e-mail</dt>
-                  <dd className="break-all text-lg font-bold xl:text-[clamp(17px,1.15vw,22px)]">
+                  <dt className="mb-1 text-[#888A96] text-[clamp(14px,1.15vw,16px)]">e-mail</dt>
+                  <dd className="text-lg text-[#000101] font-semibold text-[clamp(18px,1.15vw,20px)]">
                     {detail?.email ?? "-"}
                   </dd>
                 </div>
                 <div>
-                  <dt className="mb-1">instagram</dt>
-                  <dd className="break-all font-bold xl:text-[clamp(17px,1.15vw,22px)]">
+                  <dt className="mb-1 text-[#888A96] text-[clamp(14px,1.15vw,16px)]">instagram</dt>
+                  <dd className="text-lg text-[#000101] font-semibold text-[clamp(18px,1.15vw,20px)]">
                     {detail?.instagram?.toString() ?? "-"}
                   </dd>
                 </div>
                 <div>
-                  <dt className="mb-1">portfolio</dt>
-                  <dd className="break-all font-bold xl:text-[clamp(17px,1.15vw,22px)]">
+                  <dt className="mb-1 text-[#888A96] text-[clamp(14px,1.15vw,16px)]">portfolio</dt>
+                  <dd className="text-lg text-[#000101] font-semibold text-[clamp(18px,1.15vw,20px)]">
                     {detail?.portfolio?.toString() ?? "-"}
                   </dd>
                 </div>
                 <div>
-                  <dt className="mb-1">phone number</dt>
-                  <dd className="font-bold xl:text-[clamp(17px,1.15vw,22px)]">{detail?.phone ?? "-"}</dd>
+                  <dt className="mb-1 text-[#888A96] text-[clamp(14px,1.15vw,16px)]">phone number</dt>
+                  <dd className="text-lg text-[#000101] font-semibold text-[clamp(18px,1.15vw,20px)]">{detail?.phone ?? "-"}</dd>
                 </div>
               </dl>
             </div>
           </section>
 
-          <div className="grid gap-2 text-[#000101] ssm:grid-cols-3 lg:col-span-2 xl:col-span-1 xl:col-start-5 xl:h-full xl:min-h-0 xl:grid-cols-1 xl:grid-rows-3 xl:gap-5 xl:self-stretch">
-            <MediaPanel label="TEAM FILM" src={detail?.teamFilm} />
-            <MediaPanel
-              label="TEAM INTERACTION"
-              src={detail?.teamInteraction}
-            />
+          <div className="grid gap-5 text-[#000101] ssm:grid-cols-3 lg:col-span-2 xl:col-span-1 xl:col-start-5 xl:h-full xl:min-h-0 xl:grid-cols-1 xl:grid-rows-3 xl:gap-5 xl:self-stretch">
             <MediaPanel
               label="INDIVIDUAL INTERACTION"
               src={detail?.individualInteraction}
+              hoverTitle={designer.conceptName || "UNTITLED"}
+              to={`/project/${designer.id}#individual-interaction`}
+            />
+            <MediaPanel
+              label="TEAM FILM"
+              src={detail?.teamFilm}
+              hoverTitle={teamProject?.videoTitle || "UNTITLED"}
+              to={`${teamProject?.link ?? "/project"}#team-film`}
+            />
+            <MediaPanel
+              label="TEAM INTERACTION"
+              src={detail?.teamInteraction}
+              hoverTitle={teamProject?.interactionTitle || "UNTITLED"}
+              to={`${teamProject?.link ?? "/project"}#team-interaction`}
             />
           </div>
         </div>

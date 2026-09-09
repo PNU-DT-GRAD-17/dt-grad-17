@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, Navigate, useLocation, useParams } from "react-router-dom";
 
 import Footer from "../components/Footer";
 import { designers } from "../data/designers";
@@ -23,14 +23,21 @@ const ProjectDetail = () => {
   const navigatorRef = useRef<HTMLElement>(null);
   const snapAnimationRef = useRef<number | null>(null);
   const isSnappingRef = useRef(false);
+  const location = useLocation();
   const { designerId } = useParams();
   const projectDesigners = designers.filter((designer) => designer.id !== "all");
   const currentIndex = projectDesigners.findIndex((designer) => designer.id === designerId);
 
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
-    scrollContainerRef.current?.scrollTo(0, 0);
-  }, [designerId]);
+    const targetId = location.hash.slice(1);
+
+    if (targetId) {
+      document.getElementById(targetId)?.scrollIntoView();
+    } else {
+      scrollContainerRef.current?.scrollTo(0, 0);
+    }
+  }, [designerId, location.hash]);
 
   useEffect(() => {
     const container = scrollContainerRef.current;
@@ -191,14 +198,26 @@ const ProjectDetail = () => {
               to="/project"
               className="group absolute right-6 top-8 inline-flex items-center gap-2 text-lg font-semibold text-white/40 transition-colors hover:text-white sm:right-10 lg:right-[clamp(48px,5vw,96px)] lg:top-[clamp(28px,5svh,64px)]"
             >
-              <span className="text-3xl font-light leading-none transition-transform group-hover:-translate-x-1" aria-hidden="true">‹</span>
+              <img
+                src="/images/icon/arrowLeft.png"
+                alt=""
+                className="h-5 w-5 transition-transform group-hover:-translate-x-1"
+                aria-hidden="true"
+              />
               BACK
             </Link>
 
             <dl className="text-sm leading-relaxed">
               <div>
                 <dt className="font-semibold text-[#45BFE6]">credit</dt>
-                <dd className="mt-2 text-white text-xl">{designer.name}</dd>
+                <dd className="mt-2 text-xl">
+                  <Link
+                    to={`/designer/${designer.id}`}
+                    className="exhibition-member-link detail-member-link inline-flex"
+                  >
+                    {designer.name}
+                  </Link>
+                </dd>
               </div>
             </dl>
 
@@ -222,7 +241,7 @@ const ProjectDetail = () => {
           </div>
         </section>
 
-        <section className="mx-auto min-h-[calc(100svh-var(--header-height)-4rem)] max-w-[1720px] snap-start snap-always px-6 py-16 sm:px-10 lg:px-[clamp(56px,6.25vw,120px)] lg:py-24">
+        <section id="individual-interaction" className="mx-auto min-h-[calc(100svh-var(--header-height)-4rem)] max-w-[1720px] snap-start snap-always px-6 py-16 sm:px-10 lg:px-[clamp(56px,6.25vw,120px)] lg:pb-24 lg:pt-8">
           <div className="mb-7 flex items-end justify-between gap-6">
             <h2 className="text-[clamp(22px,2vw,32px)] font-semibold tracking-[-0.02em]">INDIVIDUAL INTERACTION</h2>
             {detail?.scenarioUrl && (
@@ -233,7 +252,7 @@ const ProjectDetail = () => {
           </div>
 
           <div className="grid gap-10 lg:grid-cols-[1fr_1.12fr] lg:items-start">
-            <div className="grid grid-cols-2 gap-1">
+            <div className="grid grid-cols-2 overflow-hidden">
               <MediaPlaceholder src={detail?.interactionImages?.[0]} alt={`${designer.interactionTitle} 인터랙션 화면 1`} />
               <MediaPlaceholder src={detail?.interactionImages?.[1]} alt={`${designer.interactionTitle} 인터랙션 화면 2`} />
             </div>
@@ -262,7 +281,18 @@ const ProjectDetail = () => {
         </div>
       </div>
 
-      <nav ref={navigatorRef} className="project-detail__navigator fixed inset-x-0 bottom-0 z-20 grid h-16 grid-cols-3 items-center bg-[#0066AD] px-5 text-base sm:px-10 lg:px-[clamp(56px,6.25vw,120px)]" aria-label="다른 개인 프로젝트">
+      <nav
+        ref={navigatorRef}
+        className="project-detail__navigator fixed inset-x-0 bottom-0 z-20 grid h-16 grid-cols-3 items-center bg-[#0066AD] px-5 text-base sm:px-10 lg:px-[clamp(56px,6.25vw,120px)]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(0, 102, 173, 0.5), rgba(0, 102, 173, 0.5)), url('/images/blue_bg-upscaled.png')",
+          backgroundPosition: "center, center",
+          backgroundRepeat: "no-repeat, no-repeat",
+          backgroundSize: "100% 100%, 106% auto",
+        }}
+        aria-label="다른 개인 프로젝트"
+      >
         <Link to={`/project/${previous.id}`} className="group flex items-center gap-2 justify-self-start">
           <img
             src="/images/icon/arrowLeft.png"

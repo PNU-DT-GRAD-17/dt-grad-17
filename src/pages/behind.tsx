@@ -76,7 +76,7 @@ const ArrowIcon = ({ direction }: { direction: "left" | "right" }) => {
 
 function Behind() {
   const [cardStack, setCardStack] = useState<StackedCut[]>([
-    { id: 0, cutIndex: 1, angle: CARD_ANGLES[0] },
+    { id: 0, cutIndex: 0, angle: CARD_ANGLES[0] },
   ]);
   const makingFilmEmbedUrl = getYoutubeEmbedUrl(MAKING_FILM_URL);
   const activeIndex = cardStack.at(-1)?.cutIndex ?? 0;

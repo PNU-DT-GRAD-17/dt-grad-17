@@ -785,7 +785,7 @@ function Home() {
                   className="h-full w-full object-cover"
                 />
               </div>
-              <h3 className="mt-[clamp(28px,3vw,52px)] text-[26px] font-semibold">
+              <h3 className="mt-[clamp(28px,3vw,52px)] text-[26px] font-semibold text-[#000101]">
                 {professor.name}
               </h3>
               <p className="mt-[16px] text-[18px] font-medium text-[#888A96]">

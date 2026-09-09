@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, Navigate, useLocation, useParams } from "react-router-dom";
 
 import Footer from "../components/Footer";
 import { teamProjects, type TeamCategory } from "../data/team";
@@ -39,14 +39,21 @@ const TeamProjectDetail = () => {
   const isSnappingRef = useRef(false);
   const isWheelGestureLockedRef = useRef(false);
   const wheelUnlockTimerRef = useRef<number | null>(null);
+  const location = useLocation();
   const { category: categoryParam } = useParams();
   const category = categoryParam?.toUpperCase() as TeamCategory | undefined;
   const currentIndex = category ? categories.indexOf(category) : -1;
 
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
-    scrollContainerRef.current?.scrollTo(0, 0);
-  }, [categoryParam]);
+    const targetId = location.hash.slice(1);
+
+    if (targetId) {
+      document.getElementById(targetId)?.scrollIntoView();
+    } else {
+      scrollContainerRef.current?.scrollTo(0, 0);
+    }
+  }, [categoryParam, location.hash]);
 
   useEffect(() => {
     const container = scrollContainerRef.current;
@@ -261,7 +268,7 @@ const TeamProjectDetail = () => {
                   <Link
                     key={member.id}
                     to={`/designer/${member.id}`}
-                    className="exhibition-member-link"
+                    className="exhibition-member-link detail-member-link"
                   >
                     {member.name}
                   </Link>
@@ -280,7 +287,7 @@ const TeamProjectDetail = () => {
         </div>
       </section>
 
-      <section className="mx-auto h-[calc(100svh-72px-4rem)] max-w-[1720px] snap-start snap-always overflow-hidden px-6 py-10 sm:px-10 md:py-[clamp(48px,6vw,96px)] lg:h-[calc(100svh-var(--header-height)-4rem)] lg:px-[clamp(56px,6.25vw,120px)]">
+      <section id="team-film" className="mx-auto h-[calc(100svh-72px-4rem)] max-w-[1720px] snap-start snap-always overflow-hidden px-6 py-10 sm:px-10 md:py-[clamp(48px,6vw,96px)] lg:h-[calc(100svh-var(--header-height)-4rem)] lg:px-[clamp(56px,6.25vw,120px)]">
         <SectionTitle>TEAM FILM</SectionTitle>
 
         <div className="mt-10 grid gap-8 md:grid-cols-[1.45fr_0.85fr] md:items-start md:gap-[clamp(20px,3vw,48px)]">
@@ -296,7 +303,7 @@ const TeamProjectDetail = () => {
         </div>
       </section>
 
-      <section className="mx-auto h-[calc(100svh-72px-4rem)] max-w-[1720px] snap-start snap-always overflow-hidden px-6 py-9 sm:px-10 md:py-[clamp(40px,4vw,70px)] lg:h-[calc(100svh-var(--header-height)-4rem)] lg:px-[clamp(56px,6.25vw,120px)]">
+      <section id="team-interaction" className="mx-auto h-[calc(100svh-72px-4rem)] max-w-[1720px] snap-start snap-always overflow-hidden px-6 py-9 sm:px-10 md:py-[clamp(40px,4vw,70px)] lg:h-[calc(100svh-var(--header-height)-4rem)] lg:px-[clamp(56px,6.25vw,120px)]">
         <div className="flex flex-wrap items-end justify-between gap-5">
           <SectionTitle>INDIVIDUAL INTERACTION</SectionTitle>
           <span className="inline-flex items-center gap-2 border-b border-white/40 pb-1 text-sm text-white/65">

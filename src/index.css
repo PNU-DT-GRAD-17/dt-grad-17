@@ -218,6 +218,23 @@ html, body, #root{
   outline-offset: 4px;
 }
 
+.detail-member-link::after {
+  background-color: #45bfe6;
+}
+
+.detail-member-link:hover,
+.detail-member-link:focus-visible {
+  color: #45bfe6;
+}
+
+.detail-member-link:focus-visible {
+  outline-color: #45bfe6;
+}
+
+.designer-team-link::after {
+  bottom: 1px;
+}
+
 @keyframes exhibition-member-preview-in {
   from { opacity: 0; }
   to { opacity: 1; }
