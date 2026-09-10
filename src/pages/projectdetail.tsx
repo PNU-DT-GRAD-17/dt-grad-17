@@ -241,7 +241,7 @@ const ProjectDetail = () => {
           </div>
         </section>
 
-        <section id="individual-interaction" className="mx-auto min-h-[calc(100svh-var(--header-height)-4rem)] max-w-[1720px] snap-start snap-always px-6 py-16 sm:px-10 lg:px-[clamp(56px,6.25vw,120px)] lg:pb-24 lg:pt-8">
+        <section id="individual-interaction" className="min-h-[calc(100svh-var(--header-height))] snap-start snap-always px-12 py-16 lg:pb-24 lg:pt-12">
           <div className="mb-7 flex items-end justify-between gap-6">
             <h2 className="text-[clamp(22px,2vw,32px)] font-semibold tracking-[-0.02em]">INDIVIDUAL INTERACTION</h2>
             {detail?.scenarioUrl && (
@@ -252,18 +252,18 @@ const ProjectDetail = () => {
           </div>
 
           <div className="grid gap-10 lg:grid-cols-[1fr_1.12fr] lg:items-start">
-            <div className="grid grid-cols-2 overflow-hidden">
-              <MediaPlaceholder src={detail?.interactionImages?.[0]} alt={`${designer.interactionTitle} 인터랙션 화면 1`} />
-              <MediaPlaceholder src={detail?.interactionImages?.[1]} alt={`${designer.interactionTitle} 인터랙션 화면 2`} />
-            </div>
-
-            <section className="lg:pl-10">
+            <section>
               <h3 className="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-2xl font-semibold">
                 {designer.interactionTitle || "인터랙션 제목"}
                 <span className="text-sm font-medium text-[#45BFE6]">interaction</span>
               </h3>
-              <p className="mt-5 max-w-[650px] whitespace-pre-line text-sm leading-7 text-white">{interactionDescription}</p>
+              <p className="mt-5 max-w-[800px] whitespace-pre-line text-sm leading-7 text-white">{interactionDescription}</p>
             </section>
+
+            <div className="grid grid-cols-2 overflow-hidden">
+              <MediaPlaceholder src={detail?.interactionImages?.[0]} alt={`${designer.interactionTitle} 인터랙션 화면 1`} />
+              <MediaPlaceholder src={detail?.interactionImages?.[1]} alt={`${designer.interactionTitle} 인터랙션 화면 2`} />
+            </div>
           </div>
 
           <div className="mt-14 grid gap-8 sm:grid-cols-3">

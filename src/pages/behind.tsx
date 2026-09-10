@@ -139,7 +139,7 @@ function Behind() {
       className="min-h-screen bg-top text-[#000101]"
       style={{ backgroundImage: "url('/images/background.png')" }}
     >
-      <div className="mx-auto w-full max-w-[1180px] px-5 pb-28 pt-[clamp(64px,8vw,118px)] sm:px-8 lg:px-12 lg:pb-40">
+      <div className="mx-auto w-full max-w-[1180px] px-5 pb-28 pt-[clamp(64px,8vw,118px)] sm:px-8 lg:px-12 lg:pb-12">
         <h1 className="flex justify-center">
           <img
             src="/images/label-behind.png"
@@ -148,7 +148,7 @@ function Behind() {
           />
         </h1>
 
-        <section className="mt-[clamp(82px,10vw,140px)]" aria-labelledby="making-film-title">
+        <section className="mt-[clamp(40px,5vw,72px)]" aria-labelledby="making-film-title">
           <h2
             id="making-film-title"
             className="mb-[40px] text-[#000101] text-center text-[clamp(20px,2vw,28px)] font-semibold"

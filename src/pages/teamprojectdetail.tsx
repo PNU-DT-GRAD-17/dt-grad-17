@@ -255,7 +255,12 @@ const TeamProjectDetail = () => {
             to="/project"
             className="group ml-auto inline-flex items-center gap-2 text-lg font-semibold text-white/40 transition-colors hover:text-white focus-visible:text-white"
           >
-            <span className="text-3xl font-light leading-none transition-transform group-hover:-translate-x-1" aria-hidden="true">‹</span>
+            <img
+              src="/images/icon/arrowLeft.png"
+              alt=""
+              className="h-5 w-5 transition-transform group-hover:-translate-x-1"
+              aria-hidden="true"
+            />
             BACK
           </Link>
 
