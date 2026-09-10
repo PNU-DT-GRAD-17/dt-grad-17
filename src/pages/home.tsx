@@ -35,6 +35,7 @@ const ERASER_ALPHA_CUTOFF = 12;
 const INTRO_SHRINK_DURATION = 1000;
 const INTRO_ERASE_DURATION = 1600;
 const INTRO_ERASE_HOLD = 180;
+const INTRO_RETURN_DURATION = 650;
 const INTRO_GROW_DURATION = 1000;
 
 const container: Variants = {
@@ -512,6 +513,45 @@ function Home() {
         }
       };
 
+      const returnCursorToLogo = (
+        now: number,
+        returnStartedAt: number,
+        returnStart: Position,
+      ) => {
+        if (cancelled) return;
+        const progress = Math.min(
+          1,
+          (now - returnStartedAt) / INTRO_RETURN_DURATION,
+        );
+        const eased = progress < 0.5
+          ? 4 * progress * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+        const next = {
+          x: returnStart.x + (logoCenter.x - returnStart.x) * eased,
+          y: returnStart.y
+            + (logoCenter.y - returnStart.y) * eased
+            - Math.sin(progress * Math.PI) * eraseSize.height * 0.28,
+        };
+
+        pointerTargetRef.current = next;
+        pointerPositionRef.current = next;
+        setPointerPosition(next);
+
+        if (progress < 1) {
+          introAnimationFrame = requestAnimationFrame((nextNow) =>
+            returnCursorToLogo(nextNow, returnStartedAt, returnStart),
+          );
+        } else {
+          pointerTargetRef.current = logoCenter;
+          pointerPositionRef.current = logoCenter;
+          setPointerPosition(logoCenter);
+          setShowIntroClickIcon(false);
+          introAnimationFrame = requestAnimationFrame((growthStartedAt) =>
+            growCursor(growthStartedAt, growthStartedAt),
+          );
+        }
+      };
+
       cursorScaleRef.current = 1;
       setCursorScale(1);
       pointerTargetRef.current = logoCenter;
@@ -557,14 +597,11 @@ function Home() {
             () => {
               if (cancelled) return;
 
-              pointerTargetRef.current = logoCenter;
-              pointerPositionRef.current = logoCenter;
-              setPointerPosition(logoCenter);
               cursorScaleRef.current = DRAG_CURSOR_SCALE;
               setCursorScale(DRAG_CURSOR_SCALE);
-              setShowIntroClickIcon(false);
-              introAnimationFrame = requestAnimationFrame((growthStartedAt) =>
-                growCursor(growthStartedAt, growthStartedAt),
+              const returnStart = previous;
+              introAnimationFrame = requestAnimationFrame((returnStartedAt) =>
+                returnCursorToLogo(returnStartedAt, returnStartedAt, returnStart),
               );
             },
             INTRO_ERASE_HOLD,
