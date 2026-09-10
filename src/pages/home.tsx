@@ -30,8 +30,12 @@ const CURSOR_ASPECT_RATIO = 339 / 509;
 const DRAG_CURSOR_SCALE = 0.2;
 const CURSOR_IMAGE_SCALE = 1;
 const CURSOR_FOLLOW_EASING = 0.18;
-const ERASER_STRENGTH = 0.06;
+const ERASER_STRENGTH = 0.025;
 const ERASER_ALPHA_CUTOFF = 12;
+const INTRO_SHRINK_DURATION = 1000;
+const INTRO_ERASE_DURATION = 1600;
+const INTRO_ERASE_HOLD = 180;
+const INTRO_GROW_DURATION = 1000;
 
 const container: Variants = {
   hidden: {},
@@ -147,6 +151,98 @@ const getCursorSize = (sceneWidth: number): Size => {
   return { width, height: width * CURSOR_ASPECT_RATIO };
 };
 
+const getSmoothPathPosition = (points: Position[], progress: number): Position => {
+  const pathProgress = progress * (points.length - 1);
+  const index = Math.min(points.length - 2, Math.floor(pathProgress));
+  const t = pathProgress - index;
+  const t2 = t * t;
+  const t3 = t2 * t;
+  const p0 = points[Math.max(0, index - 1)];
+  const p1 = points[index];
+  const p2 = points[index + 1];
+  const p3 = points[Math.min(points.length - 1, index + 2)];
+  const interpolate = (a: number, b: number, c: number, d: number) =>
+    0.5 * (
+      2 * b
+      + (-a + c) * t
+      + (2 * a - 5 * b + 4 * c - d) * t2
+      + (-a + 3 * b - 3 * c + d) * t3
+    );
+
+  return {
+    x: interpolate(p0.x, p1.x, p2.x, p3.x),
+    y: interpolate(p0.y, p1.y, p2.y, p3.y),
+  };
+};
+
+const eraseCanvasBetween = (
+  canvas: HTMLCanvasElement,
+  eraseImage: HTMLImageElement,
+  from: Position,
+  to: Position,
+  eraseSize: Size,
+) => {
+  const context = canvas.getContext("2d");
+  if (!context) return;
+
+  const distance = Math.hypot(to.x - from.x, to.y - from.y);
+  const step = Math.max(8, eraseSize.width * 0.08);
+  const count = Math.max(1, Math.ceil(distance / step));
+  const scaleX = canvas.width / canvas.clientWidth;
+  const scaleY = canvas.height / canvas.clientHeight;
+  const left = Math.max(
+    0,
+    Math.floor((Math.min(from.x, to.x) - eraseSize.width / 2) * scaleX),
+  );
+  const top = Math.max(
+    0,
+    Math.floor((Math.min(from.y, to.y) - eraseSize.height / 2) * scaleY),
+  );
+  const right = Math.min(
+    canvas.width,
+    Math.ceil((Math.max(from.x, to.x) + eraseSize.width / 2) * scaleX),
+  );
+  const bottom = Math.min(
+    canvas.height,
+    Math.ceil((Math.max(from.y, to.y) + eraseSize.height / 2) * scaleY),
+  );
+  const affectedWidth = right - left;
+  const affectedHeight = bottom - top;
+  const beforeErase = affectedWidth > 0 && affectedHeight > 0
+    ? context.getImageData(left, top, affectedWidth, affectedHeight)
+    : null;
+
+  context.save();
+  context.globalCompositeOperation = "destination-out";
+  context.globalAlpha = ERASER_STRENGTH;
+  for (let index = 0; index <= count; index += 1) {
+    const progress = index / count;
+    const x = from.x + (to.x - from.x) * progress;
+    const y = from.y + (to.y - from.y) * progress;
+    context.drawImage(
+      eraseImage,
+      x - eraseSize.width / 2,
+      y - eraseSize.height / 2,
+      eraseSize.width,
+      eraseSize.height,
+    );
+  }
+  context.restore();
+
+  if (beforeErase) {
+    const afterErase = context.getImageData(left, top, affectedWidth, affectedHeight);
+
+    for (let index = 3; index < afterErase.data.length; index += 4) {
+      const alphaWasReduced = afterErase.data[index] < beforeErase.data[index];
+      if (alphaWasReduced && afterErase.data[index] <= ERASER_ALPHA_CUTOFF) {
+        afterErase.data[index] = 0;
+      }
+    }
+
+    context.putImageData(afterErase, left, top);
+  }
+};
+
 function ObjectLayer({ color }: { color: boolean }) {
   return (
     <div className="absolute inset-0">
@@ -179,10 +275,13 @@ function Home() {
   const pointerTargetRef = useRef<Position | null>(null);
   const pointerPositionRef = useRef<Position | null>(null);
   const hasInitializedCursorRef = useRef(false);
+  const hasPlayedIntroRef = useRef(false);
 
   const [sceneSize, setSceneSize] = useState<Size>({ width: 0, height: 0 });
   const [pointerPosition, setPointerPosition] = useState<Position | null>(null);
   const [isErasing, setIsErasing] = useState(false);
+  const [isIntroAnimating, setIsIntroAnimating] = useState(true);
+  const [showIntroClickIcon, setShowIntroClickIcon] = useState(true);
   const [isScrollCueHovered, setIsScrollCueHovered] = useState(false);
   const [cursorScale, setCursorScale] = useState(1);
   const openingEmbedUrl = getYoutubeEmbedUrl(OPENING_YOUTUBE_URL);
@@ -209,6 +308,8 @@ function Home() {
     : null;
 
   useEffect(() => {
+    if (isIntroAnimating) return;
+
     const from = cursorScaleRef.current;
     const to = isErasing ? DRAG_CURSOR_SCALE : 1;
     const duration = 800;
@@ -235,7 +336,7 @@ function Home() {
 
     animationFrame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationFrame);
-  }, [isErasing]);
+  }, [isErasing, isIntroAnimating]);
 
   useEffect(() => {
     let animationFrame = 0;
@@ -294,6 +395,8 @@ function Home() {
     if (!scene || !canvas) return;
 
     let cancelled = false;
+    let introAnimationFrame = 0;
+    let introFinishTimer = 0;
     const images = BANNER_OBJECTS.map((object) => {
       const image = new Image();
       image.src = `${ASSET_ROOT}/black/${object.file}`;
@@ -342,9 +445,139 @@ function Home() {
         context.restore();
       });
       context.globalAlpha = 1;
+
+      return rect;
     };
 
-    void drawBlackObjects();
+    const playIntro = (rect: DOMRect) => {
+      if (hasPlayedIntroRef.current || !eraseImage.naturalWidth) {
+        setIsIntroAnimating(false);
+        return;
+      }
+
+      hasPlayedIntroRef.current = true;
+      const logo = BANNER_OBJECTS.find((object) => object.id === "logo");
+      if (!logo) {
+        setIsIntroAnimating(false);
+        return;
+      }
+
+      const baseSize = getCursorSize(rect.width);
+      const eraseSize = {
+        width: baseSize.width * DRAG_CURSOR_SCALE,
+        height: baseSize.height * DRAG_CURSOR_SCALE,
+      };
+      const logoCenter = {
+        x: (rect.width * logo.x) / 100,
+        y: (rect.height * logo.y) / 100,
+      };
+      const erasePath = [
+        { x: 0, y: 0 },
+        { x: -1.25, y: 0.28 },
+        { x: -1.02, y: -0.55 },
+        { x: -0.68, y: 0.52 },
+        { x: -0.32, y: -0.48 },
+        { x: 0.08, y: 0.56 },
+        { x: 0.48, y: -0.46 },
+        { x: 0.88, y: 0.5 },
+        { x: 1.28, y: -0.24 },
+      ].map(({ x, y }) => ({
+        x: logoCenter.x + eraseSize.width * x,
+        y: logoCenter.y + eraseSize.height * y,
+      }));
+      let previous = erasePath[0];
+      let startedAt: number | null = null;
+
+      const growCursor = (now: number, growthStartedAt: number) => {
+        if (cancelled) return;
+        const progress = Math.min(
+          1,
+          (now - growthStartedAt) / INTRO_GROW_DURATION,
+        );
+        const eased = progress < 0.5
+          ? 4 * progress * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+        const nextScale = DRAG_CURSOR_SCALE + (1 - DRAG_CURSOR_SCALE) * eased;
+        cursorScaleRef.current = nextScale;
+        setCursorScale(nextScale);
+
+        if (progress < 1) {
+          introAnimationFrame = requestAnimationFrame((nextNow) =>
+            growCursor(nextNow, growthStartedAt),
+          );
+        } else {
+          void drawBlackObjects().then(() => {
+            if (!cancelled) setIsIntroAnimating(false);
+          });
+        }
+      };
+
+      cursorScaleRef.current = 1;
+      setCursorScale(1);
+      pointerTargetRef.current = logoCenter;
+      pointerPositionRef.current = logoCenter;
+      setPointerPosition(logoCenter);
+
+      const animate = (now: number) => {
+        if (cancelled) return;
+        startedAt ??= now;
+        const elapsed = now - startedAt;
+
+        if (elapsed < INTRO_SHRINK_DURATION) {
+          const progress = elapsed / INTRO_SHRINK_DURATION;
+          const eased = progress < 0.5
+            ? 4 * progress * progress * progress
+            : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+          const nextScale = 1 + (DRAG_CURSOR_SCALE - 1) * eased;
+          cursorScaleRef.current = nextScale;
+          setCursorScale(nextScale);
+          introAnimationFrame = requestAnimationFrame(animate);
+          return;
+        }
+
+        cursorScaleRef.current = DRAG_CURSOR_SCALE;
+        setCursorScale(DRAG_CURSOR_SCALE);
+        const eraseProgress = Math.min(
+          1,
+          (elapsed - INTRO_SHRINK_DURATION) / INTRO_ERASE_DURATION,
+        );
+        const easedProgress = 0.5 - Math.cos(eraseProgress * Math.PI) / 2;
+        const next = getSmoothPathPosition(erasePath, easedProgress);
+
+        pointerTargetRef.current = next;
+        pointerPositionRef.current = next;
+        setPointerPosition(next);
+        eraseCanvasBetween(canvas, eraseImage, previous, next, eraseSize);
+        previous = next;
+
+        if (eraseProgress < 1) {
+          introAnimationFrame = requestAnimationFrame(animate);
+        } else {
+          introFinishTimer = window.setTimeout(
+            () => {
+              if (cancelled) return;
+
+              pointerTargetRef.current = logoCenter;
+              pointerPositionRef.current = logoCenter;
+              setPointerPosition(logoCenter);
+              cursorScaleRef.current = DRAG_CURSOR_SCALE;
+              setCursorScale(DRAG_CURSOR_SCALE);
+              setShowIntroClickIcon(false);
+              introAnimationFrame = requestAnimationFrame((growthStartedAt) =>
+                growCursor(growthStartedAt, growthStartedAt),
+              );
+            },
+            INTRO_ERASE_HOLD,
+          );
+        }
+      };
+
+      introAnimationFrame = requestAnimationFrame(animate);
+    };
+
+    void drawBlackObjects().then((rect) => {
+      if (!cancelled && rect) playIntro(rect);
+    });
     const resizeObserver = new ResizeObserver(() => void drawBlackObjects());
     resizeObserver.observe(scene);
 
@@ -372,6 +605,8 @@ function Home() {
 
     return () => {
       cancelled = true;
+      cancelAnimationFrame(introAnimationFrame);
+      window.clearTimeout(introFinishTimer);
       resizeObserver.disconnect();
       visibilityObserver.disconnect();
     };
@@ -382,69 +617,11 @@ function Home() {
     const eraseImage = eraseImageRef.current;
     if (!canvas || !eraseImage?.naturalWidth) return;
 
-    const context = canvas.getContext("2d");
-    if (!context) return;
-
     const eraseSize = {
       width: baseCursorSize.width * cursorScaleRef.current,
       height: baseCursorSize.height * cursorScaleRef.current,
     };
-    const distance = Math.hypot(to.x - from.x, to.y - from.y);
-    const step = Math.max(8, eraseSize.width * 0.08);
-    const count = Math.max(1, Math.ceil(distance / step));
-    const scaleX = canvas.width / canvas.clientWidth;
-    const scaleY = canvas.height / canvas.clientHeight;
-    const left = Math.max(
-      0,
-      Math.floor((Math.min(from.x, to.x) - eraseSize.width / 2) * scaleX),
-    );
-    const top = Math.max(
-      0,
-      Math.floor((Math.min(from.y, to.y) - eraseSize.height / 2) * scaleY),
-    );
-    const right = Math.min(
-      canvas.width,
-      Math.ceil((Math.max(from.x, to.x) + eraseSize.width / 2) * scaleX),
-    );
-    const bottom = Math.min(
-      canvas.height,
-      Math.ceil((Math.max(from.y, to.y) + eraseSize.height / 2) * scaleY),
-    );
-    const affectedWidth = right - left;
-    const affectedHeight = bottom - top;
-    const beforeErase = affectedWidth > 0 && affectedHeight > 0
-      ? context.getImageData(left, top, affectedWidth, affectedHeight)
-      : null;
-
-    context.save();
-    context.globalCompositeOperation = "destination-out";
-    context.globalAlpha = ERASER_STRENGTH;
-    for (let index = 0; index <= count; index += 1) {
-      const progress = index / count;
-      const x = from.x + (to.x - from.x) * progress;
-      const y = from.y + (to.y - from.y) * progress;
-      context.drawImage(
-        eraseImage,
-        x - eraseSize.width / 2,
-        y - eraseSize.height / 2,
-        eraseSize.width,
-        eraseSize.height,
-      );
-    }
-    context.restore();
-
-    if (beforeErase) {
-      const afterErase = context.getImageData(left, top, affectedWidth, affectedHeight);
-
-      for (let index = 3; index < afterErase.data.length; index += 4) {
-        const alphaWasReduced = afterErase.data[index] < beforeErase.data[index];
-        if (alphaWasReduced && afterErase.data[index] <= ERASER_ALPHA_CUTOFF) {
-          afterErase.data[index] = 0;
-        }
-      }
-
-      context.putImageData(afterErase, left, top);
-    }
+    eraseCanvasBetween(canvas, eraseImage, from, to, eraseSize);
   };
 
   const getPointerPosition = (event: ReactPointerEvent<HTMLElement>): Position => {
@@ -462,6 +639,8 @@ function Home() {
   };
 
   const handlePointerMove = (event: ReactPointerEvent<HTMLElement>) => {
+    if (isIntroAnimating) return;
+
     const position = getPointerPosition(event);
     updatePointerTarget(position);
 
@@ -481,6 +660,8 @@ function Home() {
 
   const handlePointerDown = (event: ReactPointerEvent<HTMLElement>) => {
     event.preventDefault();
+    if (isIntroAnimating) return;
+
     const position = getPointerPosition(event);
     const eraseSize = {
       width: baseCursorSize.width * cursorScaleRef.current,
@@ -496,6 +677,8 @@ function Home() {
   };
 
   const handlePointerUp = (event: ReactPointerEvent<HTMLElement>) => {
+    if (isIntroAnimating) return;
+
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
@@ -505,6 +688,8 @@ function Home() {
   };
 
   const handlePointerLeave = () => {
+    if (isIntroAnimating) return;
+
     pointerTargetRef.current = null;
     pointerPositionRef.current = null;
     setPointerPosition(null);
@@ -568,6 +753,14 @@ function Home() {
               draggable={false}
               className="block h-full w-full"
             />
+            {isIntroAnimating && showIntroClickIcon && (
+              <img
+                src="/images/icon/mouseclick.svg"
+                alt=""
+                draggable={false}
+                className="absolute left-1/2 top-1/2 h-[clamp(24px,3vw,40px)] w-[clamp(24px,3vw,40px)] -translate-x-1/2 -translate-y-1/2 opacity-40"
+              />
+            )}
           </div>
         )}
 
