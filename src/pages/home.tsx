@@ -839,7 +839,7 @@ function Home() {
           </h2>
 
           <motion.p
-            className="mt-16 text-[clamp(12px,1.7vw,20px)] text-[#000101] font-regular leading-[1.5] tracking-[-0.02em]"
+            className="mt-16 text-[clamp(16px,1.7vw,20px)] text-[#000101] font-regular leading-[1.5] tracking-[-0.02em]"
             variants={container}
             initial="hidden"
             whileInView="visible"
@@ -960,20 +960,28 @@ function Home() {
 
         <div className="mx-auto mt-16 grid w-full max-w-[1080px] lg:items-end gap-12 lg:grid-cols-2 lg:gap-20">
           <div className="w-full max-w-[500px] min-w-0 justify-self-center">
-            <div className="text-[clamp(13px,1.15vw,16px)] text-[#000101]">
-              <div className="pb-6">
+            <motion.div
+              className="text-[clamp(13px,1.15vw,16px)] text-[#000101]"
+              variants={container}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: false, amount: 0.4 }}
+            >
+              <motion.div variants={item} className="pb-6">
                 <h3 className="font-semibold text-[20px]">부산디자인진흥원 1층 전시실</h3>
                 <p className="mt-2 leading-relaxed">부산광역시 해운대구 센텀동로 57</p>
-              </div>
+              </motion.div>
 
-              <div className="py-6">
+              <motion.div variants={item} className="py-6">
                 <h3 className="font-semibold text-[20px]">DESIGN CENTER BUSAN 1F Exhibition Hall</h3>
                 <p className="mt-2 leading-relaxed">57, Centum dong-ro, Haeundae-gu, Busan</p>
-              </div>
+              </motion.div>
 
-              <p className="pt-6 font-semibold text-[20px]">2026.11.06(FRI) - 11.08(SUN)</p>
-              <p className="mt-2">10AM - 6PM</p>
-            </div>
+              <motion.div variants={item} className="pt-6">
+                <p className="font-semibold text-[20px]">2026.11.06(FRI) - 11.08(SUN)</p>
+                <p className="mt-2">10AM - 6PM</p>
+              </motion.div>
+            </motion.div>
           </div>
 
           <div className="h-[400px] w-full max-w-[600px] justify-self-center">
@@ -1015,10 +1023,10 @@ function Home() {
                   className="h-full w-full object-cover"
                 />
               </div>
-              <h3 className="mt-[clamp(28px,3vw,52px)] text-[26px] font-semibold text-[#000101]">
+              <h3 className="mt-[clamp(28px,3vw,32px)] text-[26px] font-semibold text-[#000101]">
                 {professor.name}
               </h3>
-              <p className="mt-[16px] text-[18px] font-medium text-[#888A96]">
+              <p className="mt-[12px] text-[18px] font-medium text-[#888A96]">
                 {professor.field}
               </p>
             </motion.article>
