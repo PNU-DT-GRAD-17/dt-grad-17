@@ -211,7 +211,7 @@ const Project = () => {
   };
 
   return (
-    <main className="min-h-screen bg-[url('/images/background.png')] bg-cover bg-center bg-fixed text-[#121212] lg:pt-[var(--header-height)]">
+    <main className="min-h-screen bg-[url('/images/background.png')] bg-[length:400%_auto] bg-top bg-repeat-y text-[#121212] lg:bg-cover lg:bg-center lg:bg-fixed lg:bg-no-repeat lg:pt-[var(--header-height)]">
       <section
         ref={projectLabelRef}
         data-project-label

@@ -10,7 +10,7 @@ const Designer = () => {
 
   return (
     <main
-      className="min-h-screen"
+      className="min-h-screen max-lg:bg-[length:400%_auto] max-lg:bg-top max-lg:bg-repeat-y"
       style={{
         backgroundImage:
           "url('/images/background.png')",

@@ -77,7 +77,7 @@ const DesignerDetail = () => {
   );
 
   return (
-    <main className="bg-[url('/images/background.png')] text-[#111]">
+    <main className="bg-[url('/images/background.png')] text-[#111] max-lg:bg-[length:400%_auto] max-lg:bg-top max-lg:bg-repeat-y">
       <div className="relative mx-auto flex min-h-[calc(100svh-72px)] max-w-[2100px] flex-col px-6 pb-12 pt-4 sm:px-10 lg:min-h-[calc(100svh-var(--header-height))] lg:px-[clamp(40px,2.5vw,52px)] lg:pb-12 lg:pt-6 xl:max-w-none xl:px-0 xl:pb-[clamp(48px,6svh,72px)] xl:pt-[clamp(28px,3.5svh,40px)]">
         <div className="grid min-h-0 flex-1 items-start gap-y-10 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1.25fr)] lg:gap-x-[clamp(28px,2.5vw,36px)] xl:mx-auto xl:w-[calc(100%_-_104px)] xl:max-w-[1962px] xl:grid-cols-[minmax(0,1.45fr)_clamp(28px,2.5vw,36px)_minmax(0,1.25fr)_clamp(120px,9vw,190px)_clamp(320px,21.5vw,450px)] xl:items-stretch xl:gap-0">
           <div className="flex w-full flex-col justify-end xl:col-start-1 xl:min-h-0">

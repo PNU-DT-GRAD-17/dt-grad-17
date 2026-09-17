@@ -358,10 +358,10 @@ function Header() {
               rel="noreferrer"
               aria-label="인스타그램"
             >
-              <img src="/images/icon/instagram.png" alt="" className="h-8 w-8 object-contain" />
+              <img src="/images/icon/instagram.svg" alt="" className="h-8 w-8 object-contain brightness-0 invert" />
             </a>
             <a href="https://www.youtube.com/@pnudt" target="_blank" rel="noreferrer" aria-label="유튜브">
-              <img src="/images/icon/youtube.png" alt="" className="h-8 w-8 object-contain" />
+              <img src="/images/icon/youtube.svg" alt="" className="h-8 w-8 object-contain brightness-0 invert" />
             </a>
           </div>
         </div>

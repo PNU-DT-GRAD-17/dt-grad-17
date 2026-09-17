@@ -881,7 +881,7 @@ function Home() {
     : {};
 
   return (
-    <main className="relative min-h-screen w-full bg-[url('/images/background.png')] bg-cover bg-center bg-no-repeat text-[#111]">
+    <main className="relative min-h-screen w-full bg-[url('/images/background.png')] bg-[length:400%_auto] bg-top bg-repeat-y text-[#111] lg:bg-cover lg:bg-center lg:bg-no-repeat">
       <section
         ref={sceneRef}
         aria-label="파란 종이를 움직여 색을 발견하는 메인 배너"
@@ -1035,7 +1035,7 @@ function Home() {
         <div className="mx-auto mt-[clamp(24px,7vw,100px)] grid w-full max-w-[1280px] gap-10 xl:grid-cols-[minmax(0,1.05fr)_minmax(420px,0.95fr)] xl:items-center xl:gap-[clamp(56px,7vw,112px)]">
           <div className="aspect-[3/2] min-w-0 w-full overflow-hidden">
             <img
-              src="/images/footer_background.png"
+              src="/images/profile/total/total_raw.jpeg"
               alt="전시 참여 인원 단체사진"
               className="block h-full w-full object-cover"
             />

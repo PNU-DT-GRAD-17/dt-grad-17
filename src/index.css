@@ -35,6 +35,16 @@ html, body, #root{
 
 }
 
+@media (max-width: 1023px) {
+  html,
+  body,
+  #root {
+    background-position: center top;
+    background-repeat: repeat-y;
+    background-size: 400% auto;
+  }
+}
+
 .project-detail__poster {
   filter: blur(7px);
   transform: scale(1.035);

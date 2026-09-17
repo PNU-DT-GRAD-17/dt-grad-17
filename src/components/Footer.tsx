@@ -11,11 +11,11 @@ const Footer = () => {
 
             <div className="absolute right-0 top-0 flex items-center gap-[1.8vw]">
               <a href="https://www.instagram.com/pnu.dt.16/" target="_blank" rel="noreferrer" aria-label="인스타그램" className="transition-transform duration-200 hover:scale-105">
-                <img src="/images/icon/instagram.png" alt="" className="w-[clamp(28px,3vw,40px)] object-contain" />
+                <img src="/images/icon/instagram.svg" alt="" className="w-[clamp(28px,3vw,40px)] object-contain" />
               </a>
 
               <a href="https://www.youtube.com/@pnudt" target="_blank" rel="noreferrer" aria-label="유튜브" className="transition-transform duration-200 hover:scale-105">
-                <img src="/images/icon/youtube.png" alt="" className="w-[clamp(28px,3vw,40px)] object-contain" />
+                <img src="/images/icon/youtube.svg" alt="" className="w-[clamp(28px,3vw,40px)] object-contain" />
               </a>
             </div>
 
@@ -42,7 +42,7 @@ const Footer = () => {
         </div>
 
         {/* 모바일 */}
-        <div className="relative px-[9.4%] py-[clamp(36px,6vw,56px)] lg:hidden">
+        <div className="relative px-[9.4%] py-[clamp(56px,12vw,88px)] lg:hidden">
           <img src="/images/footer_background.png" alt="" className="absolute inset-0 h-full w-full object-cover object-center" />
 
           <div className="relative z-10 flex flex-col">
@@ -51,24 +51,24 @@ const Footer = () => {
 
               <div className="flex items-center gap-[clamp(10px,3vw,16px)]">
                 <a href="https://www.instagram.com/pnu.dt.16/" target="_blank" rel="noreferrer" aria-label="인스타그램">
-                  <img src="/images/icon/instagram.png" alt="" className="h-9 w-9 object-contain" />
+                  <img src="/images/icon/instagram.svg" alt="" className="h-9 w-9 object-contain" />
                 </a>
 
                 <a href="https://www.youtube.com/@pnudt" target="_blank" rel="noreferrer" aria-label="유튜브">
-                  <img src="/images/icon/youtube.png" alt="" className="h-9 w-9 object-contain" />
+                  <img src="/images/icon/youtube.svg" alt="" className="h-9 w-9 object-contain" />
                 </a>
               </div>
             </div>
 
-            <div className="mt-[clamp(36px,7vw,56px)] md:mt-10">
-              <div className="text-[10px] leading-[1.45]">
+            <div className="mt-16 md:mt-10">
+              <div className="whitespace-nowrap text-[9.5px]">
                 <p className="font-light">부산대학교 디자인학과 디자인앤테크놀로지 전공 17회 졸업전시</p>
                 <p className="font-light">Dept. of Design, Design and Technology 17th Graduation Show</p><br/>
                 <p className="font-medium text-[#CBD0D7]">본 사이트는 2026 졸업논문을 대체합니다.</p>
                 <p className="font-medium text-[#CBD0D7]">©2026 Pusan National University Design&amp;Technology all rights reserved.</p>
               </div>
 
-              <div className="mt-[clamp(16px,4vw,24px)] flex flex-col items-start gap-[clamp(8px,2.5vw,12px)] text-[10px] sm:text-[11px]">
+              <div className="mt-8 flex flex-col items-start gap-[clamp(8px,2.5vw,12px)] text-[10px] sm:text-[11px]">
                 <a href="https://design.pusan.ac.kr/" target="_blank" rel="noreferrer" className="group flex items-center gap-2">
                   <img src="/images/icon/pnu_logo.png" alt="" className="h-4 w-4 flex-shrink-0 object-contain" />
                   <span className="border-b border-[#CBD0D7] text-[#CBD0D7] group-hover:font-semibold group-focus-visible:font-semibold group-active:font-semibold">부산대학교 디자인학과 공식 홈페이지</span>

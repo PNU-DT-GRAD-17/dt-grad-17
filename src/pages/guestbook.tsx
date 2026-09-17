@@ -604,7 +604,7 @@ export default function Guestbook() {
         제17회 졸업전시회를 찾아주신 여러분께 진심으로 감사드립니다!
       </span>
       {/* 상단 오브제 영역 */}
-      <section className="min-h-[600px] pt-16">
+      <section className="hidden min-h-[600px] pt-16 md:block">
         <div
           ref={objectsContainerRef}
           className="relative mx-auto h-[520px] max-w-[1280px]"
@@ -942,7 +942,7 @@ export default function Guestbook() {
     </section>
     <div
       ref={objectTooltipRef}
-      className="pointer-events-none fixed left-0 top-0 z-[9999] whitespace-nowrap bg-[#000101] px-2 py-1 text-sm font-bold text-white opacity-0 transition-none will-change-transform"
+      className="pointer-events-none fixed left-0 top-0 z-[9999] hidden whitespace-nowrap bg-[#000101] px-2 py-1 text-sm font-bold text-white opacity-0 transition-none will-change-transform md:block"
       aria-hidden="true"
     />
     <button
