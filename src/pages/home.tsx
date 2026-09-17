@@ -11,7 +11,12 @@ import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
 import KakaoMap from "../components/KakaoMap";
 import { designers } from "../data/designers";
-import { motion, type Variants } from "framer-motion";
+import {
+  motion,
+  useAnimationControls,
+  useInView,
+  type Variants,
+} from "framer-motion";
 
 type Position = { x: number; y: number };
 type Size = { width: number; height: number };
@@ -21,8 +26,11 @@ type BannerObject = {
   file: string;
   x: number;
   y: number;
+  mobileX: number;
+  mobileY: number;
   rotate: number;
   scale: number;
+  mobileScale: number;
 };
 
 const ASSET_ROOT = "/images/main_banner";
@@ -137,19 +145,107 @@ const getYoutubeEmbedUrl = (url: string) => {
 };
 
 const BANNER_OBJECTS: BannerObject[] = [
-  { id: "key", file: "dp.png", x: 20, y: 28, rotate: 0, scale: 1.3 },
-  { id: "spider-web", file: "web.png", x: 90, y: 16, rotate: 0, scale: 1.2 },
-  { id: "flower", file: "branding.png", x: 8, y: 84, rotate: 0, scale: 1.2 },
-  { id: "hourglass", file: "opening.png", x: 72, y: 70, rotate: 10, scale: 1.2 },
-  { id: "logo", file: "logo.png", x: 49, y: 50, rotate: 0, scale: 1.2 },
+  {
+    id: "key",
+    file: "dp.png",
+    x: 18,
+    y: 28,
+    mobileX: 16,
+    mobileY: 18,
+    rotate: -10,
+    scale: 1.5,
+    mobileScale: 1.6,
+  },
+  {
+    id: "spider-web",
+    file: "web.png",
+    x: 90,
+    y: 16,
+    mobileX: 80,
+    mobileY: 10,
+    rotate: 0,
+    scale: 1.3,
+    mobileScale: 1.4,
+  },
+  {
+    id: "flower",
+    file: "branding.png",
+    x: 8,
+    y: 84,
+    mobileX: 18,
+    mobileY: 86,
+    rotate: 0,
+    scale: 1.3,
+    mobileScale: 1.2,
+  },
+  {
+    id: "hourglass",
+    file: "opening.png",
+    x: 74,
+    y: 70,
+    mobileX: 90,
+    mobileY: 76,
+    rotate: 15,
+    scale: 1.4,
+    mobileScale: 1.6,
+  },
+  {
+    id: "logo",
+    file: "logo.png",
+    x: 49,
+    y: 50,
+    mobileX: 49,
+    mobileY: 50,
+    rotate: 0,
+    scale: 1.2,
+    mobileScale: 1.2,
+  },
 ];
 
-const getObjectSize = (sceneWidth: number) =>
-  Math.min(462, Math.max(264, sceneWidth * 0.28));
+const MOBILE_BREAKPOINT = 640;
+
+const getObjectSize = (sceneWidth: number, objectId: string) => {
+  if (sceneWidth < MOBILE_BREAKPOINT && objectId !== "logo") {
+    return Math.min(230, Math.max(180, sceneWidth * 0.5));
+  }
+
+  return Math.min(462, Math.max(264, sceneWidth * 0.28));
+};
+
+const getObjectPosition = (
+  object: BannerObject,
+  sceneWidth: number,
+): Position => {
+  const isMobile = sceneWidth < MOBILE_BREAKPOINT;
+
+  return {
+    x: isMobile ? object.mobileX : object.x,
+    y: isMobile ? object.mobileY : object.y,
+  };
+};
+
+const getObjectScale = (object: BannerObject, sceneWidth: number) =>
+  sceneWidth < MOBILE_BREAKPOINT ? object.mobileScale : object.scale;
 
 const getCursorSize = (sceneWidth: number): Size => {
   const width = Math.min(509, Math.max(270, sceneWidth * 0.31)) * CURSOR_IMAGE_SCALE;
   return { width, height: width * CURSOR_ASPECT_RATIO };
+};
+
+const useReplayableInViewAnimation = <T extends Element>(amount: number) => {
+  const ref = useRef<T>(null);
+  const controls = useAnimationControls();
+  const isInView = useInView(ref, { amount });
+
+  useEffect(() => {
+    if (!isInView) return;
+
+    controls.stop();
+    controls.set("hidden");
+    void controls.start("visible");
+  }, [controls, isInView]);
+
+  return { ref, controls };
 };
 
 const getSmoothPathPosition = (points: Position[], progress: number): Position => {
@@ -244,23 +340,32 @@ const eraseCanvasBetween = (
   }
 };
 
-function ObjectLayer({ color }: { color: boolean }) {
+function ObjectLayer({ color, sceneWidth }: { color: boolean; sceneWidth: number }) {
   return (
     <div className="absolute inset-0">
-      {BANNER_OBJECTS.map((object) => (
-        <img
-          key={object.id}
-          src={`${ASSET_ROOT}/${color ? "color" : "black"}/${object.file}`}
-          alt=""
-          draggable={false}
-          className="absolute aspect-square w-[clamp(264px,28vw,462px)] max-w-none object-contain select-none"
-          style={{
-            left: `${object.x}%`,
-            top: `${object.y}%`,
-            transform: `translate(-50%, -50%) rotate(${object.rotate}deg) scale(${object.scale})`,
-          }}
-        />
-      ))}
+      {BANNER_OBJECTS.map((object) => {
+        const position = getObjectPosition(object, sceneWidth);
+        const scale = getObjectScale(object, sceneWidth);
+
+        return (
+          <img
+            key={object.id}
+            src={`${ASSET_ROOT}/${color ? "color" : "black"}/${object.file}`}
+            alt=""
+            draggable={false}
+            className={`absolute aspect-square max-w-none object-contain select-none ${
+              object.id === "logo"
+                ? "w-[clamp(264px,28vw,462px)]"
+                : "w-[clamp(180px,50vw,230px)] sm:w-[clamp(264px,28vw,462px)]"
+            }`}
+            style={{
+              left: `${position.x}%`,
+              top: `${position.y}%`,
+              transform: `translate(-50%, -50%) rotate(${object.rotate}deg) scale(${scale})`,
+            }}
+          />
+        );
+      })}
     </div>
   );
 }
@@ -285,6 +390,22 @@ function Home() {
   const [showIntroClickIcon, setShowIntroClickIcon] = useState(true);
   const [isScrollCueHovered, setIsScrollCueHovered] = useState(false);
   const [cursorScale, setCursorScale] = useState(1);
+  const {
+    ref: overviewAnimationRef,
+    controls: overviewAnimationControls,
+  } = useReplayableInViewAnimation<HTMLParagraphElement>(0.4);
+  const {
+    ref: offlineAnimationRef,
+    controls: offlineAnimationControls,
+  } = useReplayableInViewAnimation<HTMLDivElement>(0.4);
+  const {
+    ref: professorAnimationRef,
+    controls: professorAnimationControls,
+  } = useReplayableInViewAnimation<HTMLDivElement>(0.2);
+  const bannerLayoutSignature = BANNER_OBJECTS.map(
+    ({ id, x, y, mobileX, mobileY, rotate, scale, mobileScale }) =>
+      `${id}:${x}:${y}:${mobileX}:${mobileY}:${rotate}:${scale}:${mobileScale}`,
+  ).join("|");
   const openingEmbedUrl = getYoutubeEmbedUrl(OPENING_YOUTUBE_URL);
 
   const baseCursorSize = getCursorSize(sceneSize.width);
@@ -435,12 +556,17 @@ function Home() {
       context.clearRect(0, 0, rect.width, rect.height);
       context.globalAlpha = 1;
 
-      const objectSize = getObjectSize(rect.width);
       images.forEach(({ image, object }) => {
         if (!image.naturalWidth) return;
-        const size = objectSize * object.scale;
+        const objectSize = getObjectSize(rect.width, object.id);
+        const position = getObjectPosition(object, rect.width);
+        const scale = getObjectScale(object, rect.width);
+        const size = objectSize * scale;
         context.save();
-        context.translate((rect.width * object.x) / 100, (rect.height * object.y) / 100);
+        context.translate(
+          (rect.width * position.x) / 100,
+          (rect.height * position.y) / 100,
+        );
         context.rotate((object.rotate * Math.PI) / 180);
         context.drawImage(image, -size / 2, -size / 2, size, size);
         context.restore();
@@ -464,13 +590,14 @@ function Home() {
       }
 
       const baseSize = getCursorSize(rect.width);
+      const logoPosition = getObjectPosition(logo, rect.width);
       const eraseSize = {
         width: baseSize.width * DRAG_CURSOR_SCALE,
         height: baseSize.height * DRAG_CURSOR_SCALE,
       };
       const logoCenter = {
-        x: (rect.width * logo.x) / 100,
-        y: (rect.height * logo.y) / 100,
+        x: (rect.width * logoPosition.x) / 100,
+        y: (rect.height * logoPosition.y) / 100,
       };
       const erasePath = [
         { x: 0, y: 0 },
@@ -647,7 +774,7 @@ function Home() {
       resizeObserver.disconnect();
       visibilityObserver.disconnect();
     };
-  }, []);
+  }, [bannerLayoutSignature]);
 
   const eraseBetween = (from: Position, to: Position) => {
     const canvas = blackCanvasRef.current;
@@ -807,7 +934,7 @@ function Home() {
             className="pointer-events-none absolute inset-0 z-30"
             style={revealMaskStyle}
           >
-            <ObjectLayer color />
+            <ObjectLayer color sceneWidth={sceneSize.width} />
           </div>
         )}
 
@@ -834,36 +961,36 @@ function Home() {
         className="relative flex min-h-[calc(100svh-var(--header-height))] scroll-mt-[var(--header-height)] flex-col items-center justify-center px-6 py-20 text-center"
       >
         <div className="mx-auto max-w-[1100px]">
-          <h2 className="text-[clamp(28px,2.4vw,32px)] font-semibold text-[#000101]">
+          <h2 className="text-[clamp(24px,2.4vw,32px)] font-semibold text-[#000101]">
             전시 개요
           </h2>
 
           <motion.p
-            className="mt-16 text-[clamp(16px,1.7vw,20px)] text-[#000101] font-regular leading-[1.5] tracking-[-0.02em]"
+            ref={overviewAnimationRef}
+            className="mt-12 text-[clamp(17px,1.7vw,20px)] px-[clamp(4px,1.5vw,20px)] text-[#000101] font-medium md:font-regular leading-[1.7]"
             variants={container}
             initial="hidden"
-            whileInView="visible"
-            viewport={{ once: false, amount: 0.4 }} // 화면에 40% 보이면 실행
+            animate={overviewAnimationControls}
           >
             <motion.span variants={item} className="block">
               사라짐으로부터 발생되는 ‘잔향’은 우리에게 다음과 같은 질문들을 던진다.
             </motion.span>
 
-            <motion.span variants={item} className="block mt-6 md:mt-8">
+            <motion.span variants={item} className="block mt-10 md:mt-8">
               우리는 무엇을 남길 것인가.
-              <br className="hidden md:block" />
+              <br />
               우리는 무엇을 기억할 것인가.
             </motion.span>
 
-            <motion.span variants={item} className="block mt-6 md:mt-8">
+            <motion.span variants={item} className="block mt-10 md:mt-8">
               이번 전시를 준비하며 사라짐이 남기는 울림을 각자의 시선으로 해석하고, 그 자취를 오브제로 표현하였다.
             </motion.span>
 
-            <motion.span variants={item} className="block mt-6 md:mt-8">
+            <motion.span variants={item} className="block mt-10 md:mt-8">
               본 전시는 마지막과 처음의 경계에서 우리가 마주한 잔향의 의미를 선보인다.
             </motion.span>
 
-            <motion.span variants={item} className="block mt-6 md:mt-8">
+            <motion.span variants={item} className="block mt-10 md:mt-8">
               지금 나는 어떤 마지막과 처음 위에 서있는가.
             </motion.span>
           </motion.p>
@@ -873,13 +1000,13 @@ function Home() {
 
       <section
         id="opening"
-        className="scroll-mt-[var(--header-height)] px-6 py-[clamp(64px,8vw,120px)] sm:px-10 lg:px-[clamp(80px,13vw,200px)]"
+        className="scroll-mt-[var(--header-height)] px-6 pt-[160px] pb-[200px] sm:px-10 sm:py-[clamp(64px,8vw,120px)] lg:px-[clamp(80px,13vw,200px)]"
       >
-        <h2 className="text-center text-[clamp(28px,2.4vw,32px)] font-semibold text-[#000101]">
+        <h2 className="text-center text-[clamp(24px,2.4vw,32px)] font-semibold text-[#000101]">
           OPENING
         </h2>
 
-        <div className="mx-auto mt-16 aspect-video w-full max-w-[1300px] overflow-hidden bg-[#d9d9d9]">
+        <div className="mx-auto mt-12 aspect-video w-full max-w-[1300px] overflow-hidden bg-[#d9d9d9]">
           {openingEmbedUrl ? (
             <iframe
               className="h-full w-full"
@@ -901,11 +1028,11 @@ function Home() {
         aria-labelledby="exhibition-members-title"
         className="px-6 pb-[clamp(96px,12vw,180px)] pt-[clamp(48px,7vw,100px)] sm:px-10 lg:px-[clamp(80px,10vw,160px)] text-[#000101]"
       >
-        <h2 className="text-center text-[clamp(28px,2.4vw,32px)] font-semibold">
+        <h2 className="text-center text-[clamp(24px,2.4vw,32px)] font-semibold">
             전시 인원 소개
           </h2>
 
-        <div className="mx-auto mt-16 grid w-full max-w-[1280px] gap-10 xl:grid-cols-[minmax(0,1.05fr)_minmax(420px,0.95fr)] xl:items-center xl:gap-[clamp(56px,7vw,112px)]">
+        <div className="mx-auto mt-[clamp(24px,7vw,100px)] grid w-full max-w-[1280px] gap-10 xl:grid-cols-[minmax(0,1.05fr)_minmax(420px,0.95fr)] xl:items-center xl:gap-[clamp(56px,7vw,112px)]">
           <div className="aspect-[3/2] min-w-0 w-full overflow-hidden">
             <img
               src="/images/footer_background.png"
@@ -920,7 +1047,7 @@ function Home() {
                 key={group.label}
                 className="grid grid-cols-[92px_1fr] items-center gap-4 py-3 sm:grid-cols-[120px_1fr] sm:gap-7 sm:py-3"
               >
-                <h3 className="text-base text-[18px] font-bold leading-none text-[#000101]">
+                <h3 className="text-base text-[clamp(16px,1.4vw,18px)] font-bold leading-none text-[#000101]">
                   {group.label}
                 </h3>
                 <ul className="grid min-w-0 w-full list-none grid-cols-5 items-center p-0">
@@ -932,7 +1059,7 @@ function Home() {
                       <li key={`${group.label}-${name}`} className="min-w-0 whitespace-nowrap">
                         <Link
                           to={`/designer/${designer.id}`}
-                          className="exhibition-member-link inline-flex items-center text-[clamp(12px,1.5vw,18px)] font-medium tracking-[-0.035em] text-[#000101]"
+                          className="exhibition-member-link inline-flex items-center text-[clamp(16px,1.4vw,18px)] font-medium tracking-[-0.035em] text-[#000101]"
                           aria-label={`${name} 디자이너 상세 페이지로 이동`}
                         >
                           <span>{name}</span>
@@ -961,25 +1088,25 @@ function Home() {
         <div className="mx-auto mt-16 grid w-full max-w-[1080px] lg:items-end gap-12 lg:grid-cols-2 lg:gap-20">
           <div className="w-full max-w-[500px] min-w-0 justify-self-center">
             <motion.div
+              ref={offlineAnimationRef}
               className="text-[clamp(13px,1.15vw,16px)] text-[#000101]"
               variants={container}
               initial="hidden"
-              whileInView="visible"
-              viewport={{ once: false, amount: 0.4 }}
+              animate={offlineAnimationControls}
             >
               <motion.div variants={item} className="pb-6">
-                <h3 className="font-semibold text-[20px]">부산디자인진흥원 1층 전시실</h3>
+                <h3 className="font-semibold text-[clamp(18px,1.4vw,20px)]">부산디자인진흥원 1층 전시실</h3>
                 <p className="mt-2 leading-relaxed">부산광역시 해운대구 센텀동로 57</p>
               </motion.div>
 
               <motion.div variants={item} className="py-6">
-                <h3 className="font-semibold text-[20px]">DESIGN CENTER BUSAN 1F Exhibition Hall</h3>
+                <h3 className="font-semibold text-[clamp(16px,1.4vw,20px)]">DESIGN CENTER BUSAN 1F Exhibition Hall</h3>
                 <p className="mt-2 leading-relaxed">57, Centum dong-ro, Haeundae-gu, Busan</p>
               </motion.div>
 
               <motion.div variants={item} className="pt-6">
-                <p className="font-semibold text-[20px]">2026.11.06(FRI) - 11.08(SUN)</p>
-                <p className="mt-2">10AM - 6PM</p>
+                <p className="font-semibold text-[clamp(18px,1.4vw,20px)] text-[#0072C1]">2026.11.06(FRI) - 11.08(SUN)</p>
+                <p className="mt-2 text-[#0072C1]">10AM - 6PM</p>
               </motion.div>
             </motion.div>
           </div>
@@ -1002,11 +1129,11 @@ function Home() {
         </h2>
 
         <motion.div
+          ref={professorAnimationRef}
           className="mx-auto mt-16 grid w-full max-w-[1200px] grid-cols-1 gap-x-[clamp(28px,4vw,72px)] gap-y-16 sm:grid-cols-2 xl:grid-cols-4"
           variants={professorContainer}
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false, amount: 0.2 }}
+          animate={professorAnimationControls}
         >
           {PROFESSORS.map((professor) => (
             <motion.article
