@@ -1,4 +1,10 @@
+import { Link } from "react-router-dom";
+
 const Footer = () => {
+  const handleLogoClick = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <div className="relative z-10 w-full shadow-[0_-8px_30px_rgba(53,73,98,0.18)]">
       <footer className="relative w-full overflow-hidden text-[#fff]">
@@ -7,7 +13,9 @@ const Footer = () => {
           <img src="/images/footer_background.png" alt="" className="absolute inset-0 h-full w-full object-cover object-center" />
 
           <div className="absolute inset-x-[9.4%] inset-y-[15%] z-10 xl:inset-y-[17%]">
-            <img src="/images/footer_logo.png" alt="잔향" className="absolute left-0 top-0 h-auto w-[12.3%] object-contain" />
+            <Link to="/" onClick={handleLogoClick} aria-label="홈으로 이동" className="absolute left-0 top-0 w-[12.3%]">
+              <img src="/images/footer_logo.png" alt="잔향" className="h-auto w-full object-contain" />
+            </Link>
 
             <div className="absolute right-0 top-0 flex items-center gap-[1.8vw]">
               <a href="https://www.instagram.com/pnu.dt.16/" target="_blank" rel="noreferrer" aria-label="인스타그램" className="transition-transform duration-200 hover:scale-105">
@@ -47,7 +55,9 @@ const Footer = () => {
 
           <div className="relative z-10 flex flex-col">
             <div className="flex items-start justify-between">
-              <img src="/images/footer_logo.png" alt="잔향" className="w-[120px] object-contain" />
+              <Link to="/" onClick={handleLogoClick} aria-label="홈으로 이동">
+                <img src="/images/footer_logo.png" alt="잔향" className="w-[120px] object-contain" />
+              </Link>
 
               <div className="flex items-center gap-[clamp(10px,3vw,16px)]">
                 <a href="https://www.instagram.com/pnu.dt.16/" target="_blank" rel="noreferrer" aria-label="인스타그램">

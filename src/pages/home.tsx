@@ -1085,7 +1085,7 @@ function Home() {
           오프라인 정보
         </h2>
 
-        <div className="mx-auto mt-16 grid w-full max-w-[1080px] lg:items-end gap-12 lg:grid-cols-2 lg:gap-20">
+        <div className="mx-auto mt-12 md:mt-16 md:mt-16 grid w-full max-w-[1080px] lg:items-end gap-12 lg:grid-cols-2 lg:gap-20">
           <div className="w-full max-w-[500px] min-w-0 justify-self-center">
             <motion.div
               ref={offlineAnimationRef}
@@ -1141,7 +1141,7 @@ function Home() {
               variants={professorItem}
               className="min-w-0 text-center"
             >
-              <div className="mx-auto aspect-[2/3] w-full max-w-[260px] overflow-hidden">
+              <div className="mx-auto aspect-[2/3] w-full max-w-[200px] overflow-hidden sm:max-w-[260px]">
                 <img
                   src={professor.image}
                   alt={`${professor.name} 사진`}
@@ -1150,10 +1150,10 @@ function Home() {
                   className="h-full w-full object-cover"
                 />
               </div>
-              <h3 className="mt-[clamp(28px,3vw,32px)] text-[26px] font-semibold text-[#000101]">
+              <h3 className="mt-[clamp(28px,3vw,36px)] text-[clamp(24px,2.5vw,26px)] font-semibold text-[#000101]">
                 {professor.name}
               </h3>
-              <p className="mt-[12px] text-[18px] font-medium text-[#888A96]">
+              <p className="mt-[clamp(8px,2vw,12px)] text-[clamp(16px,2vw,18px)] font-medium text-[#888A96]">
                 {professor.field}
               </p>
             </motion.article>

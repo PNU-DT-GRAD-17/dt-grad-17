@@ -172,6 +172,14 @@ export default function Guestbook() {
     useState(false);
 
   const [
+    isMobileComposerOpen,
+    setIsMobileComposerOpen,
+  ] = useState(false);
+
+  const mobileMessageRef =
+    useRef<HTMLTextAreaElement>(null);
+
+  const [
     randomPlaceholderName,
     setRandomPlaceholderName,
   ] = useState(getRandomName());
@@ -407,16 +415,40 @@ export default function Guestbook() {
         return;
       }
 
+      const isMobile = window.matchMedia(
+        "(max-width: 767px)"
+      ).matches;
+
+      const firstCard =
+        cardsSection.querySelector<HTMLElement>("li");
+
+      const cardsSectionTop =
+        cardsSection.getBoundingClientRect().top +
+        window.scrollY;
+
       /*
-       * 방명록 카드 영역이 화면 아래쪽에
-       * 들어오기 시작하는 위치입니다.
+       * 모바일에서는 카드 약 1.5개를 지난 뒤,
+       * 웹에서는 기존 위치에서 버튼을 표시합니다.
        */
-      const showButtonPosition =
-        cardsSection.offsetTop -
-        window.innerHeight * 1;
+      const showButtonPosition = isMobile
+        ? cardsSectionTop +
+          (firstCard?.offsetHeight ??
+            window.innerHeight * 0.6) *
+            1.5
+        : cardsSection.offsetTop -
+          window.innerHeight * 1;
+
+      /*
+       * 계산된 카드 위치와 별개로 페이지 상단에서는
+       * 버튼이 절대 나타나지 않도록 최소 스크롤 거리를 둡니다.
+       */
+      const minimumScrollPosition = isMobile
+        ? Math.max(window.innerHeight * 0.75, 320)
+        : 120;
 
       setIsGoTopVisible(
-        window.scrollY >= showButtonPosition
+        window.scrollY >= showButtonPosition &&
+        window.scrollY >= minimumScrollPosition
       );
     };
 
@@ -448,12 +480,14 @@ export default function Guestbook() {
         handleScroll
       );
     };
-  }, []);
+  }, [messages.length]);
 
   /*
    * 페이지 맨 위로 이동합니다.
    */
   const handleGoToTop = () => {
+    setIsGoTopVisible(false);
+
     window.scrollTo({
       top: 0,
       behavior: "smooth",
@@ -461,6 +495,42 @@ export default function Guestbook() {
   };
   
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
+
+  /*
+   * 모바일에서는 하단 작성 버튼을 누르면
+   * 엽서 입력 폼을 바텀 시트로 엽니다.
+   */
+  useEffect(() => {
+    if (
+      !isMobileComposerOpen ||
+      window.matchMedia("(min-width: 768px)").matches
+    ) {
+      return;
+    }
+
+    const previousOverflow =
+      document.body.style.overflow;
+
+    document.body.style.overflow = "hidden";
+
+    const focusFrame = window.requestAnimationFrame(
+      () => mobileMessageRef.current?.focus()
+    );
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsMobileComposerOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.cancelAnimationFrame(focusFrame);
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isMobileComposerOpen]);
 
   /*
    * 상단 방명록 확인 필터
@@ -489,6 +559,10 @@ export default function Guestbook() {
    * 작성 엽서가 보이는 위치로 이동합니다.
    */
   const handleMessageClick = () => {
+    if (!window.matchMedia("(min-width: 768px)").matches) {
+      return;
+    }
+
     guestbookFormRef.current?.scrollIntoView({
       behavior: "smooth",
       block: "start",
@@ -548,6 +622,8 @@ export default function Guestbook() {
       setRandomPlaceholderName(
         getRandomName()
       );
+
+      setIsMobileComposerOpen(false);
     } catch (error) {
       console.error(
         "방명록 작성 오류:",
@@ -599,79 +675,105 @@ export default function Guestbook() {
     {/* <div className="text-2xl font-semibold text-center py-4">
       감사합니다!
     </div> */}
-    <section className="mx-auto w-full max-w-[1440px] px-8 pb-24">
-      <span className="text-lg font-medium text-[#6A6A6A] text-center block mt-20">
-        제17회 졸업전시회를 찾아주신 여러분께 진심으로 감사드립니다!
-      </span>
-      {/* 상단 오브제 영역 */}
-      <section className="hidden min-h-[600px] pt-16 md:block">
-        <div
-          ref={objectsContainerRef}
-          className="relative mx-auto h-[520px] max-w-[1280px]"
-        >
-          {orderedDesigners.map((designer, index) => {
-            const is000Image =
-              designer.objectImage
-                .split("?")[0]
-                .endsWith("/000.png");
+    <section className="mx-auto w-full max-w-[1440px] px-4 pb-36 md:px-8 md:pb-24">
+      <div className="contents">
+        <span className="mt-8 block text-center text-lg font-medium text-[#6A6A6A] md:mt-20">
+          제17회 졸업전시회를 찾아주신 여러분께
+          <br className="md:hidden" />{" "}
+          진심으로 감사드립니다!
+        </span>
+        {/* 상단 오브제 영역 */}
+        <section className="hidden min-h-[600px] pt-16 md:block">
+          <div
+            ref={objectsContainerRef}
+            className="relative mx-auto h-[520px] max-w-[1280px]"
+          >
+            {orderedDesigners.map((designer, index) => {
+              const is000Image =
+                designer.objectImage
+                  .split("?")[0]
+                  .endsWith("/000.png");
 
-            const objectScale = is000Image ? 1.7 : 1.4;
-            const isSelected =
-              formToId === designer.id;
-            
-            return (
-              <button
-                key={designer.id}
-                type="button"
-                onClick={() =>
-                  handleObjectClick(designer.id)
-                }
-                data-object-name={designer.name}
-                aria-label={`${designer.name} 선택`}
-                className={`group absolute flex items-center justify-center border-0 bg-transparent p-0
-                  ${
-                    isSelected
-                      ? ""
-                      : "mix-blend-hard-light"
+              const objectScale = is000Image ? 1.7 : 1.4;
+              const isSelected =
+                formToId === designer.id;
+
+              return (
+                <button
+                  key={designer.id}
+                  type="button"
+                  onClick={() =>
+                    handleObjectClick(designer.id)
                   }
-                `}
-                style={{
-                  left: `${objectLayouts[index]?.left ?? 50}%`,
-                  top: `${objectLayouts[index]?.top ?? 50}%`,
-                  width: `${110 * objectScale}px`,
-                  height: `${110 * objectScale}px`,
-                  transform: "translate(-50%, -50%)",
-                }}
-              >
-                <img
-                  src={
-                    isSelected
-                      ? designer.selectedObjectImage
-                      : designer.objectImage
-                  }
-                  alt={`${designer.name} 오브제`}
-                  className={`
-                    pointer-events-none h-full w-full object-contain
-                    transition-transform duration-200
-                    group-hover:scale-110
+                  data-object-name={designer.name}
+                  aria-label={`${designer.name} 선택`}
+                  className={`group absolute flex items-center justify-center border-0 bg-transparent p-0
+                    ${
+                      isSelected
+                        ? ""
+                        : "mix-blend-hard-light"
+                    }
                   `}
-                />
-              </button>
-            );
-          })}
-        </div>
-      </section>
+                  style={{
+                    left: `${objectLayouts[index]?.left ?? 50}%`,
+                    top: `${objectLayouts[index]?.top ?? 50}%`,
+                    width: `${110 * objectScale}px`,
+                    height: `${110 * objectScale}px`,
+                    transform: "translate(-50%, -50%)",
+                  }}
+                >
+                  <img
+                    src={
+                      isSelected
+                        ? designer.selectedObjectImage
+                        : designer.objectImage
+                    }
+                    alt={`${designer.name} 오브제`}
+                    className={`
+                      pointer-events-none h-full w-full object-contain
+                      transition-transform duration-200
+                      group-hover:scale-110
+                    `}
+                  />
+                </button>
+              );
+            })}
+          </div>
+        </section>
 
-      {/* 작성 폼 */}
-      <section ref={guestbookFormRef}
-        className="mb-20 scroll-mt-48 border border-[#BCBCBC] bg-[#f9f9f9] p-8">
-        <form
-          onSubmit={handleSubmit}
-          className="grid min-h-[360px] grid-cols-1 md:grid-cols-[420px_1fr]"
+        {/* 작성 폼 */}
+        <section
+          ref={guestbookFormRef}
+          role={isMobileComposerOpen ? "dialog" : undefined}
+          aria-modal={isMobileComposerOpen ? true : undefined}
+          aria-label={isMobileComposerOpen ? "방명록 작성" : undefined}
+          className={`${
+            isMobileComposerOpen
+              ? "fixed inset-x-0 bottom-0 z-40 block max-h-[calc(100dvh-72px)] overflow-y-auto rounded-t-2xl"
+              : "hidden"
+          } scroll-mt-48 border border-[#BCBCBC] bg-[#f9f9f9] p-4 md:static md:z-auto md:mb-20 md:block md:max-h-none md:overflow-visible md:rounded-none md:p-8`}
         >
+          <div className="mb-3 flex items-center justify-between md:hidden">
+            <p className="text-lg font-semibold">방명록 남기기</p>
+            <button
+              type="button"
+              onClick={() => {
+                setIsMobileComposerOpen(false);
+                setIsRecipientDropdownOpen(false);
+              }}
+              aria-label="방명록 작성 닫기"
+              className="flex h-9 w-9 items-center justify-center text-2xl leading-none"
+            >
+              ×
+            </button>
+          </div>
+          <form
+            onSubmit={handleSubmit}
+            className="grid grid-cols-1 md:min-h-[360px] md:grid-cols-[420px_1fr]"
+          >
           {/* 왼쪽 */}
-          <div className="border-b border-[#BCBCBC] pr-16 p-8 md:border-b-0 md:border-r">
-            <div className="mb-6 grid grid-cols-[70px_1fr] items-center gap-4">
+          <div className="border-b border-[#BCBCBC] p-3 md:border-b-0 md:border-r md:p-8 md:pr-16">
+            <div className="mb-3 grid grid-cols-[56px_1fr] items-center gap-2 md:mb-6 md:grid-cols-[70px_1fr] md:gap-4">
               <p className="text-lg font-semibold">
                 TO. 
               </p>
@@ -685,7 +787,7 @@ export default function Guestbook() {
                   }
                   aria-haspopup="listbox"
                   aria-expanded={isRecipientDropdownOpen}
-                  className={`flex w-full items-center justify-between border-b border-neutral-300 bg-transparent px-2 py-3 text-left text-lg font-semibold outline-none ${
+                  className={`flex w-full items-center justify-between border-b border-neutral-300 bg-transparent px-2 py-2 text-left text-lg font-semibold outline-none md:py-3 ${
                     formToId === "all"
                       ? "text-neutral-900"
                       : "text-[#45BFE6]"
@@ -745,7 +847,7 @@ export default function Guestbook() {
                 )}
               </div>
             </div>
-            <div className="mb-8 grid grid-cols-[70px_1fr] items-center gap-4">
+            <div className="mb-3 grid grid-cols-[56px_1fr] items-center gap-2 md:mb-8 md:grid-cols-[70px_1fr] md:gap-4">
               <p className="text-lg font-semibold text-[#000101]">
                 FROM.
               </p>
@@ -756,11 +858,11 @@ export default function Guestbook() {
                   setFrom(event.target.value)
                 }
                 placeholder={randomPlaceholderName}
-                className="border-b border-neutral-300 bg-transparent px-2 py-3 outline-none text-lg font-semibold placeholder:text-lg placeholder:text-[#bcbcbc] placeholder:font-medium"
+                className="min-w-0 w-full border-b border-neutral-300 bg-transparent px-2 py-2 text-lg font-semibold outline-none placeholder:text-lg placeholder:font-medium placeholder:text-[#bcbcbc] md:py-3"
               />
             </div>
 
-            <div className="relative h-[130px] w-[105px] mt-12">
+            <div className="relative mt-2 h-20 w-16 md:mt-12 md:h-[130px] md:w-[105px]">
               <img
                 src="/images/stamp-frame.png"
                 alt="우표 프레임"
@@ -777,15 +879,20 @@ export default function Guestbook() {
           </div>
 
           {/* 오른쪽 */}
-          <div className="flex flex-col pl-12 pb-4 pr-4 pt-8">
+          <div className="flex flex-col p-3 md:pb-4 md:pl-12 md:pr-4 md:pt-8">
             <textarea
+              ref={mobileMessageRef}
               value={message}
               onChange={(event) =>
                 setMessage(event.target.value)
               }
               onClick={handleMessageClick}
-              placeholder="상단의 오브젝트를 선택하여 응원의 한마디를 남겨주세요."
-              className="min-h-[220px] flex-1 resize-none bg-transparent text-medium outline-none placeholder:text-neutral-300"
+              placeholder={
+                isMobileComposerOpen
+                  ? "응원의 한마디를 남겨주세요."
+                  : "상단의 오브젝트를 선택하여 응원의 한마디를 남겨주세요."
+              }
+              className="min-h-[120px] flex-1 resize-none bg-transparent text-medium outline-none placeholder:text-neutral-300 md:min-h-[220px]"
             />
 
             <div className="flex justify-end">
@@ -800,12 +907,13 @@ export default function Guestbook() {
               </button>
             </div>
           </div>
-        </form>
-      </section>
+          </form>
+        </section>
+      </div>
 
       {/* 필터 */}
-      <section className="mb-10">
-        <div className="relative w-[160px]">
+      <section className="mt-10 mb-10 md:mt-0">
+        <div className="relative w-full md:w-[160px]">
           <button
             type="button"
             onClick={() =>
@@ -815,7 +923,7 @@ export default function Guestbook() {
             }
             aria-haspopup="listbox"
             aria-expanded={isFilterDropdownOpen}
-            className="flex w-full items-center justify-between border-b border-[#000101] bg-transparent px-2 py-3 text-left text-lg font-semibold text-neutral-900 outline-none"
+            className="flex w-full items-center justify-between border-b border-[#000101] bg-transparent px-6 py-3 text-left text-lg font-semibold text-neutral-900 outline-none md:px-2"
           >
             <span>
               {designers.find(
@@ -861,7 +969,7 @@ export default function Guestbook() {
                           false
                         );
                       }}
-                      className="block w-full bg-white px-4 py-3 text-left text-md font-medium leading-none text-[#000101] hover:bg-[#DFDFDF]"
+                      className="block w-full bg-white px-6 py-3 text-left text-md font-medium leading-none text-[#000101] hover:bg-[#DFDFDF] md:px-4"
                     >
                       {designer.name}
                     </button>
@@ -940,6 +1048,33 @@ export default function Guestbook() {
       )}
     </section>
     </section>
+    {isMobileComposerOpen ? (
+      <button
+        type="button"
+        onClick={() => {
+          setIsMobileComposerOpen(false);
+          setIsRecipientDropdownOpen(false);
+        }}
+        aria-label="방명록 작성 닫기"
+        className="fixed inset-x-0 bottom-0 top-[72px] z-30 bg-black/25 md:hidden"
+      />
+    ) : (
+      <button
+        type="button"
+        onClick={() => setIsMobileComposerOpen(true)}
+        aria-haspopup="dialog"
+        aria-label="방명록 작성 열기"
+        className="fixed inset-x-0 bottom-0 z-40 border-t-2 border-[#45BFE6] bg-white px-4 pt-5 text-left md:hidden"
+        style={{
+          paddingBottom:
+            "max(1.25rem, env(safe-area-inset-bottom))",
+        }}
+      >
+        <span className="block border-b border-neutral-200 pb-4 text-lg font-medium text-neutral-400">
+          응원의 한마디를 남겨주세요.
+        </span>
+      </button>
+    )}
     <div
       ref={objectTooltipRef}
       className="pointer-events-none fixed left-0 top-0 z-[9999] hidden whitespace-nowrap bg-[#000101] px-2 py-1 text-sm font-bold text-white opacity-0 transition-none will-change-transform md:block"
@@ -949,7 +1084,8 @@ export default function Guestbook() {
       type="button"
       onClick={handleGoToTop}
       aria-label="페이지 맨 위로 이동"
-      className={`fixed bottom-6 left-1/2 z-[9998] -translate-x-1/2 transition-all duration-400 hover:-translate-y-1
+      className={`fixed top-20 left-1/2 z-20 -translate-x-1/2 transition-all duration-400 hover:-translate-y-1 md:top-auto md:bottom-6 md:z-[9998]
+        ${isMobileComposerOpen ? "hidden md:block" : ""}
         ${
           isGoTopVisible
             ? "visible translate-y-0 opacity-100"

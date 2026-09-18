@@ -19,7 +19,7 @@ const Designer = () => {
       <img
         src="/images/label-designer.png"
         alt="label"
-        className="mx-auto mt-28 mb-24 w-[clamp(280px,20vw,400px)] object-contain"
+        className="mx-auto mt-16 mb-12 w-[clamp(240px,20vw,400px)] object-contain md:mt-28 md:mb-24"
       />
 
       <section className="mx-auto max-w-[1540px] px-2 pt-2 pb-24 md:px-4">
