@@ -171,11 +171,11 @@ const BANNER_OBJECTS: BannerObject[] = [
     id: "flower",
     file: "branding.png",
     x: 8,
-    y: 84,
+    y: 74,
     mobileX: 18,
     mobileY: 86,
     rotate: 0,
-    scale: 1.3,
+    scale: 1.1,
     mobileScale: 1.2,
   },
   {
@@ -958,16 +958,16 @@ function Home() {
 
       <section
         ref={overviewRef}
-        className="relative flex min-h-[calc(100svh-var(--header-height))] scroll-mt-[var(--header-height)] flex-col items-center justify-center px-6 py-20 text-center"
+        className="relative flex min-h-[calc(100svh-var(--header-height))] scroll-mt-[var(--header-height)] flex-col items-center justify-center px-6 py-20 text-center sm:px-10 lg:px-[clamp(80px,13vw,200px)]"
       >
-        <div className="mx-auto max-w-[1100px]">
+        <div className="mx-auto w-full max-w-[1080px]">
           <h2 className="text-[clamp(24px,2.4vw,32px)] font-semibold text-[#000101]">
             전시 개요
           </h2>
 
           <motion.p
             ref={overviewAnimationRef}
-            className="mt-12 text-[clamp(17px,1.7vw,20px)] px-[clamp(4px,1.5vw,20px)] text-[#000101] font-medium md:font-regular leading-[1.7]"
+            className="mt-12 text-[clamp(17px,1.7vw,20px)] text-[#000101] font-medium md:font-regular leading-[1.7]"
             variants={container}
             initial="hidden"
             animate={overviewAnimationControls}
@@ -1006,7 +1006,7 @@ function Home() {
           OPENING
         </h2>
 
-        <div className="mx-auto mt-12 aspect-video w-full max-w-[1300px] overflow-hidden bg-[#d9d9d9]">
+        <div className="mx-auto mt-12 aspect-video w-full max-w-[1080px] overflow-hidden bg-[#d9d9d9]">
           {openingEmbedUrl ? (
             <iframe
               className="h-full w-full"
@@ -1026,13 +1026,13 @@ function Home() {
 
       <section
         aria-labelledby="exhibition-members-title"
-        className="px-6 pb-[clamp(96px,12vw,180px)] pt-[clamp(48px,7vw,100px)] sm:px-10 lg:px-[clamp(80px,10vw,160px)] text-[#000101]"
+        className="px-6 pb-[clamp(96px,12vw,180px)] pt-[clamp(48px,7vw,100px)] sm:px-10 lg:px-[clamp(80px,13vw,200px)] text-[#000101]"
       >
         <h2 className="text-center text-[clamp(24px,2.4vw,32px)] font-semibold">
             전시 인원 소개
           </h2>
 
-        <div className="mx-auto mt-[clamp(24px,7vw,100px)] grid w-full max-w-[1280px] gap-10 xl:grid-cols-[minmax(0,1.05fr)_minmax(420px,0.95fr)] xl:items-center xl:gap-[clamp(56px,7vw,112px)]">
+        <div className="mx-auto mt-12 md:mt-16 grid w-full max-w-[1080px] gap-10 xl:grid-cols-[minmax(0,1.05fr)_minmax(420px,0.95fr)] xl:items-center xl:gap-[clamp(56px,7vw,112px)]">
           <div className="aspect-[3/2] min-w-0 w-full overflow-hidden">
             <img
               src="/images/profile/total/total_raw.jpeg"
@@ -1119,7 +1119,7 @@ function Home() {
 
       <section
         aria-labelledby="professors-title"
-        className="px-6 pb-[clamp(112px,14vw,220px)] pt-[clamp(64px,8vw,120px)] sm:px-10 lg:px-[clamp(64px,7vw,140px)]"
+        className="px-6 pb-[clamp(112px,14vw,220px)] pt-[clamp(64px,8vw,120px)] sm:px-10 lg:px-[clamp(80px,13vw,200px)]"
       >
         <h2
           id="professors-title"
@@ -1130,7 +1130,7 @@ function Home() {
 
         <motion.div
           ref={professorAnimationRef}
-          className="mx-auto mt-16 grid w-full max-w-[1200px] grid-cols-1 gap-x-[clamp(28px,4vw,72px)] gap-y-16 sm:grid-cols-2 xl:grid-cols-4"
+          className="mx-auto mt-16 grid w-full max-w-[1080px] grid-cols-1 gap-x-[clamp(28px,4vw,72px)] gap-y-16 sm:grid-cols-2 xl:grid-cols-4"
           variants={professorContainer}
           initial="hidden"
           animate={professorAnimationControls}
@@ -1153,7 +1153,7 @@ function Home() {
               <h3 className="mt-[clamp(28px,3vw,36px)] text-[clamp(24px,2.5vw,26px)] font-semibold text-[#000101]">
                 {professor.name}
               </h3>
-              <p className="mt-[clamp(8px,2vw,12px)] text-[clamp(16px,2vw,18px)] font-medium text-[#888A96]">
+              <p className="mt-[clamp(8px,2vw,12px)] text-[clamp(14px,2vw,16px)] font-medium text-[#888A96]">
                 {professor.field}
               </p>
             </motion.article>
