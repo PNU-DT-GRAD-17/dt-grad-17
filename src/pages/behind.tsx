@@ -139,7 +139,7 @@ function Behind() {
       className="min-h-screen bg-top text-[#000101] max-lg:bg-[length:400%_auto] max-lg:bg-repeat-y"
       style={{ backgroundImage: "url('/images/background.png')" }}
     >
-      <div className="mx-auto w-full max-w-[1180px] px-5 pb-28 pt-[clamp(64px,8vw,118px)] sm:px-8 lg:px-12 lg:pb-12">
+      <div className="mx-auto w-full max-w-[1180px] px-5 pb-40 pt-[clamp(64px,8vw,118px)] sm:px-8 lg:px-12 lg:pb-48">
         <h1 className="flex justify-center">
           <img
             src="/images/label-behind.png"

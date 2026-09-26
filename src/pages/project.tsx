@@ -1,5 +1,5 @@
 import { type MouseEvent, useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { designers } from "../data/designers";
 import { teamProjects } from "../data/team";
@@ -111,8 +111,8 @@ const projects: ProjectItem[] = designers.slice(1).map((designer, index) => ({
 }));
 
 const Project = () => {
+  const navigate = useNavigate();
   const projectLabelRef = useRef<HTMLElement>(null);
-  const [activeCategory, setActiveCategory] = useState<Category>("ALL");
   const [hoveredCategory, setHoveredCategory] = useState<Category | null>(null);
   const [isProjectLabelVisible, setIsProjectLabelVisible] = useState(true);
   const [activePreviewId, setActivePreviewId] = useState<string | null>(null);
@@ -128,10 +128,6 @@ const Project = () => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         setIsProjectLabelVisible(entry.isIntersecting);
-
-        if (entry.isIntersecting) {
-          setActiveCategory("ALL");
-        }
       },
       {
         // 라벨이 실제 헤더 아래의 가시 영역을 벗어나는 순간 전환합니다.
@@ -145,60 +141,17 @@ const Project = () => {
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    if (isProjectLabelVisible) return;
-
-    const categorySections = Array.from(
-      document.querySelectorAll<HTMLElement>("[data-project-category]"),
-    );
-    const intersectionRatios = new Map<Element, number>();
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          intersectionRatios.set(entry.target, entry.isIntersecting ? entry.intersectionRatio : 0);
-        });
-
-        const currentSection = categorySections.reduce<HTMLElement | null>((current, section) => {
-          if (!current) return section;
-
-          return (intersectionRatios.get(section) ?? 0) > (intersectionRatios.get(current) ?? 0)
-            ? section
-            : current;
-        }, null);
-        const currentCategory = currentSection?.dataset.projectCategory;
-
-        if (
-          currentCategory &&
-          categories.some((category) => category === currentCategory)
-        ) {
-          setActiveCategory(currentCategory as Category);
-        }
-      },
-      { threshold: [0.2, 0.4, 0.6, 0.8] },
-    );
-
-    categorySections.forEach((section) => observer.observe(section));
-
-    return () => observer.disconnect();
-  }, [isProjectLabelVisible]);
-
   const visibleCategories = categories.filter(
     (category): category is ProjectItem["category"] => category !== "ALL",
   );
 
   const handleCategoryNavigation = (category: Category) => {
-    setActiveCategory(category);
-
     if (category === "ALL") {
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
 
-    document.getElementById(`category-${category.toLowerCase()}`)?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
+    navigate(teamProjects[category].link);
   };
 
   const handleCardTap = (event: MouseEvent<HTMLAnchorElement>, previewId: string) => {
@@ -231,7 +184,7 @@ const Project = () => {
       </section>
 
       <div className="flex w-full items-start">
-        <aside className="sticky top-0 hidden h-dvh w-[clamp(190px,19vw,420px)] shrink-0 self-start overflow-hidden bg-white px-8 py-8 lg:block">
+        <aside className="sticky top-0 hidden h-dvh w-[clamp(160px,16vw,320px)] shrink-0 self-start overflow-hidden bg-white px-6 py-8 lg:block">
           <nav
             aria-label="프로젝트 카테고리"
             className="flex flex-col items-start"
@@ -259,16 +212,14 @@ const Project = () => {
                     onClick={() => handleCategoryNavigation(category)}
                     aria-label={`${category} 프로젝트 카테고리`}
                     aria-expanded={categoryProjects.length > 0 ? isExpanded : undefined}
-                    className={`group flex w-full items-center py-1.5 text-left text-lg transition-colors hover:text-[#45BFE6] ${
-                      activeCategory === category ? "font-bold text-[#45BFE6]" : "text-[#000101]"
-                    }`}
+                    className="group flex w-full items-center py-1.5 text-left text-[clamp(14px,1.25vw,18px)] text-[#000101] transition-colors hover:text-[#45BFE6]"
                   >
                     {isExpanded && category !== "ALL" ? (
                       <>
                         <span className="min-w-0 break-words">
                           {teamProjects[category].conceptName}
                         </span>
-                        <span className="ml-0 max-w-0 translate-x-1 overflow-hidden whitespace-nowrap text-sm font-normal opacity-0 transition-all duration-300 group-hover:ml-4 group-hover:max-w-28 group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:ml-4 group-focus-visible:max-w-28 group-focus-visible:translate-x-0 group-focus-visible:opacity-100">
+                        <span className="ml-0 max-w-0 translate-x-1 overflow-hidden whitespace-nowrap text-[clamp(11px,0.9722vw,14px)] font-normal opacity-0 transition-all duration-300 group-hover:ml-4 group-hover:max-w-28 group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:ml-4 group-focus-visible:max-w-28 group-focus-visible:translate-x-0 group-focus-visible:opacity-100">
                           {category}
                         </span>
                       </>
@@ -289,10 +240,9 @@ const Project = () => {
                             <li key={project.id}>
                               <a
                                 href={`/project/${project.id}`}
-                                onClick={() => setActiveCategory(category)}
                                 className="
                                   group flex items-center
-                                  text-md leading-5 text-[#777]
+                                  text-[clamp(12px,1.1111vw,16px)] leading-[1.4] text-[#777]
                                   transition-colors hover:text-[#45BFE6]
                                   focus-visible:text-[#45BFE6]
                                 "
@@ -369,20 +319,19 @@ const Project = () => {
                 <section
                   key={category}
                   id={`category-${category.toLowerCase()}`}
-                  data-project-category={category}
                   aria-labelledby={`${category.toLowerCase()}-title`}
-                  className="contents lg:block lg:h-dvh lg:w-full lg:scroll-mt-0 lg:overflow-hidden"
+                  className="contents lg:block lg:w-full lg:scroll-mt-0 lg:overflow-hidden"
                 >
                   <div
-                    className={`contents lg:grid lg:h-full lg:w-full lg:grid-flow-row-dense lg:grid-rows-2 ${
+                    className={`contents lg:grid lg:aspect-[45/32] lg:w-full lg:grid-flow-row-dense lg:grid-rows-2 ${
                       teamOnRight
-                        ? "lg:grid-cols-[repeat(3,28.125dvh)_minmax(0,1fr)]"
-                        : "lg:grid-cols-[minmax(0,1fr)_repeat(3,28.125dvh)]"
+                        ? "lg:grid-cols-[repeat(3,minmax(0,1fr))_minmax(0,2fr)]"
+                        : "lg:grid-cols-[minmax(0,2fr)_repeat(3,minmax(0,1fr))]"
                     }`}
                   >
                     <article
                       id={`team-${category.toLowerCase()}`}
-                      className={`relative aspect-[9/16] min-w-0 overflow-hidden bg-[#ececec] lg:col-span-1 lg:row-span-2 lg:aspect-auto ${
+                      className={`relative aspect-[9/16] min-w-0 overflow-hidden bg-[#ececec] lg:col-span-1 lg:row-span-2 ${
                         teamOnRight
                           ? "lg:col-start-4 lg:row-start-1"
                           : "lg:col-start-1 lg:row-start-1"
@@ -420,9 +369,22 @@ const Project = () => {
 
                         <p
                           id={`${category.toLowerCase()}-title`}
-                          className="pointer-events-none absolute inset-x-0 top-0 z-40 p-[clamp(18px,2.4vw,36px)] text-[clamp(18px,2vw,36px)] font-semibold leading-none tracking-tight text-white"
+                          className="pointer-events-none absolute inset-x-0 top-0 z-40 p-[clamp(18px,2.4vw,36px)] text-[clamp(24px,3vw,36px)] font-semibold leading-none tracking-tight text-white lg:text-[clamp(18px,2vw,36px)]"
                         >
-                          {category}
+                          <span
+                            className={`group-hover:hidden group-focus-visible:hidden ${
+                              activePreviewId === `team-${category}` ? "hidden" : "block"
+                            }`}
+                          >
+                            {category}
+                          </span>
+                          <span
+                            className={`group-hover:block group-focus-visible:block ${
+                              activePreviewId === `team-${category}` ? "block" : "hidden"
+                            }`}
+                          >
+                            {teamProject.conceptName}
+                          </span>
                         </p>
 
                         <div
@@ -432,37 +394,34 @@ const Project = () => {
                         />
 
                         <div
-                          className={`absolute inset-0 z-30 flex flex-col justify-between overflow-hidden p-[clamp(24px,4vw,36px)] pt-[clamp(76px,8vw,104px)] text-white transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100 ${
+                          className={`absolute inset-0 z-30 flex flex-col justify-between overflow-hidden p-[clamp(18px,2.4vw,36px)] pt-[calc(clamp(18px,2.4vw,36px)+clamp(24px,3vw,36px)+12px)] text-white transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100 lg:p-[clamp(24px,4vw,36px)] lg:pt-[clamp(76px,8vw,104px)] ${
                             activePreviewId === `team-${category}`
                               ? "translate-y-0 opacity-100"
                               : "translate-y-3 opacity-0"
                           }`}
                         >
                           <div>
-                            <p className="break-words text-[clamp(18px,2vw,28px)] font-medium leading-snug [overflow-wrap:anywhere]">
-                              {teamProject.conceptName}
-                            </p>
-                            <ul className="mt-[clamp(16px,2vw,28px)] flex flex-col gap-[clamp(8px,1vw,16px)] text-[clamp(13px,1.2vw,19px)]">
+                            <ul className="mt-[clamp(8px,1vw,14px)] flex flex-wrap gap-[clamp(8px,1vw,16px)] text-[clamp(14px,1.2vw,19px)] lg:flex-col lg:flex-nowrap">
                               {teamProject.members.map((member) => (
-                                <li key={member.id}>{member.name}</li>
+                                <li key={member.id} className="whitespace-nowrap">{member.name}</li>
                               ))}
                             </ul>
                           </div>
 
                           <div className="flex flex-col gap-[clamp(20px,2.5vw,36px)]">
                             <div>
-                              <p className="text-[clamp(14px,1.4vw,18px)] font-semibold text-[#45BFE6]">
-                                • video
+                              <p className="text-[clamp(12px,1.4vw,16px)] font-semibold text-[#45BFE6]">
+                                • Team Video
                               </p>
-                              <p className="mt-1 break-words text-[clamp(16px,1.7vw,20px)] font-medium leading-snug text-white [overflow-wrap:anywhere]">
+                              <p className="mt-2 break-words text-[clamp(16px,1.7vw,20px)] font-medium leading-snug text-white [overflow-wrap:anywhere]">
                                 {teamProject.videoTitle || "팀 영상 제목"}
                               </p>
                             </div>
                             <div>
-                              <p className="text-[clamp(14px,1.4vw,18px)] font-semibold text-[#45BFE6]">
-                                • interaction
+                              <p className="text-[clamp(12px,1.4vw,16px)] font-semibold text-[#45BFE6]">
+                                • Team Interaction
                               </p>
-                              <p className="mt-1 break-words text-[clamp(16px,1.7vw,20px)] font-medium leading-snug text-white [overflow-wrap:anywhere]">
+                              <p className="mt-2 break-words text-[clamp(16px,1.7vw,20px)] font-medium leading-snug text-white [overflow-wrap:anywhere]">
                                 {teamProject.interactionTitle || "팀 인터 제목"}
                               </p>
                             </div>
@@ -536,7 +495,7 @@ const Project = () => {
                             />
 
                             <div
-                              className={`absolute inset-0 z-20 flex flex-col justify-between overflow-hidden p-[clamp(14px,1.5vw,22px)] transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100 ${
+                              className={`absolute inset-0 z-20 flex flex-col justify-between overflow-hidden p-[clamp(18px,2.4vw,36px)] transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100 lg:p-[clamp(14px,1.5vw,22px)] ${
                                 activePreviewId === project.id
                                   ? "translate-y-0 opacity-100"
                                   : "translate-y-2 opacity-0"
@@ -551,20 +510,20 @@ const Project = () => {
                                 </p>
                               </div>
 
-                              <div className="flex flex-col gap-[clamp(14px,1.4vw,22px)]">
+                              <div className="flex flex-col gap-[clamp(20px,2.5vw,36px)] lg:gap-[clamp(14px,1.4vw,22px)]">
                                 <div>
-                                  <p className="text-[clamp(11px,0.9vw,16px)] font-semibold text-[#45BFE6]">
-                                    • motion poster
+                                  <p className="text-[clamp(12px,1.4vw,16px)] font-semibold text-[#45BFE6] lg:text-[clamp(12px,0.9vw,14px)]">
+                                    • Motion Poster
                                   </p>
-                                  <p className="mt-1 break-words text-[clamp(13px,1vw,20px)] font-medium leading-snug text-white [overflow-wrap:anywhere]">
+                                  <p className="mt-2 break-words text-[clamp(16px,1.7vw,20px)] font-bold leading-snug text-white [overflow-wrap:anywhere] lg:mt-1 lg:text-[clamp(16px,1vw,20px)] lg:font-medium">
                                     {project.motionPosterTitle || "개인 모션포스터 제목"}
                                   </p>
                                 </div>
                                 <div>
-                                  <p className="text-[clamp(11px,0.9vw,16px)] font-semibold text-[#45BFE6]">
-                                    • interaction
+                                  <p className="text-[clamp(12px,1.4vw,16px)] font-semibold text-[#45BFE6] lg:text-[clamp(12px,0.9vw,14px)]">
+                                    • Interaction
                                   </p>
-                                  <p className="mt-1 break-words text-[clamp(13px,1vw,20px)] font-medium leading-snug text-white [overflow-wrap:anywhere]">
+                                  <p className="mt-2 break-words text-[clamp(16px,1.7vw,20px)] font-bold leading-snug text-white [overflow-wrap:anywhere] lg:mt-1 lg:text-[clamp(16px,1vw,20px)] lg:font-medium">
                                     {project.interactionTitle || "개인 인터 제목"}
                                   </p>
                                 </div>

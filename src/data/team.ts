@@ -15,6 +15,14 @@ export type TeamProject = {
   objectImage: string;
   link: string;
   members: Designer[];
+  projectDetail?: {
+    motionPosterImage?: string;
+    filmImage?: string;
+    /** YouTube watch, youtu.be, shorts 또는 embed 링크 */
+    filmUrl?: string;
+    scenarioUrl?: string;
+    interactionImages?: string[];
+  };
 };
 
 const getTeamMembers = (category: TeamCategory) =>

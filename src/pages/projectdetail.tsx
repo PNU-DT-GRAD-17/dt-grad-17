@@ -1,16 +1,27 @@
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link, Navigate, useLocation, useParams } from "react-router-dom";
 
 import Footer from "../components/Footer";
+import { ScenarioVideoLink, ScenarioVideoModal } from "../components/ScenarioVideo";
 import { designers } from "../data/designers";
 
 const defaultDescription =
   "우리는 사용자의 행동 패턴을 분석하여 가장 직관적이고 편리한 경험을 설계합니다. 복잡한 과정을 최소화하고, 누구나 쉽게 이해할 수 있는 디지털 환경을 만드는 것이 우리의 목표입니다.";
 
-const MediaPlaceholder = ({ src, alt }: { src?: string; alt: string }) => (
-  <div className="aspect-[16/9] overflow-hidden bg-white/30">
+const MediaPlaceholder = ({
+  src,
+  alt,
+  className = "aspect-[16/9]",
+  imageClassName = "object-cover",
+}: {
+  src?: string;
+  alt: string;
+  className?: string;
+  imageClassName?: string;
+}) => (
+  <div className={`${className} overflow-hidden bg-white/30`}>
     {src ? (
-      <img src={src} alt={alt} className="h-full w-full object-cover" />
+      <img src={src} alt={alt} className={`h-full w-full ${imageClassName}`} />
     ) : (
       <span className="sr-only">이미지 준비 중</span>
     )}
@@ -18,11 +29,14 @@ const MediaPlaceholder = ({ src, alt }: { src?: string; alt: string }) => (
 );
 
 const ProjectDetail = () => {
+  const [isScenarioVideoOpen, setIsScenarioVideoOpen] = useState(false);
   const scrollContainerRef = useRef<HTMLElement>(null);
   const footerRef = useRef<HTMLDivElement>(null);
   const navigatorRef = useRef<HTMLElement>(null);
   const snapAnimationRef = useRef<number | null>(null);
   const isSnappingRef = useRef(false);
+  const isWheelGestureLockedRef = useRef(false);
+  const wheelUnlockTimerRef = useRef<number | null>(null);
   const location = useLocation();
   const { designerId } = useParams();
   const projectDesigners = designers.filter((designer) => designer.id !== "all");
@@ -33,7 +47,11 @@ const ProjectDetail = () => {
     const targetId = location.hash.slice(1);
 
     if (targetId) {
-      document.getElementById(targetId)?.scrollIntoView();
+      // 모바일에서는 아래 모바일 전용 인터랙션 섹션으로 이동합니다.
+      const resolvedId = window.innerWidth < 768 && targetId === "individual-interaction"
+        ? "mobile-individual-interaction"
+        : targetId;
+      document.getElementById(resolvedId)?.scrollIntoView();
     } else {
       scrollContainerRef.current?.scrollTo(0, 0);
     }
@@ -49,6 +67,19 @@ const ProjectDetail = () => {
     }
 
     const positionNavigator = () => {
+      // 모바일 하단 내비게이션은 콘텐츠 끝에 놓이므로 위치 보정을 하지 않습니다.
+      if (window.innerWidth < 768) {
+        navigator.style.transform = "";
+        return;
+      }
+
+      const secondFrameTop = container.clientHeight - 64;
+
+      if (container.scrollTop <= secondFrameTop + 1) {
+        navigator.style.transform = "";
+        return;
+      }
+
       const footerTop = footer.getBoundingClientRect().top;
       const footerOverlap = Math.max(0, window.innerHeight - footerTop);
       navigator.style.transform = `translateY(-${footerOverlap}px)`;
@@ -74,6 +105,17 @@ const ProjectDetail = () => {
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    const releaseWheelGestureAfterIdle = () => {
+      if (wheelUnlockTimerRef.current !== null) {
+        window.clearTimeout(wheelUnlockTimerRef.current);
+      }
+
+      wheelUnlockTimerRef.current = window.setTimeout(() => {
+        isWheelGestureLockedRef.current = false;
+        wheelUnlockTimerRef.current = null;
+      }, 260);
+    };
+
     const snapTo = (targetTop: number) => {
       if (isSnappingRef.current) {
         return;
@@ -81,12 +123,11 @@ const ProjectDetail = () => {
 
       if (reducedMotion) {
         container.scrollTop = targetTop;
+        releaseWheelGestureAfterIdle();
         return;
       }
 
       isSnappingRef.current = true;
-      // Prevent the browser snap from fighting the custom animation.
-      container.style.scrollSnapType = "none";
       const startTop = container.scrollTop;
       const distance = targetTop - startTop;
       const startedAt = performance.now();
@@ -106,37 +147,70 @@ const ProjectDetail = () => {
         }
 
         container.scrollTop = targetTop;
-        container.style.scrollSnapType = "";
         snapAnimationRef.current = null;
         isSnappingRef.current = false;
+        releaseWheelGestureAfterIdle();
       };
 
       snapAnimationRef.current = window.requestAnimationFrame(animate);
     };
 
     const handleWheel = (event: WheelEvent) => {
-      if (Math.abs(event.deltaY) < 6) {
+      // 모바일은 일반 스크롤 사용. 768px 이상에서만 화면 단위 스크롤을 적용합니다.
+      if (window.innerWidth < 768) return;
+
+      const frameHeight = container.clientHeight - 64;
+      const lastFrameTop = frameHeight;
+      const isEnteringFooter =
+        event.deltaY > 0 && container.scrollTop >= lastFrameTop - 1;
+      const isLeavingFooter =
+        event.deltaY < 0 && container.scrollTop > lastFrameTop + 1;
+
+      if (isWheelGestureLockedRef.current) {
+        event.preventDefault();
+
+        if (!isSnappingRef.current) {
+          releaseWheelGestureAfterIdle();
+        }
+
         return;
       }
 
-      const firstSectionHeight = container.clientHeight - 64;
-      const boundaryTolerance = 96;
-      const isLeavingPoster = event.deltaY > 0 && container.scrollTop < boundaryTolerance;
-      const isReturningToPoster =
-        event.deltaY < 0 &&
-        container.scrollTop > boundaryTolerance &&
-        container.scrollTop <= firstSectionHeight + boundaryTolerance;
+      // The footer keeps native scrolling in both directions. Once it reaches
+      // the final project frame again, the presentation-style navigation resumes.
+      if (isEnteringFooter || isLeavingFooter) {
+        return;
+      }
 
-      if (!isLeavingPoster && !isReturningToPoster && !isSnappingRef.current) {
+      if (Math.abs(event.deltaY) < 6) {
+        event.preventDefault();
+        return;
+      }
+
+      if (isSnappingRef.current) {
+        event.preventDefault();
         return;
       }
 
       event.preventDefault();
+      const snapPoints = [0, lastFrameTop];
+      const currentFrameIndex = snapPoints.reduce(
+        (closestIndex, point, index) =>
+          Math.abs(point - container.scrollTop) <
+          Math.abs(snapPoints[closestIndex] - container.scrollTop)
+            ? index
+            : closestIndex,
+        0,
+      );
+      const direction = event.deltaY > 0 ? 1 : -1;
+      const targetFrameIndex = Math.min(
+        snapPoints.length - 1,
+        Math.max(0, currentFrameIndex + direction),
+      );
 
-      if (isLeavingPoster) {
-        snapTo(firstSectionHeight);
-      } else if (isReturningToPoster) {
-        snapTo(0);
+      if (targetFrameIndex !== currentFrameIndex) {
+        isWheelGestureLockedRef.current = true;
+        snapTo(snapPoints[targetFrameIndex]);
       }
     };
 
@@ -149,9 +223,14 @@ const ProjectDetail = () => {
         window.cancelAnimationFrame(snapAnimationRef.current);
       }
 
+      if (wheelUnlockTimerRef.current !== null) {
+        window.clearTimeout(wheelUnlockTimerRef.current);
+      }
+
       snapAnimationRef.current = null;
       isSnappingRef.current = false;
-      container.style.scrollSnapType = "";
+      isWheelGestureLockedRef.current = false;
+      wheelUnlockTimerRef.current = null;
     };
   }, [designerId]);
 
@@ -171,7 +250,7 @@ const ProjectDetail = () => {
   return (
     <main
       ref={scrollContainerRef}
-      className="project-detail relative h-[calc(100svh-var(--header-height))] snap-y snap-proximity overflow-x-hidden overflow-y-auto overscroll-y-contain bg-[#0a171e] text-white"
+      className="project-detail relative h-[calc(100svh-var(--header-height))] overflow-x-hidden overflow-y-auto overscroll-y-contain bg-[#0a171e] text-white"
     >
       <div
         className="project-detail__poster fixed inset-0 bg-cover bg-center bg-no-repeat"
@@ -181,7 +260,67 @@ const ProjectDetail = () => {
       <div className="project-detail__veil fixed inset-0" aria-hidden="true" />
 
       <div className="relative z-10">
-        <section className="relative mx-auto flex h-[calc(100svh-var(--header-height)-4rem)] max-w-[1920px] snap-start snap-always overflow-hidden">
+        {/* 모바일 디자인 수정 영역 (768px 미만): md:hidden으로 데스크톱에서는 숨깁니다.
+            mx-2: 바깥 좌우 여백. 아래 hidden md:block 영역은 데스크톱 전용입니다. */}
+        <div className="mx-2 md:hidden">
+          {/* 모바일 상단 바: h-11은 높이, bg-black은 배경색입니다. */}
+          <div className="relative flex h-11 items-center justify-center bg-black text-base font-semibold">
+            <Link to="/project" aria-label="프로젝트 목록으로 돌아가기" className="absolute inset-y-0 left-2 flex w-11 items-center justify-center">
+              <img src="/images/icon/arrowLeft.png" alt="" className="h-4 w-auto" />
+            </Link>
+            <Link to={`/designer/${designer.id}`}>{designer.name}</Link>
+          </div>
+
+          {/* 모바일 본문 여백: px-5 좌우, pt-7 상단, pb-12 하단.
+              제목 text-base, 본문 text-sm, leading-[1.6]으로 글자 크기와 행간을 조절합니다. */}
+          <div className="px-5 pb-12 pt-7">
+            {/* 1. 컨셉 제목과 설명 — 실제 문구는 src/data/designers.ts에서 수정합니다. */}
+            <section>
+              <h1 className="text-base font-semibold">{designer.conceptName || "컨셉 제목"}</h1>
+              <p className="mt-3 whitespace-pre-line text-sm leading-[1.6] text-white/85">{conceptDescription}</p>
+            </section>
+
+            {/* 2. 인터랙션 설명과 시나리오 — mt-10은 섹션 사이 간격입니다. */}
+            <section id="mobile-individual-interaction" className="mt-10">
+              <h2 className="text-base font-semibold">{designer.interactionTitle || "인터랙션 제목"}</h2>
+              <p className="mt-3 whitespace-pre-line text-sm leading-[1.6] text-white/85">{interactionDescription}</p>
+              {/* 시나리오 이미지 비율: aspect-[1.58], 카드 사이 간격: space-y-3. */}
+              <div className="mt-10 space-y-3">
+                {[2, 3, 4].map((index) => (
+                  <figure key={index}>
+                    <MediaPlaceholder className="aspect-[1.58]" src={detail?.interactionImages?.[index]} alt={`${designer.interactionTitle} 시나리오 ${index - 1}`} />
+                    <figcaption className="mt-3 text-sm text-white/80">시나리오 설명</figcaption>
+                  </figure>
+                ))}
+              </div>
+            </section>
+
+            {/* 3. 시연 영상 */}
+            <section className="mt-10">
+              <h2 className="mb-3 text-base font-semibold">시연 영상</h2>
+              <button
+                type="button"
+                onClick={() => setIsScenarioVideoOpen(true)}
+                aria-haspopup="dialog"
+                className="flex aspect-[1.58] w-full cursor-pointer items-center justify-center bg-white/30"
+                aria-label="시연 영상 재생"
+              >
+                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-black/60" aria-hidden="true">▶</span>
+              </button>
+            </section>
+
+            <section className="mt-10">
+              {/* 4. 포스터 — 아래 w-[53%]는 이미지 너비, aspect-[9/16]은 이미지 비율입니다. */}
+              <h2 className="text-base font-semibold">{designer.motionPosterTitle || "포스터 제목"}</h2>
+              <p className="mt-3 whitespace-pre-line text-sm leading-[1.6] text-white/85">{motionPosterDescription}</p>
+              <MediaPlaceholder className="mx-auto mt-12 aspect-[9/16] w-[53%]" imageClassName="object-contain" src={backgroundImage} alt={`${designer.motionPosterTitle || designer.name} 모션 포스터`} />
+            </section>
+          </div>
+        </div>
+
+        {/* 데스크톱 전용 레이아웃 (768px 이상): 모바일 디자인 수정 시 이 영역은 유지합니다. */}
+        <div className="hidden md:block">
+        <section className="relative mx-auto flex h-[calc(100svh-var(--header-height)-4rem)] max-w-[1920px] overflow-hidden">
           <div className="absolute inset-y-0 left-0 aspect-[9/16] h-full shrink-0 overflow-hidden bg-white/30 lg:relative">
             <img
               src={backgroundImage}
@@ -241,32 +380,28 @@ const ProjectDetail = () => {
           </div>
         </section>
 
-        <section id="individual-interaction" className="min-h-[calc(100svh-var(--header-height))] snap-start snap-always px-12 py-16 lg:pb-24 lg:pt-12">
+        <section id="individual-interaction" className="h-[calc(100svh-var(--header-height))] overflow-hidden px-12 py-16 lg:pb-24 lg:pt-12">
           <div className="mb-7 flex items-end justify-between gap-6">
             <h2 className="text-[clamp(22px,2vw,32px)] font-semibold tracking-[-0.02em]">INDIVIDUAL INTERACTION</h2>
-            {detail?.scenarioUrl && (
-              <a href={detail.scenarioUrl} target="_blank" rel="noreferrer" className="shrink-0 text-sm text-white/65 underline-offset-4 hover:text-white hover:underline">
-                ↗ 시나리오 영상
-              </a>
-            )}
           </div>
 
           <div className="grid gap-10 lg:grid-cols-[1fr_1.12fr] lg:items-start">
-            <section>
+            <section className="lg:-mr-[144px] xl:-mr-[176px]">
               <h3 className="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-2xl font-semibold">
                 {designer.interactionTitle || "인터랙션 제목"}
                 <span className="text-sm font-medium text-[#45BFE6]">interaction</span>
               </h3>
-              <p className="mt-5 max-w-[800px] whitespace-pre-line text-sm leading-7 text-white">{interactionDescription}</p>
+              <p className="mt-5 whitespace-pre-line text-sm leading-7 text-white">{interactionDescription}</p>
+              <ScenarioVideoLink onClick={() => setIsScenarioVideoOpen(true)} />
             </section>
 
-            <div className="grid grid-cols-2 overflow-hidden">
-              <MediaPlaceholder src={detail?.interactionImages?.[0]} alt={`${designer.interactionTitle} 인터랙션 화면 1`} />
-              <MediaPlaceholder src={detail?.interactionImages?.[1]} alt={`${designer.interactionTitle} 인터랙션 화면 2`} />
+            <div className="grid w-4/5 grid-cols-2 justify-self-end overflow-hidden">
+              <MediaPlaceholder className="aspect-square" imageClassName="object-contain" src={detail?.interactionImages?.[0]} alt={`${designer.interactionTitle} 인터랙션 화면 1`} />
+              <MediaPlaceholder className="aspect-square" imageClassName="object-contain" src={detail?.interactionImages?.[1]} alt={`${designer.interactionTitle} 인터랙션 화면 2`} />
             </div>
           </div>
 
-          <div className="mt-14 grid gap-8 sm:grid-cols-3">
+          <div className="mt-20 grid gap-8 sm:grid-cols-3">
             {[2, 3, 4].map((index) => (
               <figure key={index}>
                 <MediaPlaceholder src={detail?.interactionImages?.[index]} alt={`${designer.interactionTitle} 시나리오 ${index - 1}`} />
@@ -279,11 +414,18 @@ const ProjectDetail = () => {
         <div ref={footerRef}>
           <Footer />
         </div>
+        </div>
       </div>
 
+      {isScenarioVideoOpen && (
+        <ScenarioVideoModal onClose={() => setIsScenarioVideoOpen(false)} />
+      )}
+
+      {/* 공통 이전·다음 내비게이션: 접두사 없는 클래스는 모바일 기본값입니다.
+          md: 클래스는 768px 이상에 적용됩니다. 모바일 높이 h-14, 좌우 여백 mx-2. */}
       <nav
         ref={navigatorRef}
-        className="project-detail__navigator fixed inset-x-0 bottom-0 z-20 grid h-16 grid-cols-3 items-center bg-[#0066AD] px-5 text-base sm:px-10 lg:px-[clamp(56px,6.25vw,120px)]"
+        className="project-detail__navigator relative mx-2 z-20 grid h-14 grid-cols-2 md:fixed md:inset-x-0 md:bottom-0 md:mx-0 md:h-16 md:grid-cols-3 items-center bg-[#0066AD] px-5 text-base sm:px-10 lg:px-[clamp(56px,6.25vw,120px)]"
         style={{
           backgroundImage:
             "linear-gradient(rgba(0, 102, 173, 0.5), rgba(0, 102, 173, 0.5)), url('/images/blue_bg-upscaled.png')",
@@ -302,7 +444,7 @@ const ProjectDetail = () => {
           />
           <span className="opacity-70 transition-opacity duration-200 group-hover:opacity-100 text-lg">{previous.name}</span>
         </Link>
-        <Link to="/project" aria-label="프로젝트 목록" className="grid grid-cols-2 gap-1 justify-self-center p-3 opacity-80 transition-opacity hover:opacity-100">
+        <Link to="/project" aria-label="프로젝트 목록" className="hidden grid-cols-2 gap-1 justify-self-center p-3 md:grid opacity-80 transition-opacity hover:opacity-100">
           {Array.from({ length: 4 }).map((_, index) => <span key={index} className="h-2 w-2 border border-white" />)}
         </Link>
         <Link to={`/project/${next.id}`} className="group flex items-center gap-2 justify-self-end">

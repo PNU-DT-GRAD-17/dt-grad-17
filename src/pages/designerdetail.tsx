@@ -16,7 +16,7 @@ const MediaPanel = ({ label, src, hoverTitle, to }: MediaPanelProps) => {
   const [isPreviewVisible, setIsPreviewVisible] = useState(false);
 
   return (
-    <section className="xl:flex xl:min-h-0 xl:flex-col">
+    <section className="xl:flex xl:min-h-0 xl:shrink-0 xl:flex-col">
       <Link
         to={to}
         className="group flex min-h-0 flex-1 flex-col focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0066AD]"
@@ -35,7 +35,7 @@ const MediaPanel = ({ label, src, hoverTitle, to }: MediaPanelProps) => {
         <h2 className="mb-1 text-base font-bold uppercase lg:text-sm xl:mb-1 xl:text-[clamp(12px,1.15vw,18px)]">
           {label}
         </h2>
-        <div className="relative aspect-video w-full overflow-hidden bg-[#d9d9d9] xl:min-h-0 xl:flex-1 xl:aspect-auto">
+        <div className="relative aspect-video w-full shrink-0 overflow-hidden bg-[#d9d9d9]">
           {src ? (
             <video
               className="h-full w-full object-cover"
@@ -66,7 +66,7 @@ const MediaPanel = ({ label, src, hoverTitle, to }: MediaPanelProps) => {
                 src="/images/icon/arrow-right.svg"
                 alt=""
                 aria-hidden="true"
-                className="h-5 w-5 shrink-0 self-center lg:h-4 lg:w-4"
+                className="h-5 w-5 shrink-0 self-center lg:hidden"
               />
             </div>
           </div>
@@ -105,11 +105,11 @@ const DesignerDetail = () => {
   return (
     <main className="bg-[url('/images/background.png')] text-[#111] max-lg:bg-[length:400%_auto] max-lg:bg-top max-lg:bg-repeat-y">
       <div className="relative mx-auto flex min-h-[calc(100svh-72px)] max-w-[2100px] flex-col px-6 pb-12 pt-[39px] sm:px-10 lg:min-h-[calc(100svh-var(--header-height))] lg:px-[clamp(40px,2.5vw,52px)] lg:pb-12 lg:pt-6 xl:max-w-none xl:px-0 xl:pb-[clamp(48px,6svh,72px)] xl:pt-[clamp(28px,3.5svh,40px)]">
-        <div className="grid min-h-0 flex-1 items-start gap-y-0 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1.25fr)] lg:gap-x-[clamp(28px,2.5vw,36px)] lg:gap-y-10 xl:mx-auto xl:w-[calc(100%_-_104px)] xl:max-w-[1962px] xl:grid-cols-[minmax(0,1.45fr)_clamp(28px,2.5vw,36px)_minmax(0,1.25fr)_clamp(120px,9vw,190px)_clamp(320px,21.5vw,450px)] xl:items-stretch xl:gap-0">
-          <div className="flex w-full flex-col justify-end xl:col-start-1 xl:min-h-0">
+        <div className="grid min-h-0 flex-1 items-start gap-y-0 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1.25fr)] lg:gap-x-[clamp(28px,2.5vw,36px)] lg:gap-y-10 xl:mx-auto xl:w-[calc(100%_-_104px)] xl:max-w-[1962px] xl:grid-cols-[minmax(0,1.45fr)_clamp(28px,2.5vw,36px)_minmax(0,1.25fr)_clamp(62px,3.2vw,73px)_clamp(378px,27.3vw,567px)] xl:items-stretch xl:gap-0">
+          <div className="flex w-full flex-col justify-end xl:col-start-1 xl:min-h-0 xl:justify-start">
             <Link
               to="/designer"
-              className="group z-20 mb-4 hidden w-fit items-center gap-1 text-lg font-semibold text-[#a7adb1] transition-colors hover:text-[#000101] focus-visible:text-[#000101] lg:inline-flex lg:text-2xl xl:mb-12"
+              className="group z-20 mb-4 hidden w-fit shrink-0 items-center gap-1 text-lg font-semibold text-[#a7adb1] transition-colors hover:text-[#000101] focus-visible:text-[#000101] lg:inline-flex lg:text-2xl xl:mb-6"
             >
               <span
                 className="relative h-7 w-7 shrink-0 lg:h-9 lg:w-9"
@@ -152,8 +152,8 @@ const DesignerDetail = () => {
               <span className="text-[clamp(16px,2vw,24px)] font-regular text-[#4A4B51] tracking-[-0.02em]">{getEnglishName(designer)}</span>
             </h1>
 
-            <div className="relative mb-[8%] w-[85%] lg:mb-0 lg:w-full">
-              <section className="aspect-[3/4] w-full overflow-hidden bg-[#dedede]">
+            <div className="relative mb-[8%] w-[85%] lg:mb-0 lg:w-full xl:min-h-0 xl:flex-1">
+              <section className="aspect-[3/4] w-full overflow-hidden bg-[#dedede] xl:h-full xl:aspect-auto">
                 {detail?.profileImage ? (
                   <img
                     src={detail.profileImage}
@@ -247,7 +247,7 @@ const DesignerDetail = () => {
             </div>
           </section>
 
-          <div className="mt-[110px] grid gap-5 text-[#000101] ssm:grid-cols-3 lg:col-span-2 lg:mt-0 xl:col-span-1 xl:col-start-5 xl:h-full xl:min-h-0 xl:grid-cols-1 xl:grid-rows-3 xl:gap-5 xl:self-stretch">
+          <div className="mt-[110px] grid gap-5 text-[#000101] ssm:grid-cols-3 lg:col-span-2 lg:mt-0 xl:col-span-1 xl:col-start-5 xl:flex xl:min-h-0 xl:flex-col xl:justify-between xl:gap-5 xl:self-stretch">
             <MediaPanel
               label="INDIVIDUAL INTERACTION"
               src={detail?.individualInteraction}
