@@ -30,7 +30,10 @@ const MediaPlaceholder = ({
 
 const ProjectDetail = () => {
   const [isScenarioVideoOpen, setIsScenarioVideoOpen] = useState(false);
+  const [isMobileConceptOpen, setIsMobileConceptOpen] = useState(false);
+  const [mobileSlideIndex, setMobileSlideIndex] = useState(0);
   const scrollContainerRef = useRef<HTMLElement>(null);
+  const mobileGalleryRef = useRef<HTMLDivElement>(null);
   const footerRef = useRef<HTMLDivElement>(null);
   const navigatorRef = useRef<HTMLElement>(null);
   const snapAnimationRef = useRef<number | null>(null);
@@ -54,6 +57,7 @@ const ProjectDetail = () => {
       document.getElementById(resolvedId)?.scrollIntoView();
     } else {
       scrollContainerRef.current?.scrollTo(0, 0);
+      mobileGalleryRef.current?.scrollTo(0, 0);
     }
   }, [designerId, location.hash]);
 
@@ -260,31 +264,65 @@ const ProjectDetail = () => {
       <div className="project-detail__veil fixed inset-0" aria-hidden="true" />
 
       <div className="relative z-10">
-        {/* 모바일 디자인 수정 영역 (768px 미만): md:hidden으로 데스크톱에서는 숨깁니다.
-            mx-2: 바깥 좌우 여백. 아래 hidden md:block 영역은 데스크톱 전용입니다. */}
-        <div className="mx-2 md:hidden">
-          {/* 모바일 상단 바: h-11은 높이, bg-black은 배경색입니다. */}
-          <div className="relative flex h-11 items-center justify-center bg-black text-base font-semibold">
+        <div className="flex h-[calc(100svh-var(--header-height))] flex-col md:hidden">
+          <div className="relative flex h-11 shrink-0 items-center justify-center bg-black text-base font-semibold">
             <Link to="/project" aria-label="프로젝트 목록으로 돌아가기" className="absolute inset-y-0 left-2 flex w-11 items-center justify-center">
               <img src="/images/icon/arrowLeft.png" alt="" className="h-4 w-auto" />
             </Link>
-            <Link to={`/designer/${designer.id}`}>{designer.name}</Link>
+            {mobileSlideIndex === 0 ? (
+              <span>{designer.conceptName || "컨셉 제목"}</span>
+            ) : (
+              <Link to={`/designer/${designer.id}`}>{designer.name}</Link>
+            )}
           </div>
 
-          {/* 모바일 본문 여백: px-5 좌우, pt-7 상단, pb-12 하단.
-              제목 text-base, 본문 text-sm, leading-[1.6]으로 글자 크기와 행간을 조절합니다. */}
-          <div className="px-5 pb-12 pt-7">
-            {/* 1. 컨셉 제목과 설명 — 실제 문구는 src/data/designers.ts에서 수정합니다. */}
-            <section>
-              <h1 className="text-base font-semibold">{designer.conceptName || "컨셉 제목"}</h1>
-              <p className="mt-3 whitespace-pre-line text-sm leading-[1.6] text-white/85">{conceptDescription}</p>
+          <div
+            ref={mobileGalleryRef}
+            className="flex min-h-0 flex-1 snap-x snap-mandatory overflow-x-auto overscroll-x-contain"
+            aria-label="개인 프로젝트 갤러리"
+            tabIndex={0}
+            onScroll={(event) => {
+              const gallery = event.currentTarget;
+              setMobileSlideIndex(Math.round(gallery.scrollLeft / gallery.clientWidth));
+            }}
+          >
+            <section className="relative h-full min-w-full snap-start touch-pan-x overflow-hidden" aria-label="모션 포스터 썸네일">
+              <button
+                type="button"
+                className="h-full w-full cursor-pointer"
+                onClick={() => setIsMobileConceptOpen((isOpen) => !isOpen)}
+                aria-expanded={isMobileConceptOpen}
+                aria-controls="mobile-project-concept"
+                aria-label={`${designer.conceptName || "컨셉"} 설명 ${isMobileConceptOpen ? "닫기" : "보기"}`}
+              >
+                <img
+                  src={backgroundImage}
+                  alt={`${designer.motionPosterTitle || designer.name} 모션 포스터`}
+                  className="h-full w-full object-cover"
+                />
+              </button>
+              {isMobileConceptOpen ? (
+                <div id="mobile-project-concept" className="absolute inset-0 flex items-center justify-center bg-[#000101]/80 px-6 py-8 text-white">
+                  <div>
+                    <p className="whitespace-pre-line text-sm leading-[1.6]">{conceptDescription}</p>
+                    <button type="button" className="mt-6 text-sm underline underline-offset-4" onClick={() => setIsMobileConceptOpen(false)}>닫기</button>
+                  </div>
+                </div>
+              ) : (
+                <div id="mobile-project-concept" className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/80 to-transparent px-5 pb-8 pt-16 text-center text-sm text-white/60">
+                  이미지를 터치하면 컨셉 설명이 보입니다.
+                </div>
+              )}
             </section>
 
-            {/* 2. 인터랙션 설명과 시나리오 — mt-10은 섹션 사이 간격입니다. */}
-            <section id="mobile-individual-interaction" className="mt-10">
+            <section className="h-full min-w-full snap-start overflow-y-auto px-5 pb-8 pt-7">
+              <h2 className="text-base font-semibold">{designer.motionPosterTitle || "포스터 제목"}</h2>
+              <p className="mt-3 whitespace-pre-line text-sm leading-[1.6] text-white/85">{motionPosterDescription}</p>
+            </section>
+
+            <section id="mobile-individual-interaction" className="h-full min-w-full snap-start overflow-y-auto px-5 pb-8 pt-7">
               <h2 className="text-base font-semibold">{designer.interactionTitle || "인터랙션 제목"}</h2>
               <p className="mt-3 whitespace-pre-line text-sm leading-[1.6] text-white/85">{interactionDescription}</p>
-              {/* 시나리오 이미지 비율: aspect-[1.58], 카드 사이 간격: space-y-3. */}
               <div className="mt-10 space-y-3">
                 {[2, 3, 4].map((index) => (
                   <figure key={index}>
@@ -295,8 +333,7 @@ const ProjectDetail = () => {
               </div>
             </section>
 
-            {/* 3. 시연 영상 */}
-            <section className="mt-10">
+            <section className="h-full min-w-full snap-start overflow-y-auto px-5 pb-8 pt-7">
               <h2 className="mb-3 text-base font-semibold">시연 영상</h2>
               <button
                 type="button"
@@ -307,13 +344,6 @@ const ProjectDetail = () => {
               >
                 <span className="flex h-12 w-12 items-center justify-center rounded-full bg-black/60" aria-hidden="true">▶</span>
               </button>
-            </section>
-
-            <section className="mt-10">
-              {/* 4. 포스터 — 아래 w-[53%]는 이미지 너비, aspect-[9/16]은 이미지 비율입니다. */}
-              <h2 className="text-base font-semibold">{designer.motionPosterTitle || "포스터 제목"}</h2>
-              <p className="mt-3 whitespace-pre-line text-sm leading-[1.6] text-white/85">{motionPosterDescription}</p>
-              <MediaPlaceholder className="mx-auto mt-12 aspect-[9/16] w-[53%]" imageClassName="object-contain" src={backgroundImage} alt={`${designer.motionPosterTitle || designer.name} 모션 포스터`} />
             </section>
           </div>
         </div>
@@ -401,7 +431,7 @@ const ProjectDetail = () => {
             </div>
           </div>
 
-          <div className="mt-20 grid gap-8 sm:grid-cols-3">
+          <div className="mt-[24px] grid gap-8 sm:grid-cols-3">
             {[2, 3, 4].map((index) => (
               <figure key={index}>
                 <MediaPlaceholder src={detail?.interactionImages?.[index]} alt={`${designer.interactionTitle} 시나리오 ${index - 1}`} />
@@ -421,11 +451,10 @@ const ProjectDetail = () => {
         <ScenarioVideoModal onClose={() => setIsScenarioVideoOpen(false)} />
       )}
 
-      {/* 공통 이전·다음 내비게이션: 접두사 없는 클래스는 모바일 기본값입니다.
-          md: 클래스는 768px 이상에 적용됩니다. 모바일 높이 h-14, 좌우 여백 mx-2. */}
+      {/* 이전·다음 내비게이션은 데스크톱에서만 표시합니다. */}
       <nav
         ref={navigatorRef}
-        className="project-detail__navigator relative mx-2 z-20 grid h-14 grid-cols-2 md:fixed md:inset-x-0 md:bottom-0 md:mx-0 md:h-16 md:grid-cols-3 items-center bg-[#0066AD] px-5 text-base sm:px-10 lg:px-[clamp(56px,6.25vw,120px)]"
+        className="project-detail__navigator relative mx-2 z-20 hidden h-14 grid-cols-2 md:fixed md:inset-x-0 md:bottom-0 md:mx-0 md:grid md:h-16 md:grid-cols-3 items-center bg-[#0066AD] px-5 text-base sm:px-10 lg:px-[clamp(56px,6.25vw,120px)]"
         style={{
           backgroundImage:
             "linear-gradient(rgba(0, 102, 173, 0.5), rgba(0, 102, 173, 0.5)), url('/images/blue_bg-upscaled.png')",

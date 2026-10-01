@@ -1,8 +1,25 @@
+import { useState, type MouseEvent } from "react";
 import { designers } from "../data/designers";
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
 
 const Designer = () => {
+  const [previewedDesignerId, setPreviewedDesignerId] = useState<string | null>(null);
+
+  const handleCardClick = (event: MouseEvent<HTMLAnchorElement>, designerId: string) => {
+    if (
+      event.detail === 0 ||
+      !window.matchMedia("(hover: none)").matches ||
+      previewedDesignerId === designerId ||
+      (event.target instanceof Element && event.target.closest("[data-designer-arrow]"))
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+    setPreviewedDesignerId(designerId);
+  };
+
   // ALL 제외
   const designerList = designers.filter(
     (designer) => designer.id !== "all"
@@ -40,7 +57,10 @@ const Designer = () => {
                 key={designer.id}
                 to={`/designer/${designer.id}`}
                 aria-label={`${designer.name} 디자이너 상세 페이지로 이동`}
-                className={`designer-card group relative aspect-[5/6] w-auto xl:col-span-2 ${
+                onClick={(event) => handleCardClick(event, designer.id)}
+                className={`designer-card relative aspect-[5/6] w-auto xl:col-span-2 ${
+                  previewedDesignerId === designer.id ? "designer-card--previewed" : ""
+                } ${
                   index === designerList.length - 3
                     ? "designer-card-last-row-start xl:col-start-3"
                     : ""
@@ -61,7 +81,7 @@ const Designer = () => {
                   src={`/images/object/paper/${imageNumber}_paper.png`}
                   alt=""
                   aria-hidden="true"
-                  className={`${imageClassName} z-10 transition-opacity duration-300 group-hover:opacity-0`}
+                  className={`${imageClassName} designer-hover-paper z-10 transition-opacity duration-300`}
                 />
                 <img
                   src={`/images/object/original/${imageNumber}_ori.png`}
@@ -69,6 +89,13 @@ const Designer = () => {
                   aria-hidden="true"
                   className={`${imageClassName} designer-hover-original z-20 opacity-0`}
                 />
+                <span
+                  data-designer-arrow
+                  className="designer-card__arrow absolute right-3 top-1/2 z-30 -translate-y-1/2 md:right-5"
+                  aria-hidden="true"
+                >
+                  <img src="/images/icon/arrow-right.svg" alt="" width="24" height="24" />
+                </span>
               </Link>
             );
           })}

@@ -9,6 +9,7 @@ import {
 import { Link } from "react-router-dom";
 
 import Footer from "../components/Footer";
+import HomeSectionNav from "../components/HomeSectionNav";
 import KakaoMap from "../components/KakaoMap";
 import { designers } from "../data/designers";
 import {
@@ -882,7 +883,9 @@ function Home() {
 
   return (
     <main className="relative min-h-screen w-full bg-[url('/images/background.png')] bg-[length:400%_auto] bg-top bg-repeat-y text-[#111] lg:bg-cover lg:bg-center lg:bg-no-repeat">
+      <HomeSectionNav />
       <section
+        id="main-banner"
         ref={sceneRef}
         aria-label="파란 종이를 움직여 색을 발견하는 메인 배너"
         onPointerMove={handlePointerMove}
@@ -957,6 +960,7 @@ function Home() {
       </section>
 
       <section
+        id="exhibition-overview"
         ref={overviewRef}
         className="relative flex min-h-[calc(100svh-var(--header-height))] scroll-mt-[var(--header-height)] flex-col items-center justify-center px-6 py-20 text-center sm:px-10 lg:px-[clamp(80px,13vw,200px)]"
       >
@@ -1003,7 +1007,7 @@ function Home() {
         className="scroll-mt-[var(--header-height)] px-6 pt-[160px] pb-[200px] sm:px-10 sm:py-[clamp(64px,8vw,120px)] lg:px-[clamp(80px,13vw,200px)]"
       >
         <h2 className="text-center text-[clamp(24px,2.4vw,32px)] font-semibold text-[#000101]">
-          OPENING
+          오프닝 영상
         </h2>
 
         <div className="mx-auto mt-12 aspect-video w-full max-w-[1080px] overflow-hidden bg-[#d9d9d9]">
@@ -1011,24 +1015,25 @@ function Home() {
             <iframe
               className="h-full w-full"
               src={openingEmbedUrl}
-              title="OPENING 영상"
+              title="오프닝 영상"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               referrerPolicy="strict-origin-when-cross-origin"
               allowFullScreen
             />
           ) : (
             <div className="flex h-full items-center justify-center text-center text-sm font-medium text-[#777] sm:text-base">
-              OPENING VIDEO
+              오프닝 영상
             </div>
           )}
         </div>
       </section>
 
       <section
+        id="exhibition-members"
         aria-labelledby="exhibition-members-title"
-        className="px-6 pb-[clamp(96px,12vw,180px)] pt-[clamp(48px,7vw,100px)] sm:px-10 lg:px-[clamp(80px,13vw,200px)] text-[#000101]"
+        className="flex min-h-[calc(100svh-var(--header-height))] scroll-mt-[var(--header-height)] flex-col justify-center px-6 py-[clamp(64px,8vh,120px)] sm:px-10 lg:px-[clamp(80px,13vw,200px)] text-[#000101]"
       >
-        <h2 className="text-center text-[clamp(24px,2.4vw,32px)] font-semibold">
+        <h2 id="exhibition-members-title" className="text-center text-[clamp(24px,2.4vw,32px)] font-semibold">
             전시 인원 소개
           </h2>
 
@@ -1075,6 +1080,7 @@ function Home() {
       </section>
 
       <section
+        id="offline-information"
         aria-labelledby="offline-information-title"
         className="px-6 pb-[clamp(96px,12vw,180px)] pt-[clamp(64px,8vw,120px)] sm:px-10 lg:px-[clamp(80px,13vw,200px)]"
       >
@@ -1118,6 +1124,7 @@ function Home() {
       </section>
 
       <section
+        id="professors"
         aria-labelledby="professors-title"
         className="px-6 pb-[clamp(112px,14vw,220px)] pt-[clamp(64px,8vw,120px)] sm:px-10 lg:px-[clamp(80px,13vw,200px)]"
       >

@@ -334,19 +334,19 @@ const TeamProjectDetail = () => {
             <SectionTitle>TEAM FILM</SectionTitle>
           </div>
 
-          <div className="grid gap-8 lg:grid-cols-[4fr_1fr] lg:items-start">
+          <div className="grid gap-8 lg:grid-cols-[3.6fr_1.4fr] lg:items-start">
             {filmEmbedUrl ? (
               <iframe
                 key={filmEmbedUrl}
                 src={filmEmbedUrl}
                 title={`${project.videoTitle} 팀 필름`}
-                className="aspect-video w-full border-0 bg-black"
+                className="aspect-video w-[90%] border-0 bg-black lg:w-full"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
               />
             ) : (
-              <MediaPanel src={detail?.filmImage} alt={`${project.videoTitle} 영상`} className="aspect-video" />
+              <MediaPanel src={detail?.filmImage} alt={`${project.videoTitle} 영상`} className="aspect-video w-[90%] lg:w-full" />
             )}
             <section>
               <h3 className="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-2xl font-semibold">
@@ -378,7 +378,7 @@ const TeamProjectDetail = () => {
             </div>
           </div>
 
-          <div className="mt-20 grid gap-8 sm:grid-cols-3">
+          <div className="mt-[24px] grid gap-8 sm:grid-cols-3">
             {[2, 3, 4].map((index) => (
               <figure key={index}>
                 <MediaPanel src={detail?.interactionImages?.[index]} alt={`${project.interactionTitle} 시나리오 ${index - 1}`} className="aspect-video" />

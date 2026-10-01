@@ -63,7 +63,7 @@ const MediaPanel = ({ label, src, hoverTitle, to }: MediaPanelProps) => {
                 {hoverTitle}
               </p>
               <img
-                src="/images/icon/arrow-right.svg"
+                src="/images/icon/arrow-right-white.svg"
                 alt=""
                 aria-hidden="true"
                 className="h-5 w-5 shrink-0 self-center lg:hidden"
