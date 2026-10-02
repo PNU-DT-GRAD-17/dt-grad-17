@@ -101,9 +101,10 @@ export const teamProjects: Record<TeamCategory, TeamProject> = {
     link: "/project/team/web",
     members: getTeamMembers("WEB"),
     projectDetail: {
+      filmUrl: "https://www.youtube.com/watch?v=KIed24YqaL0",
       interactionImages: [
-        "/images/team/web-interaction/side-view.png",
         "/images/team/web-interaction/top-view.png",
+        "/images/team/web-interaction/side-view.png",
         "/images/team/web-interaction/scenario-01.png",
         "/images/team/web-interaction/scenario-02.png",
         "/images/team/web-interaction/scenario-03.png",

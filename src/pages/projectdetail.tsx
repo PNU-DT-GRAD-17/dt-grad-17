@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link, Navigate, useLocation, useParams } from "react-router-dom";
 
 import Footer from "../components/Footer";
+import InteractionDrawings from "../components/InteractionDrawings";
 import MobileProjectHeader from "../components/MobileProjectHeader";
 import { ScenarioVideoLink, ScenarioVideoModal } from "../components/ScenarioVideo";
 import { designers } from "../data/designers";
@@ -322,18 +323,7 @@ const ProjectDetail = () => {
                 <span className="text-sm font-medium text-[#45BFE6]">interaction</span>
               </h2>
               <p className="mt-6 whitespace-pre-line text-[16px] leading-[1.6] text-white/85">{interactionDescription}</p>
-              <div className="mt-8 grid w-full grid-cols-1">
-                {["도면", "배치도"].map((label, index) => (
-                  <figure key={label}>
-                    <MediaPlaceholder
-                      className="aspect-square"
-                      imageClassName="object-contain"
-                      src={detail?.interactionImages?.[index]}
-                      alt={`${designer.interactionTitle || "인터랙션"} ${label}`}
-                    />
-                  </figure>
-                ))}
-              </div>
+              <InteractionDrawings key={designer.id} images={detail?.interactionImages} title={designer.interactionTitle || "인터랙션"} />
             </section>
 
             <section className="flex h-full min-w-full snap-start flex-col overflow-hidden">

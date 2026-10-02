@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link, Navigate, useLocation, useParams } from "react-router-dom";
 
 import Footer from "../components/Footer";
+import InteractionDrawings from "../components/InteractionDrawings";
 import MobileProjectHeader from "../components/MobileProjectHeader";
 import { ScenarioVideoLink, ScenarioVideoModal } from "../components/ScenarioVideo";
 import { teamProjects, type TeamCategory } from "../data/team";
@@ -373,11 +374,7 @@ const TeamProjectDetail = () => {
                 <span className="text-sm font-medium text-[#45BFE6]">team interaction</span>
               </h2>
               <p className="mt-6 whitespace-pre-line text-[16px] leading-[1.6] text-white/85">{interactionDescription}</p>
-              <div className="mt-8 grid w-full grid-cols-1">
-                {["도면", "배치도"].map((label, index) => (
-                  <MediaPanel key={label} src={detail?.interactionImages?.[index]} alt={`${project.interactionTitle} ${label}`} className="aspect-square" imageClassName="object-contain" />
-                ))}
-              </div>
+              <InteractionDrawings key={category} images={detail?.interactionImages} title={project.interactionTitle || "팀 인터랙션"} />
             </section>
 
             <section className="flex h-full w-full shrink-0 snap-start flex-col overflow-hidden">
