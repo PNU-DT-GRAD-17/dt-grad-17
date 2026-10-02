@@ -266,6 +266,25 @@ html, body, #root{
   outline-color: #45bfe6;
 }
 
+.mobile-project-designer-link::after {
+  background-color: #45bee6;
+}
+
+.mobile-project-designer-link:hover,
+.mobile-project-designer-link:focus-visible,
+.mobile-project-designer-link[data-active="true"] {
+  color: #45bee6;
+  font-weight: 700;
+}
+
+.mobile-project-designer-link[data-active="true"]::after {
+  transform: scaleX(1);
+}
+
+.mobile-project-designer-link:focus-visible {
+  outline-color: #45bee6;
+}
+
 .designer-team-link::after {
   bottom: 1px;
 }

@@ -22,6 +22,7 @@ export type TeamProject = {
     filmUrl?: string;
     scenarioUrl?: string;
     interactionImages?: string[];
+    scenarioDescriptions?: string[];
   };
 };
 
@@ -99,5 +100,19 @@ export const teamProjects: Record<TeamCategory, TeamProject> = {
     objectImage: "/images/team/web.png",
     link: "/project/team/web",
     members: getTeamMembers("WEB"),
+    projectDetail: {
+      interactionImages: [
+        "/images/team/web-interaction/side-view.png",
+        "/images/team/web-interaction/top-view.png",
+        "/images/team/web-interaction/scenario-01.png",
+        "/images/team/web-interaction/scenario-02.png",
+        "/images/team/web-interaction/scenario-03.png",
+      ],
+      scenarioDescriptions: [
+        "개별 작품과 상호작용하며 빈 도장판을 하나씩 채워나갑니다.",
+        "모든 체험이 담긴 도장판을 지정된 카메라에 인식시킵니다.",
+        "서로 다른 관람객의 흔적이 모여 화면의 픽셀로 변환되어 작품을 완성해 나갑니다.",
+      ],
+    },
   },
 };

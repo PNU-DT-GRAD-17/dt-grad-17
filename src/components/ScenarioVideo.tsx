@@ -38,16 +38,22 @@ export const ScenarioVideoModal = ({
           onClick={onClose}
           aria-label="시연 영상 닫기"
           autoFocus
-          className="flex h-16 w-16 cursor-pointer items-center justify-center text-[#BABDC1] transition-colors hover:text-[#45bee6] focus-visible:text-[#45bee6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-current"
+          className="flex h-12 w-12 cursor-pointer appearance-none items-center justify-center border-0 bg-transparent p-0 text-[#45bee6] outline-none [-webkit-tap-highlight-color:transparent] transition-colors md:h-16 md:w-16 md:text-[#BABDC1] hover:text-[#45bee6] focus-visible:text-[#45bee6] md:focus-visible:outline md:focus-visible:outline-2 md:focus-visible:outline-current"
         >
-          <span
+          <svg
             aria-hidden="true"
-            className="h-16 w-16 bg-current"
-            style={{
-              mask: "url('/images/icon/x.svg') center / contain no-repeat",
-              WebkitMask: "url('/images/icon/x.svg') center / contain no-repeat",
-            }}
-          />
+            viewBox="0 0 24 24"
+            fill="none"
+            className="h-full w-full"
+          >
+            <path
+              d="M6.4 6.4L17.6 17.6M17.6 6.4L6.4 17.6"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              vectorEffect="non-scaling-stroke"
+            />
+          </svg>
         </button>
         <iframe
           src={embedUrl}

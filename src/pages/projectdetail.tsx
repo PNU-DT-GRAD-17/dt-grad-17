@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link, Navigate, useLocation, useParams } from "react-router-dom";
 
 import Footer from "../components/Footer";
+import MobileProjectHeader from "../components/MobileProjectHeader";
 import { ScenarioVideoLink, ScenarioVideoModal } from "../components/ScenarioVideo";
 import { designers } from "../data/designers";
 
@@ -254,7 +255,7 @@ const ProjectDetail = () => {
   return (
     <main
       ref={scrollContainerRef}
-      className="project-detail relative h-[calc(100svh-var(--header-height))] overflow-x-hidden overflow-y-auto overscroll-y-contain bg-[#0a171e] text-white"
+      className="project-detail relative h-[calc(100svh-var(--header-height))] overflow-x-hidden overflow-y-hidden overscroll-y-contain bg-[#0a171e] text-white md:overflow-y-auto"
     >
       <div
         className="project-detail__poster fixed inset-0 bg-cover bg-center bg-no-repeat"
@@ -265,25 +266,18 @@ const ProjectDetail = () => {
 
       <div className="relative z-10">
         <div className="flex h-[calc(100svh-var(--header-height))] flex-col md:hidden">
-          <div className="relative flex h-11 shrink-0 items-center justify-center bg-black text-base font-semibold">
-            <Link to="/project" aria-label="프로젝트 목록으로 돌아가기" className="absolute inset-y-0 left-2 flex w-11 items-center justify-center">
-              <img src="/images/icon/arrowLeft.png" alt="" className="h-4 w-auto" />
-            </Link>
-            {mobileSlideIndex === 0 ? (
-              <span>{designer.conceptName || "컨셉 제목"}</span>
-            ) : (
-              <Link to={`/designer/${designer.id}`}>{designer.name}</Link>
-            )}
-          </div>
+          <MobileProjectHeader key={designer.id} label={designer.name} currentPath={`/project/${designer.id}`} />
 
           <div
             ref={mobileGalleryRef}
-            className="flex min-h-0 flex-1 snap-x snap-mandatory overflow-x-auto overscroll-x-contain"
+            className="flex min-h-0 flex-1 snap-x snap-mandatory overflow-x-auto overflow-y-hidden overscroll-x-none"
             aria-label="개인 프로젝트 갤러리"
             tabIndex={0}
             onScroll={(event) => {
               const gallery = event.currentTarget;
-              setMobileSlideIndex(Math.round(gallery.scrollLeft / gallery.clientWidth));
+              if (gallery.clientWidth > 0) {
+                setMobileSlideIndex(Math.max(0, Math.min(4, Math.round(gallery.scrollLeft / gallery.clientWidth))));
+              }
             }}
           >
             <section className="relative h-full min-w-full snap-start touch-pan-x overflow-hidden" aria-label="모션 포스터 썸네일">
@@ -302,12 +296,19 @@ const ProjectDetail = () => {
                 />
               </button>
               {isMobileConceptOpen ? (
-                <div id="mobile-project-concept" className="absolute inset-0 flex items-center justify-center bg-[#000101]/80 px-6 py-8 text-white">
-                  <div>
-                    <p className="whitespace-pre-line text-sm leading-[1.6]">{conceptDescription}</p>
-                    <button type="button" className="mt-6 text-sm underline underline-offset-4" onClick={() => setIsMobileConceptOpen(false)}>닫기</button>
-                  </div>
-                </div>
+                <button
+                  id="mobile-project-concept"
+                  type="button"
+                  className="absolute inset-0 flex w-full cursor-pointer flex-col items-start overflow-hidden bg-[#000101]/60 px-5 pb-8 pt-7 text-left text-white"
+                  onClick={() => setIsMobileConceptOpen(false)}
+                  aria-label="컨셉 설명 닫고 썸네일 보기"
+                >
+                  <span className="flex shrink-0 flex-wrap items-baseline gap-x-3 gap-y-1 text-3xl font-semibold">
+                    <span>{designer.conceptName || "컨셉 제목"}</span>
+                    <span className="text-sm font-medium text-[#45BFE6]">concept</span>
+                  </span>
+                  <span className="mt-6 shrink-0 whitespace-pre-line text-[16px] leading-[1.6] text-white/85">{conceptDescription}</span>
+                </button>
               ) : (
                 <div id="mobile-project-concept" className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/80 to-transparent px-5 pb-8 pt-16 text-center text-sm text-white/60">
                   이미지를 터치하면 컨셉 설명이 보입니다.
@@ -315,37 +316,75 @@ const ProjectDetail = () => {
               )}
             </section>
 
-            <section className="h-full min-w-full snap-start overflow-y-auto px-5 pb-8 pt-7">
-              <h2 className="text-base font-semibold">{designer.motionPosterTitle || "포스터 제목"}</h2>
-              <p className="mt-3 whitespace-pre-line text-sm leading-[1.6] text-white/85">{motionPosterDescription}</p>
+            <section id="mobile-individual-interaction" className="h-full min-w-full snap-start overflow-y-auto px-5 pb-8 pt-7">
+              <h2 className="flex shrink-0 flex-wrap items-baseline gap-x-3 gap-y-1 text-3xl font-semibold">
+                <span>{designer.interactionTitle || "인터랙션 제목"}</span>
+                <span className="text-sm font-medium text-[#45BFE6]">interaction</span>
+              </h2>
+              <p className="mt-6 whitespace-pre-line text-[16px] leading-[1.6] text-white/85">{interactionDescription}</p>
+              <div className="mt-8 grid w-full grid-cols-1">
+                {["도면", "배치도"].map((label, index) => (
+                  <figure key={label}>
+                    <MediaPlaceholder
+                      className="aspect-square"
+                      imageClassName="object-contain"
+                      src={detail?.interactionImages?.[index]}
+                      alt={`${designer.interactionTitle || "인터랙션"} ${label}`}
+                    />
+                  </figure>
+                ))}
+              </div>
             </section>
 
-            <section id="mobile-individual-interaction" className="h-full min-w-full snap-start overflow-y-auto px-5 pb-8 pt-7">
-              <h2 className="text-base font-semibold">{designer.interactionTitle || "인터랙션 제목"}</h2>
-              <p className="mt-3 whitespace-pre-line text-sm leading-[1.6] text-white/85">{interactionDescription}</p>
-              <div className="mt-10 space-y-3">
+            <section className="flex h-full min-w-full snap-start flex-col overflow-hidden">
+              <div className="flex shrink-0 justify-center px-5 pb-6">
+                <ScenarioVideoLink onClick={() => setIsScenarioVideoOpen(true)} />
+              </div>
+              <div className="min-h-0 flex-1 space-y-6 overflow-y-auto px-5 pb-8">
                 {[2, 3, 4].map((index) => (
                   <figure key={index}>
-                    <MediaPlaceholder className="aspect-[1.58]" src={detail?.interactionImages?.[index]} alt={`${designer.interactionTitle} 시나리오 ${index - 1}`} />
+                    <MediaPlaceholder className="aspect-[16/9]" src={detail?.interactionImages?.[index]} alt={`${designer.interactionTitle} 시나리오 ${index - 1}`} />
                     <figcaption className="mt-3 text-sm text-white/80">시나리오 설명</figcaption>
                   </figure>
                 ))}
               </div>
             </section>
 
-            <section className="h-full min-w-full snap-start overflow-y-auto px-5 pb-8 pt-7">
-              <h2 className="mb-3 text-base font-semibold">시연 영상</h2>
-              <button
-                type="button"
-                onClick={() => setIsScenarioVideoOpen(true)}
-                aria-haspopup="dialog"
-                className="flex aspect-[1.58] w-full cursor-pointer items-center justify-center bg-white/30"
-                aria-label="시연 영상 재생"
-              >
-                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-black/60" aria-hidden="true">▶</span>
-              </button>
+            <section className="h-full min-w-full snap-start touch-pan-x overflow-hidden" aria-label="모션 포스터">
+              <video
+                src={detail?.motionPosterVideoUrl}
+                poster={backgroundImage}
+                aria-label={`${designer.motionPosterTitle || designer.name} 모션 포스터 영상`}
+                className="h-full w-full object-contain"
+                controls
+                playsInline
+                loop
+                preload="metadata"
+              />
+            </section>
+
+            <section className="h-full min-w-full snap-start touch-pan-x overflow-hidden px-5 pb-8 pt-7" aria-label="모션 포스터 설명">
+              <h2 className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-3xl font-semibold">
+                <span>{designer.motionPosterTitle || "포스터 제목"}</span>
+                <span className="text-sm font-medium text-[#45BFE6]">motion poster</span>
+              </h2>
+              <p className="mt-6 whitespace-pre-line text-[16px] leading-[1.6] text-white/85">{motionPosterDescription}</p>
             </section>
           </div>
+        </div>
+
+        <div
+          className="pointer-events-none fixed bottom-[calc(20px+env(safe-area-inset-bottom))] left-1/2 z-30 flex -translate-x-1/2 items-center gap-2 md:hidden"
+          role="img"
+          aria-label={`전체 5페이지 중 ${mobileSlideIndex + 1}페이지`}
+        >
+          {Array.from({ length: 5 }, (_, index) => (
+            <span
+              key={index}
+              aria-hidden="true"
+              className={`h-1.5 w-1.5 rounded-full transition-colors ${index === mobileSlideIndex ? "bg-white/80" : "bg-white/40"}`}
+            />
+          ))}
         </div>
 
         {/* 데스크톱 전용 레이아웃 (768px 이상): 모바일 디자인 수정 시 이 영역은 유지합니다. */}
@@ -402,7 +441,7 @@ const ProjectDetail = () => {
               <section>
                 <h2 className="flex items-baseline gap-3 text-2xl font-semibold">
                   {designer.motionPosterTitle || "포스터 제목"}
-                  <span className="text-sm font-medium text-[#45BFE6]">poster</span>
+                  <span className="text-sm font-medium text-[#45BFE6]">motion poster</span>
                 </h2>
                 <p className="mt-4 max-w-[920px] whitespace-pre-line text-sm leading-7 text-white">{motionPosterDescription}</p>
               </section>

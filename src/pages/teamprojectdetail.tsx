@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link, Navigate, useLocation, useParams } from "react-router-dom";
 
 import Footer from "../components/Footer";
+import MobileProjectHeader from "../components/MobileProjectHeader";
 import { ScenarioVideoLink, ScenarioVideoModal } from "../components/ScenarioVideo";
 import { teamProjects, type TeamCategory } from "../data/team";
 
@@ -60,6 +61,10 @@ const SectionTitle = ({ children }: { children: string }) => (
 
 const TeamProjectDetail = () => {
   const [isScenarioVideoOpen, setIsScenarioVideoOpen] = useState(false);
+  const [isMobileConceptOpen, setIsMobileConceptOpen] = useState(false);
+  const [mobileSlideIndex, setMobileSlideIndex] = useState(0);
+  const [activeCreditId, setActiveCreditId] = useState<string | null>(null);
+  const mobileGalleryRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLElement>(null);
   const footerRef = useRef<HTMLDivElement>(null);
   const navigatorRef = useRef<HTMLElement>(null);
@@ -77,9 +82,13 @@ const TeamProjectDetail = () => {
     const targetId = location.hash.slice(1);
 
     if (targetId) {
-      document.getElementById(targetId)?.scrollIntoView();
+      const resolvedId = window.innerWidth < 768 && ["team-film", "team-interaction"].includes(targetId)
+        ? `mobile-${targetId}`
+        : targetId;
+      document.getElementById(resolvedId)?.scrollIntoView();
     } else {
       scrollContainerRef.current?.scrollTo(0, 0);
+      mobileGalleryRef.current?.scrollTo(0, 0);
     }
   }, [categoryParam, location.hash]);
 
@@ -93,6 +102,10 @@ const TeamProjectDetail = () => {
     }
 
     const positionNavigator = () => {
+      if (window.innerWidth < 768) {
+        navigator.style.transform = "";
+        return;
+      }
       const lastFrameTop = (container.clientHeight - 64) * 2;
 
       if (container.scrollTop <= lastFrameTop + 1) {
@@ -176,6 +189,7 @@ const TeamProjectDetail = () => {
     };
 
     const handleWheel = (event: WheelEvent) => {
+      if (window.innerWidth < 768) return;
       const frameHeight = container.clientHeight - 64;
       const lastFrameTop = frameHeight * 2;
       const isEnteringFooter =
@@ -268,7 +282,7 @@ const TeamProjectDetail = () => {
   return (
     <main
       ref={scrollContainerRef}
-      className="project-detail relative h-[calc(100svh-var(--header-height))] overflow-x-hidden overflow-y-auto overscroll-y-contain bg-[#0a171e] text-white"
+      className="project-detail relative h-[calc(100svh-var(--header-height))] overflow-x-hidden overflow-y-hidden overscroll-y-contain bg-[#0a171e] text-white md:overflow-y-auto"
     >
       <div
         className="project-detail__poster fixed inset-0 bg-cover bg-center bg-no-repeat"
@@ -278,6 +292,140 @@ const TeamProjectDetail = () => {
       <div className="project-detail__veil fixed inset-0" aria-hidden="true" />
 
       <div className="relative z-10">
+        <div className="flex h-[calc(100svh-var(--header-height))] flex-col md:hidden">
+          <MobileProjectHeader key={category} label={category} currentPath={`/project/team/${category.toLowerCase()}`} />
+
+          <div
+            ref={mobileGalleryRef}
+            className="flex min-h-0 flex-1 snap-x snap-mandatory overflow-x-auto overflow-y-hidden overscroll-x-none"
+            aria-label="팀 프로젝트 갤러리"
+            tabIndex={0}
+            onScroll={(event) => {
+              const gallery = event.currentTarget;
+              if (gallery.clientWidth > 0) {
+                setMobileSlideIndex(Math.max(0, Math.min(3, Math.round(gallery.scrollLeft / gallery.clientWidth))));
+              }
+            }}
+          >
+            <section className="relative h-full w-full shrink-0 snap-start touch-pan-x overflow-hidden" aria-label="팀 컨셉 이미지">
+              <button
+                type="button"
+                className="h-full w-full cursor-pointer"
+                onClick={() => setIsMobileConceptOpen((isOpen) => !isOpen)}
+                aria-expanded={isMobileConceptOpen}
+                aria-controls="mobile-team-concept"
+                aria-label={`${project.conceptName || "컨셉"} 설명 ${isMobileConceptOpen ? "닫기" : "보기"}`}
+              >
+                <img src={backgroundImage} alt={`${project.title} 팀 컨셉 이미지`} className="h-full w-full object-cover" />
+              </button>
+              {isMobileConceptOpen ? (
+                <div
+                  id="mobile-team-concept"
+                  className="absolute inset-0 flex w-full flex-col items-start overflow-hidden bg-[#000101]/60 px-5 pb-[calc(52px+env(safe-area-inset-bottom))] pt-7 text-left text-white"
+                >
+                  <button
+                    type="button"
+                    className="absolute inset-0 h-full w-full cursor-pointer"
+                    onClick={() => {
+                      setIsMobileConceptOpen(false);
+                      setActiveCreditId(null);
+                    }}
+                    aria-label="컨셉 설명 닫고 이미지 보기"
+                  />
+                  <span className="pointer-events-none relative flex shrink-0 flex-wrap items-baseline gap-x-3 gap-y-1 text-3xl font-semibold">
+                    <span>{project.conceptName || "컨셉 제목"}</span>
+                    <span className="text-sm font-medium text-[#45BFE6]">concept</span>
+                  </span>
+                  <span className="pointer-events-none relative mt-6 shrink-0 whitespace-pre-line text-[16px] leading-[1.6] text-white/85">{conceptDescription}</span>
+                  <span className="pointer-events-none relative mt-auto flex w-full shrink-0 flex-col items-start pt-6">
+                    <span className="text-sm font-semibold text-[#45BFE6]">credit</span>
+                    <span className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-lg">
+                      {project.members.map((member) => (
+                        <Link
+                          key={member.id}
+                          to={`/designer/${member.id}`}
+                          className="exhibition-member-link mobile-project-designer-link pointer-events-auto inline-flex transition-colors"
+                          data-active={activeCreditId === member.id}
+                          onClick={(event) => {
+                            if (activeCreditId !== member.id) {
+                              event.preventDefault();
+                              setActiveCreditId(member.id);
+                            }
+                          }}
+                          onBlur={() => setActiveCreditId(null)}
+                        >
+                          {member.name}
+                        </Link>
+                      ))}
+                    </span>
+                  </span>
+                </div>
+              ) : (
+                <div id="mobile-team-concept" className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/80 to-transparent px-5 pb-12 pt-16 text-center text-sm text-white/60">
+                  이미지를 터치하면 컨셉 설명이 보입니다.
+                </div>
+              )}
+            </section>
+
+            <section id="mobile-team-interaction" className="h-full w-full shrink-0 snap-start overflow-y-auto px-5 pb-12 pt-7">
+              <h2 className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-3xl font-semibold">
+                <span>{project.interactionTitle || "인터랙션 제목"}</span>
+                <span className="text-sm font-medium text-[#45BFE6]">team interaction</span>
+              </h2>
+              <p className="mt-6 whitespace-pre-line text-[16px] leading-[1.6] text-white/85">{interactionDescription}</p>
+              <div className="mt-8 grid w-full grid-cols-1">
+                {["도면", "배치도"].map((label, index) => (
+                  <MediaPanel key={label} src={detail?.interactionImages?.[index]} alt={`${project.interactionTitle} ${label}`} className="aspect-square" imageClassName="object-contain" />
+                ))}
+              </div>
+            </section>
+
+            <section className="flex h-full w-full shrink-0 snap-start flex-col overflow-hidden">
+              <div className="flex shrink-0 justify-center px-5 pb-6">
+                <ScenarioVideoLink onClick={() => setIsScenarioVideoOpen(true)} />
+              </div>
+              <div className="min-h-0 flex-1 space-y-6 overflow-y-auto px-5 pb-12">
+                {[2, 3, 4].map((index) => (
+                  <figure key={index}>
+                    <MediaPanel src={detail?.interactionImages?.[index]} alt={`${project.interactionTitle} 시나리오 ${index - 1}`} className="aspect-video" />
+                    <figcaption className="mt-3 text-sm text-white/80">{detail?.scenarioDescriptions?.[index - 2] || "시나리오 설명"}</figcaption>
+                  </figure>
+                ))}
+              </div>
+            </section>
+
+            <section id="mobile-team-film" className="h-full w-full shrink-0 snap-start touch-pan-x overflow-hidden pb-12" aria-label="팀 영상 및 소개">
+              {filmEmbedUrl ? (
+                <iframe
+                  key={filmEmbedUrl}
+                  src={filmEmbedUrl}
+                  title={`${project.videoTitle} 팀 필름`}
+                  className="aspect-video w-full border-0 bg-black"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                />
+              ) : (
+                <MediaPanel src={detail?.filmImage} alt={`${project.videoTitle} 팀 영상`} className="aspect-video w-full" />
+              )}
+              <div className="px-5 pt-7">
+              <h2 className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-3xl font-semibold">
+                <span>{project.videoTitle || "영상 제목"}</span>
+                <span className="text-sm font-medium text-[#45BFE6]">team film</span>
+              </h2>
+              <p className="mt-6 whitespace-pre-line text-[16px] leading-[1.6] text-white/85">{videoDescription}</p>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <div className="pointer-events-none fixed bottom-[calc(20px+env(safe-area-inset-bottom))] left-1/2 z-30 flex -translate-x-1/2 items-center gap-2 md:hidden" role="img" aria-label={`전체 4페이지 중 ${mobileSlideIndex + 1}페이지`}>
+          {Array.from({ length: 4 }, (_, index) => (
+            <span key={index} aria-hidden="true" className={`h-1.5 w-1.5 rounded-full transition-colors ${index === mobileSlideIndex ? "bg-white/80" : "bg-white/40"}`} />
+          ))}
+        </div>
+
+        <div className="hidden md:block">
         <section className="relative mx-auto flex h-[calc(100svh-var(--header-height)-4rem)] max-w-[1920px] overflow-hidden">
           <MediaPanel
             src={backgroundImage}
@@ -322,7 +470,7 @@ const TeamProjectDetail = () => {
             <section className="mt-auto">
               <h1 className="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-2xl font-semibold">
                 {project.conceptName || "컨셉"}
-                <span className="text-sm font-medium text-[#45BFE6]">Team Concept</span>
+                <span className="text-sm font-medium text-[#45BFE6]">team concept</span>
               </h1>
               <p className="mt-4 max-w-[920px] whitespace-pre-line text-sm leading-7 text-white">{conceptDescription}</p>
             </section>
@@ -351,7 +499,7 @@ const TeamProjectDetail = () => {
             <section>
               <h3 className="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-2xl font-semibold">
                 {project.videoTitle || "영상 제목"}
-                <span className="text-sm font-medium text-[#45BFE6]">Team Film</span>
+                <span className="text-sm font-medium text-[#45BFE6]">team film</span>
               </h3>
               <p className="mt-5 whitespace-pre-line text-sm leading-7 text-white">{videoDescription}</p>
             </section>
@@ -360,14 +508,14 @@ const TeamProjectDetail = () => {
 
         <section id="team-interaction" className="h-[calc(100svh-var(--header-height))] overflow-hidden px-12 py-16 lg:pb-24 lg:pt-12">
           <div className="mb-7 flex items-end justify-between gap-6">
-            <SectionTitle>INDIVIDUAL INTERACTION</SectionTitle>
+            <SectionTitle>TEAM INTERACTION</SectionTitle>
           </div>
 
           <div className="grid gap-10 lg:grid-cols-[1fr_1.12fr] lg:items-start">
             <section className="lg:-mr-[144px] xl:-mr-[176px]">
               <h3 className="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-2xl font-semibold">
                 {project.interactionTitle || "인터 제목"}
-                <span className="text-sm font-medium text-[#45BFE6]">Team Interaction</span>
+                <span className="text-sm font-medium text-[#45BFE6]">team interaction</span>
               </h3>
               <p className="mt-5 whitespace-pre-line text-sm leading-7 text-white">{interactionDescription}</p>
               <ScenarioVideoLink onClick={() => setIsScenarioVideoOpen(true)} />
@@ -382,7 +530,7 @@ const TeamProjectDetail = () => {
             {[2, 3, 4].map((index) => (
               <figure key={index}>
                 <MediaPanel src={detail?.interactionImages?.[index]} alt={`${project.interactionTitle} 시나리오 ${index - 1}`} className="aspect-video" />
-                <figcaption className="mt-3 text-xs text-white/70">시나리오 설명</figcaption>
+                <figcaption className="mt-3 text-xs text-white/70">{detail?.scenarioDescriptions?.[index - 2] || "시나리오 설명"}</figcaption>
               </figure>
             ))}
           </div>
@@ -390,6 +538,7 @@ const TeamProjectDetail = () => {
 
         <div ref={footerRef}>
           <Footer />
+        </div>
         </div>
       </div>
 
@@ -402,7 +551,7 @@ const TeamProjectDetail = () => {
 
       <nav
         ref={navigatorRef}
-        className="project-detail__navigator fixed inset-x-0 bottom-0 z-20 grid h-16 grid-cols-3 items-center bg-[#0066AD] px-5 text-base sm:px-10 lg:px-[clamp(56px,6.25vw,120px)]"
+        className="project-detail__navigator fixed inset-x-0 bottom-0 z-20 hidden h-16 grid-cols-3 items-center bg-[#0066AD] px-5 text-base md:grid sm:px-10 lg:px-[clamp(56px,6.25vw,120px)]"
         style={{
           backgroundImage:
             "linear-gradient(rgba(0, 102, 173, 0.5), rgba(0, 102, 173, 0.5)), url('/images/blue_bg-upscaled.png')",

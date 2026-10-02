@@ -856,8 +856,6 @@ function Home() {
     if (isIntroAnimating) return;
 
     pointerTargetRef.current = null;
-    pointerPositionRef.current = null;
-    setPointerPosition(null);
   };
 
   const scrollBelowBanner = () => {

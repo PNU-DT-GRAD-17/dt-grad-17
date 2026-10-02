@@ -13,6 +13,7 @@ export type Designer = {
   projectDetail?: {
     /** 개인 프로젝트 페이지 전체 배경으로 사용하는 모션 포스터 이미지 */
     motionPosterImage?: string;
+    motionPosterVideoUrl?: string;
     scenarioUrl?: string;
     interactionImages?: string[];
   };
