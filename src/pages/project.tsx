@@ -16,6 +16,7 @@ type ProjectItem = {
   motionPosterTitle: string;
   interactionTitle: string;
   objectImage: string;
+  thumbnailImage?: string;
 };
 
 type GalleryImageSlot = {
@@ -108,6 +109,7 @@ const projects: ProjectItem[] = designers.slice(1).map((designer, index) => ({
   interactionTitle: designer.interactionTitle,
   designer: designer.name,
   objectImage: designer.selectedObjectImage,
+  thumbnailImage: designer.projectDetail?.motionPosterImage,
 }));
 
 const Project = () => {
@@ -481,9 +483,9 @@ const Project = () => {
                             aria-label={`${project.conceptName}, ${project.designer}`}
                           >
                             <img
-                              src={project.objectImage}
+                              src={project.thumbnailImage ?? project.objectImage}
                               alt=""
-                              className={`absolute inset-0 m-auto h-1/2 w-3/4 object-contain transition-transform duration-500 group-hover:scale-110 ${
+                              className={`absolute inset-0 m-auto ${project.thumbnailImage ? "h-full w-full object-cover" : "h-1/2 w-3/4 object-contain"} transition-transform duration-500 group-hover:scale-110 ${
                                 activePreviewId === project.id ? "scale-110" : ""
                               }`}
                             />
