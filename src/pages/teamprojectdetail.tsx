@@ -283,7 +283,7 @@ const TeamProjectDetail = () => {
   return (
     <main
       ref={scrollContainerRef}
-      className="project-detail relative h-[calc(100svh-var(--header-height))] overflow-x-hidden overflow-y-hidden overscroll-y-contain bg-[#0a171e] text-white md:overflow-y-auto"
+      className="project-detail relative h-[calc(100svh-var(--header-height))] overflow-x-hidden overflow-y-hidden overscroll-y-none bg-[#0a171e] text-white md:overflow-y-auto"
     >
       <div
         className="project-detail__poster fixed inset-0 bg-cover bg-center bg-no-repeat"
@@ -359,6 +359,9 @@ const TeamProjectDetail = () => {
                         </Link>
                       ))}
                     </span>
+                    <span className="mt-3 whitespace-pre-line text-xs leading-relaxed text-white/60">
+                      {project.description}
+                    </span>
                   </span>
                 </div>
               ) : (
@@ -385,7 +388,7 @@ const TeamProjectDetail = () => {
                 {[2, 3, 4].map((index) => (
                   <figure key={index}>
                     <MediaPanel src={detail?.interactionImages?.[index]} alt={`${project.interactionTitle} 시나리오 ${index - 1}`} className="aspect-video" />
-                    <figcaption className="mt-3 text-sm text-white/80">{detail?.scenarioDescriptions?.[index - 2] || "시나리오 설명"}</figcaption>
+                    <figcaption className="mt-3 text-sm text-white font-regular">{detail?.scenarioDescriptions?.[index - 2] || "시나리오 설명"}</figcaption>
                   </figure>
                 ))}
               </div>
@@ -460,6 +463,9 @@ const TeamProjectDetail = () => {
                       {member.name}
                     </Link>
                   ))}
+                </dd>
+                <dd className="mt-3 max-w-[920px] whitespace-pre-line text-xs leading-relaxed text-white/60">
+                  {project.description}
                 </dd>
               </div>
             </dl>

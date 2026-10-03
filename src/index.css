@@ -5,6 +5,11 @@
   --header-height: clamp(72px, calc(3.15vw + 40px), 80px);
 }
 
+html,
+body {
+  overscroll-behavior-y: none;
+}
+
 .guestbook-scroll {
   scrollbar-width: thin; /* Firefox */
   scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
@@ -42,6 +47,25 @@ html, body, #root{
     background-position: center top;
     background-repeat: repeat-y;
     background-size: 400% auto;
+  }
+}
+
+.project-detail__mouse-hint {
+  background-color: #d1d5d8;
+  -webkit-mask: url('/images/icon/mouseclick.svg') center / contain no-repeat;
+  mask: url('/images/icon/mouseclick.svg') center / contain no-repeat;
+  opacity: 0.5;
+  animation: project-mouse-hint-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes project-mouse-hint-pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.65; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-detail__mouse-hint {
+    animation: none;
   }
 }
 
@@ -253,6 +277,17 @@ html, body, #root{
   outline-offset: 4px;
 }
 
+@media (max-width: 1023px) {
+  .exhibition-member-link[data-active="true"] {
+    font-weight: 700;
+    color: #0072C1;
+  }
+
+  .exhibition-member-link[data-active="true"]::after {
+    transform: scaleX(1);
+  }
+}
+
 .detail-member-link::after {
   background-color: #45bfe6;
 }
@@ -287,6 +322,28 @@ html, body, #root{
 
 .designer-team-link::after {
   bottom: 1px;
+}
+
+.designer-portfolio-link:hover,
+.designer-portfolio-link:active,
+.designer-portfolio-link:focus-visible {
+  color: #0072C1;
+}
+
+.designer-portfolio-link:focus-visible {
+  outline: 2px solid #0072C1;
+  outline-offset: 4px;
+}
+
+.designer-portfolio-link__arrow {
+  display: inline-block;
+  width: 1.2em;
+  height: 1.2em;
+  margin-left: calc(4px - 0.15em);
+  vertical-align: -0.3em;
+  background-color: currentColor;
+  -webkit-mask: url('/images/icon/arrowUpright.svg') center / contain no-repeat;
+  mask: url('/images/icon/arrowUpright.svg') center / contain no-repeat;
 }
 
 @keyframes exhibition-member-preview-in {

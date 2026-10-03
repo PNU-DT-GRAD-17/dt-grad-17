@@ -96,7 +96,7 @@ export const teamProjects: Record<TeamCategory, TeamProject> = {
 우리는 기나긴 과정을 지나 더 넓은 세계로 발을 내디딘다. 게임 속 캐릭터처럼 ‘레벨업’을 거치며 우리는 이전과 다른 자신이 된다.`,
     interactionTitle: "Fill - Up",
     interactionDescription: "비어 있던 공간은 관람객의 참여가 하나씩 더해지며 새로운 모습으로 채워진다. 서로 다른 관람객의 경험이 모여 하나의 작품을 완성해 나가며, 전시는 관람객의 참여를 통해 비로소 완전한 형태를 갖게 된다.",
-    description: "전시회 작업물을 아카이빙하는 졸업 논문 대체 웹 사이트 제작과 SNS 채널 관리를 통해 전시회의 디지털 기록과 홍보를 담당합니다.",
+    description: "웹팀은 전시회 작업물을 아카이빙하는 졸업 논문 대체 웹 사이트 제작과 SNS 채널 관리를 통해 전시회의 디지털 기록과 홍보를 담당합니다.",
     objectImage: "/images/team/web.png",
     link: "/project/team/web",
     members: getTeamMembers("WEB"),

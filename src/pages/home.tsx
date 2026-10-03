@@ -391,10 +391,15 @@ function Home() {
   const [showIntroClickIcon, setShowIntroClickIcon] = useState(true);
   const [isScrollCueHovered, setIsScrollCueHovered] = useState(false);
   const [cursorScale, setCursorScale] = useState(1);
+  const [activeMemberKey, setActiveMemberKey] = useState<string | null>(null);
   const {
     ref: overviewAnimationRef,
     controls: overviewAnimationControls,
   } = useReplayableInViewAnimation<HTMLParagraphElement>(0.4);
+  const {
+    ref: membersAnimationRef,
+    controls: membersAnimationControls,
+  } = useReplayableInViewAnimation<HTMLDivElement>(0.4);
   const {
     ref: offlineAnimationRef,
     controls: offlineAnimationControls,
@@ -1044,10 +1049,17 @@ function Home() {
             />
           </div>
 
-          <div className="min-w-0 flex flex-col justify-center">
+          <motion.div
+            ref={membersAnimationRef}
+            className="min-w-0 flex flex-col justify-center"
+            variants={container}
+            initial="hidden"
+            animate={membersAnimationControls}
+          >
             {EXHIBITION_MEMBER_GROUPS.map((group) => (
-              <div
+              <motion.div
                 key={group.label}
+                variants={item}
                 className="grid grid-cols-[92px_1fr] items-center gap-4 py-3 sm:grid-cols-[120px_1fr] sm:gap-7 sm:py-3"
               >
                 <h3 className="text-base text-[clamp(16px,1.4vw,18px)] font-bold leading-none text-[#000101]">
@@ -1057,13 +1069,29 @@ function Home() {
                   {group.members.map((name) => {
                     const designer = exhibitionDesigners.get(name);
                     if (!designer) return null;
+                    const memberKey = `${group.label}-${name}`;
 
                     return (
-                      <li key={`${group.label}-${name}`} className="min-w-0 whitespace-nowrap">
+                      <li key={memberKey} className="min-w-0 whitespace-nowrap">
                         <Link
                           to={`/designer/${designer.id}`}
                           className="exhibition-member-link inline-flex items-center text-[clamp(16px,1.4vw,18px)] font-medium tracking-[-0.035em] text-[#000101]"
                           aria-label={`${name} 디자이너 상세 페이지로 이동`}
+                          data-active={activeMemberKey === memberKey}
+                          onClick={(event) => {
+                            if (
+                              event.detail === 0 ||
+                              event.metaKey || event.ctrlKey || event.shiftKey || event.altKey ||
+                              !window.matchMedia("(max-width: 1023px)").matches ||
+                              activeMemberKey === memberKey
+                            ) {
+                              return;
+                            }
+
+                            event.preventDefault();
+                            setActiveMemberKey(memberKey);
+                          }}
+                          onBlur={() => setActiveMemberKey(null)}
                         >
                           <span>{name}</span>
                         </Link>
@@ -1071,9 +1099,9 @@ function Home() {
                     );
                   })}
                 </ul>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -1135,7 +1163,7 @@ function Home() {
 
         <motion.div
           ref={professorAnimationRef}
-          className="mx-auto mt-16 grid w-full max-w-[1080px] grid-cols-1 gap-x-[clamp(28px,4vw,72px)] gap-y-16 sm:grid-cols-2 xl:grid-cols-4"
+          className="mx-auto mt-12 grid w-full max-w-[1080px] grid-cols-2 gap-x-4 gap-y-10 sm:mt-16 sm:gap-x-[clamp(28px,4vw,72px)] sm:gap-y-16 xl:grid-cols-4"
           variants={professorContainer}
           initial="hidden"
           animate={professorAnimationControls}
@@ -1155,10 +1183,10 @@ function Home() {
                   className="h-full w-full object-cover"
                 />
               </div>
-              <h3 className="mt-[clamp(28px,3vw,36px)] text-[clamp(24px,2.5vw,26px)] font-semibold text-[#000101]">
+              <h3 className="mt-4 text-[clamp(16px,4.2vw,20px)] font-semibold text-[#000101] sm:mt-[clamp(28px,3vw,36px)] sm:text-[clamp(24px,2.5vw,26px)]">
                 {professor.name}
               </h3>
-              <p className="mt-[clamp(8px,2vw,12px)] text-[clamp(14px,2vw,16px)] font-medium text-[#888A96]">
+              <p className="mt-2 text-[12px] leading-relaxed font-medium text-[#888A96] sm:mt-[clamp(8px,2vw,12px)] sm:text-[clamp(14px,2vw,16px)]">
                 {professor.field}
               </p>
             </motion.article>

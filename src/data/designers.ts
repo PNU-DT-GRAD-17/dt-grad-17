@@ -170,6 +170,10 @@ const designerSources: DesignerSource[] = [
   {
     id: "yoon-seohyun",
     name: "윤서현",
+    projectDetail: {
+      motionPosterImage: "/images/poster/vertical/09.png",
+      motionPosterVideoUrl: "/motionPoster/09_motionPoster.mp4",
+    },
     team: "OPENING",
     conceptName: "진화",
     conceptDescription: "누구나 잔향을 기반으로 살아온다. 우리는 공동체 안에서 살아가며 필연적으로 흔적을 남기고, 누군가가 그 위에 새로운 흔적을 덧씌우며 변화를 일으킨다. 변화의 결과물은 기존의 잔향으로부터 자유로울 수 없으며 곧 다음 변화의 잔향이 된다. 축적되는 변화 속, 잔향은 진화를 반복하며 가변적인 형태로 현재를 구성해나간다.",

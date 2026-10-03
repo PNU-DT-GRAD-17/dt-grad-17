@@ -97,6 +97,7 @@ const DesignerDetail = () => {
 
   const designer = designerList[currentIndex];
   const detail = designer.detail;
+  const instagramUsername = detail?.instagram?.trim().replace(/^@/, "");
   const imageNumber = String(currentIndex + 1).padStart(2, "0");
   const teamProject = Object.values(teamProjects).find(
     (project) => project.category === designer.team,
@@ -129,10 +130,10 @@ const DesignerDetail = () => {
               <span>BACK</span>
             </Link>
 
-            <h1 className="mb-4 flex flex-wrap items-center gap-x-2 gap-y-1 lg:hidden">
+            <h1 className="mb-4 flex flex-wrap items-baseline gap-x-2 gap-y-1 lg:hidden">
               <Link
                 to="/designer"
-                className="group inline-flex shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0066AD]"
+                className="group inline-flex shrink-0 self-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0066AD]"
                 aria-label="디자이너 목록으로 돌아가기"
               >
                 <span className="relative h-7 w-7" aria-hidden="true">
@@ -203,7 +204,7 @@ const DesignerDetail = () => {
                 <span className="text-[clamp(16px,2vw,24px)] font-regular text-[#4A4B51] tracking-[-0.02em]">{getEnglishName(designer)}</span>
               </h1>
 
-              <dl className="mt-0 grid max-w-[570px] grid-cols-1 gap-x-12 gap-y-6 text-sm [&>div]:grid [&>div]:grid-cols-[110px_minmax(0,1fr)] [&>div]:items-baseline [&>div>dd]:min-w-0 lg:mt-8 lg:grid-cols-2 lg:[&>div]:block xl:mt-12 xl:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] xl:gap-x-[clamp(72px,6.2vw,130px)] xl:gap-y-10 xl:text-[clamp(16px,1.05vw,20px)]">
+              <dl className="mt-0 grid max-w-[570px] grid-cols-1 gap-x-12 gap-y-6 text-sm [&>div]:grid [&>div]:grid-cols-[110px_minmax(0,1fr)] [&>div]:items-baseline [&>div>dd]:min-w-0 lg:mt-8 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] lg:gap-x-[196px] lg:[&>div]:block xl:mt-12 xl:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] xl:gap-x-[236px] xl:gap-y-10 xl:text-[clamp(16px,1.05vw,20px)]">
                 <div className="lg:col-span-2">
                   <dt className="mb-0 text-[#888A96] text-[clamp(14px,1.15vw,16px)] lg:mb-1">team</dt>
                   <dd className="text-lg text-[#000101] font-semibold text-[clamp(18px,1.15vw,20px)]">
@@ -230,13 +231,27 @@ const DesignerDetail = () => {
                 <div>
                   <dt className="mb-0 text-[#888A96] text-[clamp(14px,1.15vw,16px)] lg:mb-1">instagram</dt>
                   <dd className="text-lg text-[#000101] font-semibold text-[clamp(18px,1.15vw,20px)]">
-                    {detail?.instagram?.toString() ?? "-"}
+                    {instagramUsername ? (
+                      <a
+                        href={`https://www.instagram.com/${encodeURIComponent(instagramUsername)}/`}
+                        className="designer-portfolio-link whitespace-nowrap"
+                      >
+                        {detail?.instagram}<span className="whitespace-nowrap">{"\u2060"}<span className="designer-portfolio-link__arrow" aria-hidden="true" /></span>
+                      </a>
+                    ) : "-"}
                   </dd>
                 </div>
                 <div>
                   <dt className="mb-0 text-[#888A96] text-[clamp(14px,1.15vw,16px)] lg:mb-1">portfolio</dt>
                   <dd className="text-lg text-[#000101] font-semibold text-[clamp(18px,1.15vw,20px)]">
-                    {detail?.portfolio?.toString() ?? "-"}
+                    {detail?.portfolio ? (
+                      <a
+                        href={detail.portfolio}
+                        className="designer-portfolio-link whitespace-nowrap"
+                      >
+                        {detail.portfolio}<span className="whitespace-nowrap">{"\u2060"}<span className="designer-portfolio-link__arrow" aria-hidden="true" /></span>
+                      </a>
+                    ) : "-"}
                   </dd>
                 </div>
                 <div>

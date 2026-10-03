@@ -14,8 +14,9 @@ const projects = [
   })),
 ];
 
-export default function MobileProjectHeader({ label, currentPath }: { label: string; currentPath: string }) {
+export default function MobileProjectHeader({ label, currentPath, designerPath }: { label: string; currentPath: string; designerPath?: string }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isNameActive, setIsNameActive] = useState(false);
   const headerRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const selectedRef = useRef<HTMLAnchorElement>(null);
@@ -48,25 +49,44 @@ export default function MobileProjectHeader({ label, currentPath }: { label: str
   }, [isOpen]);
 
   return (
-    <div ref={headerRef} className="relative z-40 flex h-14 shrink-0 items-center justify-center bg-[#000101] text-lg font-medium text-white">
+    <div ref={headerRef} className="relative z-40 flex h-12 shrink-0 items-center justify-center bg-[#000101] text-lg font-medium text-white">
       <Link to="/project" aria-label="프로젝트 목록으로 돌아가기" className="absolute inset-y-0 left-2 flex w-11 items-center justify-center">
         <img src="/images/icon/arrowLeft.png" alt="" className="h-5 w-auto" />
       </Link>
-      <button
+      <div className="relative flex h-full items-center justify-center">
+        {designerPath ? (
+          <Link
+            to={designerPath}
+            className="exhibition-member-link mobile-project-designer-link inline-flex transition-colors"
+            data-active={isNameActive}
+            onClick={(event) => {
+              setIsOpen(false);
+              if (!isNameActive) {
+                event.preventDefault();
+                setIsNameActive(true);
+              }
+            }}
+            onBlur={() => setIsNameActive(false)}
+          >
+            {label}
+          </Link>
+        ) : <span>{label}</span>}
+        <button
         ref={triggerRef}
         type="button"
+        aria-label="프로젝트 선택 목록"
         aria-expanded={isOpen}
         aria-controls={listId}
-        className="relative flex h-full cursor-pointer items-center justify-center"
+        className="absolute left-full ml-1 flex h-11 w-8 cursor-pointer items-center justify-start"
         onClick={() => setIsOpen((open) => !open)}
       >
-        {label}
         <span
           aria-hidden="true"
-          className={`absolute left-full ml-1 h-6 w-6 bg-white transition-transform ${isOpen ? "rotate-180" : ""}`}
+          className={`h-8 w-8 bg-white transition-transform ${isOpen ? "rotate-180" : ""}`}
           style={{ mask: "url('/images/icon/triangle_down.svg') center / contain no-repeat", WebkitMask: "url('/images/icon/triangle_down.svg') center / contain no-repeat" }}
         />
       </button>
+      </div>
       {isOpen && (
         <div id={listId} ref={listRef} className="absolute inset-x-0 top-full h-[min(224px,50svh)] overflow-y-auto overscroll-y-contain bg-[#000101]" aria-label="프로젝트 선택">
           <nav className="pb-[calc(min(224px,50svh)-48px)]">

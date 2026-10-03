@@ -10,6 +10,91 @@ import { designers } from "../data/designers";
 const defaultDescription =
   "우리는 사용자의 행동 패턴을 분석하여 가장 직관적이고 편리한 경험을 설계합니다. 복잡한 과정을 최소화하고, 누구나 쉽게 이해할 수 있는 디지털 환경을 만드는 것이 우리의 목표입니다.";
 
+const DesktopMotionPoster = ({ image, video, title }: { image: string; video?: string; title: string }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 1024px)");
+    const stopOnMobile = () => {
+      if (!desktop.matches) setIsHovered(false);
+    };
+    desktop.addEventListener("change", stopOnMobile);
+    return () => desktop.removeEventListener("change", stopOnMobile);
+  }, []);
+
+  return (
+    <div
+      className="absolute inset-y-0 left-0 aspect-[9/16] h-full shrink-0 overflow-hidden bg-white/30 lg:relative"
+      onPointerEnter={(event) => {
+        if (event.pointerType === "mouse" && window.innerWidth >= 1024) setIsHovered(true);
+      }}
+      onPointerLeave={() => setIsHovered(false)}
+    >
+      <img src={image} alt={`${title} 모션 포스터`} className="h-full w-full object-cover" />
+      {video && isHovered && (
+        <video
+          src={video}
+          poster={image}
+          aria-label={`${title} 모션 포스터 영상`}
+          className="absolute inset-0 h-full w-full object-cover"
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
+      )}
+      <span
+        aria-hidden="true"
+        className="project-detail__mouse-hint pointer-events-none absolute left-1/2 top-6 z-20 h-8 w-8 -translate-x-1/2"
+      />
+    </div>
+  );
+};
+
+const MobileMotionPoster = ({ image, video, title }: { image: string; video?: string; title: string }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  return (
+    <div className="relative h-full w-full">
+      <video
+        ref={videoRef}
+        src={video}
+        poster={image}
+        aria-label={`${title} 모션 포스터 영상`}
+        className="block h-full w-full object-contain object-top"
+        playsInline
+        loop
+        preload="metadata"
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
+      />
+      {video && isPlaying && (
+        <button
+          type="button"
+          aria-label={`${title} 모션 포스터 일시정지`}
+          className="absolute inset-0 h-full w-full cursor-pointer bg-transparent focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-white"
+          onClick={() => videoRef.current?.pause()}
+        />
+      )}
+      {video && !isPlaying && (
+        <button
+          type="button"
+          aria-label={`${title} 모션 포스터 재생`}
+          className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-white/40 bg-black/30 text-[#D1D5D8] backdrop-blur-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+          onClick={() => {
+            void videoRef.current?.play().catch(() => setIsPlaying(false));
+          }}
+        >
+          <svg aria-hidden="true" viewBox="0 0 24 24" className="ml-1 h-7 w-7" fill="currentColor">
+            <path d="M7 4.5v15l12-7.5z" />
+          </svg>
+        </button>
+      )}
+    </div>
+  );
+};
+
 const MediaPlaceholder = ({
   src,
   alt,
@@ -53,7 +138,7 @@ const ProjectDetail = () => {
 
     if (targetId) {
       // 모바일에서는 아래 모바일 전용 인터랙션 섹션으로 이동합니다.
-      const resolvedId = window.innerWidth < 768 && targetId === "individual-interaction"
+      const resolvedId = window.innerWidth < 1024 && targetId === "individual-interaction"
         ? "mobile-individual-interaction"
         : targetId;
       document.getElementById(resolvedId)?.scrollIntoView();
@@ -74,7 +159,7 @@ const ProjectDetail = () => {
 
     const positionNavigator = () => {
       // 모바일 하단 내비게이션은 콘텐츠 끝에 놓이므로 위치 보정을 하지 않습니다.
-      if (window.innerWidth < 768) {
+      if (window.innerWidth < 1024) {
         navigator.style.transform = "";
         return;
       }
@@ -162,8 +247,8 @@ const ProjectDetail = () => {
     };
 
     const handleWheel = (event: WheelEvent) => {
-      // 모바일은 일반 스크롤 사용. 768px 이상에서만 화면 단위 스크롤을 적용합니다.
-      if (window.innerWidth < 768) return;
+      // 모바일은 일반 스크롤 사용. 1024px 이상에서만 화면 단위 스크롤을 적용합니다.
+      if (window.innerWidth < 1024) return;
 
       const frameHeight = container.clientHeight - 64;
       const lastFrameTop = frameHeight;
@@ -256,7 +341,7 @@ const ProjectDetail = () => {
   return (
     <main
       ref={scrollContainerRef}
-      className="project-detail relative h-[calc(100svh-var(--header-height))] overflow-x-hidden overflow-y-hidden overscroll-y-contain bg-[#0a171e] text-white md:overflow-y-auto"
+      className="project-detail relative h-[calc(100svh-var(--header-height))] overflow-x-hidden overflow-y-hidden overscroll-y-none bg-[#0a171e] text-white lg:overflow-y-auto"
     >
       <div
         className="project-detail__poster fixed inset-0 bg-cover bg-center bg-no-repeat"
@@ -266,8 +351,8 @@ const ProjectDetail = () => {
       <div className="project-detail__veil fixed inset-0" aria-hidden="true" />
 
       <div className="relative z-10">
-        <div className="flex h-[calc(100svh-var(--header-height))] flex-col md:hidden">
-          <MobileProjectHeader key={designer.id} label={designer.name} currentPath={`/project/${designer.id}`} />
+        <div className="flex h-[calc(100svh-var(--header-height))] flex-col lg:hidden">
+          <MobileProjectHeader key={designer.id} label={designer.name} currentPath={`/project/${designer.id}`} designerPath={`/designer/${designer.id}`} />
 
           <div
             ref={mobileGalleryRef}
@@ -311,7 +396,7 @@ const ProjectDetail = () => {
                   <span className="mt-6 shrink-0 whitespace-pre-line text-[16px] leading-[1.6] text-white/85">{conceptDescription}</span>
                 </button>
               ) : (
-                <div id="mobile-project-concept" className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/80 to-transparent px-5 pb-8 pt-16 text-center text-sm text-white/60">
+                <div id="mobile-project-concept" className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent px-5 pb-12 pt-24 text-center text-sm text-white/60">
                   이미지를 터치하면 컨셉 설명이 보입니다.
                 </div>
               )}
@@ -334,22 +419,18 @@ const ProjectDetail = () => {
                 {[2, 3, 4].map((index) => (
                   <figure key={index}>
                     <MediaPlaceholder className="aspect-[16/9]" src={detail?.interactionImages?.[index]} alt={`${designer.interactionTitle} 시나리오 ${index - 1}`} />
-                    <figcaption className="mt-3 text-sm text-white/80">시나리오 설명</figcaption>
+                    <figcaption className="mt-3 text-sm text-white">시나리오 설명</figcaption>
                   </figure>
                 ))}
               </div>
             </section>
 
             <section className="h-full min-w-full snap-start touch-pan-x overflow-hidden" aria-label="모션 포스터">
-              <video
-                src={detail?.motionPosterVideoUrl}
-                poster={backgroundImage}
-                aria-label={`${designer.motionPosterTitle || designer.name} 모션 포스터 영상`}
-                className="h-full w-full object-contain"
-                controls
-                playsInline
-                loop
-                preload="metadata"
+              <MobileMotionPoster
+                key={designer.id}
+                video={detail?.motionPosterVideoUrl}
+                image={backgroundImage}
+                title={designer.motionPosterTitle || designer.name}
               />
             </section>
 
@@ -364,7 +445,7 @@ const ProjectDetail = () => {
         </div>
 
         <div
-          className="pointer-events-none fixed bottom-[calc(20px+env(safe-area-inset-bottom))] left-1/2 z-30 flex -translate-x-1/2 items-center gap-2 md:hidden"
+          className="pointer-events-none fixed bottom-[calc(20px+env(safe-area-inset-bottom))] left-1/2 z-30 flex -translate-x-1/2 items-center gap-2 lg:hidden"
           role="img"
           aria-label={`전체 5페이지 중 ${mobileSlideIndex + 1}페이지`}
         >
@@ -377,24 +458,23 @@ const ProjectDetail = () => {
           ))}
         </div>
 
-        {/* 데스크톱 전용 레이아웃 (768px 이상): 모바일 디자인 수정 시 이 영역은 유지합니다. */}
-        <div className="hidden md:block">
+        {/* 데스크톱 전용 레이아웃 (1024px 이상): 모바일 디자인 수정 시 이 영역은 유지합니다. */}
+        <div className="hidden lg:block">
         <section className="relative mx-auto flex h-[calc(100svh-var(--header-height)-4rem)] max-w-[1920px] overflow-hidden">
-          <div className="absolute inset-y-0 left-0 aspect-[9/16] h-full shrink-0 overflow-hidden bg-white/30 lg:relative">
-            <img
-              src={backgroundImage}
-              alt={`${designer.motionPosterTitle || designer.name} 모션 포스터`}
-              className="h-full w-full object-cover"
-            />
-          </div>
+          <DesktopMotionPoster
+            key={designer.id}
+            image={backgroundImage}
+            video={detail?.motionPosterVideoUrl}
+            title={designer.motionPosterTitle || designer.name}
+          />
 
-          <div className="absolute inset-0 bg-gradient-to-r from-[#07151d]/35 via-[#07151d]/90 to-[#07151d] lg:hidden" aria-hidden="true" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#07151d]/35 via-[#07151d]/90 to-[#07151d] lg:hidden" aria-hidden="true" />
 
-          <div className="relative z-10 flex min-w-0 flex-1 flex-col px-6 pb-[clamp(28px,5svh,64px)] pt-[clamp(28px,5svh,64px)] sm:px-10 lg:px-[clamp(48px,5vw,52px)]">
+          <div className="pointer-events-none relative z-10 flex min-w-0 flex-1 flex-col px-6 pb-[clamp(28px,5svh,64px)] pt-[clamp(28px,5svh,64px)] sm:px-10 lg:pointer-events-auto lg:px-[clamp(48px,5vw,52px)]">
 
             <Link
               to="/project"
-              className="group absolute right-6 top-8 inline-flex items-center gap-2 text-lg font-semibold text-white/40 transition-colors hover:text-white sm:right-10 lg:right-[clamp(48px,5vw,96px)] lg:top-[clamp(28px,5svh,64px)]"
+              className="pointer-events-auto group absolute right-6 top-8 inline-flex items-center gap-2 text-lg font-semibold text-white/40 transition-colors hover:text-white sm:right-10 lg:right-[clamp(48px,5svh,96px)] lg:top-[clamp(28px,5svh,64px)]"
             >
               <img
                 src="/images/icon/arrowLeft.png"
@@ -411,7 +491,7 @@ const ProjectDetail = () => {
                 <dd className="mt-2 text-xl">
                   <Link
                     to={`/designer/${designer.id}`}
-                    className="exhibition-member-link detail-member-link inline-flex"
+                    className="pointer-events-auto exhibition-member-link detail-member-link inline-flex"
                   >
                     {designer.name}
                   </Link>
@@ -483,7 +563,7 @@ const ProjectDetail = () => {
       {/* 이전·다음 내비게이션은 데스크톱에서만 표시합니다. */}
       <nav
         ref={navigatorRef}
-        className="project-detail__navigator relative mx-2 z-20 hidden h-14 grid-cols-2 md:fixed md:inset-x-0 md:bottom-0 md:mx-0 md:grid md:h-16 md:grid-cols-3 items-center bg-[#0066AD] px-5 text-base sm:px-10 lg:px-[clamp(56px,6.25vw,120px)]"
+        className="project-detail__navigator relative mx-2 z-20 hidden h-14 grid-cols-2 lg:fixed lg:inset-x-0 lg:bottom-0 lg:mx-0 lg:grid lg:h-16 lg:grid-cols-3 items-center bg-[#0066AD] px-5 text-base sm:px-10 lg:px-[clamp(56px,6.25vw,120px)]"
         style={{
           backgroundImage:
             "linear-gradient(rgba(0, 102, 173, 0.5), rgba(0, 102, 173, 0.5)), url('/images/blue_bg-upscaled.png')",
@@ -502,7 +582,7 @@ const ProjectDetail = () => {
           />
           <span className="opacity-70 transition-opacity duration-200 group-hover:opacity-100 text-lg">{previous.name}</span>
         </Link>
-        <Link to="/project" aria-label="프로젝트 목록" className="hidden grid-cols-2 gap-1 justify-self-center p-3 md:grid opacity-80 transition-opacity hover:opacity-100">
+        <Link to="/project" aria-label="프로젝트 목록" className="hidden grid-cols-2 gap-1 justify-self-center p-3 lg:grid opacity-80 transition-opacity hover:opacity-100">
           {Array.from({ length: 4 }).map((_, index) => <span key={index} className="h-2 w-2 border border-white" />)}
         </Link>
         <Link to={`/project/${next.id}`} className="group flex items-center gap-2 justify-self-end">

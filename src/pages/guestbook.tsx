@@ -749,12 +749,10 @@ export default function Guestbook() {
           aria-label={isMobileComposerOpen ? "방명록 작성" : undefined}
           className={`${
             isMobileComposerOpen
-              ? "fixed inset-x-0 bottom-0 z-40 block max-h-[calc(100dvh-72px)] overflow-y-auto rounded-t-2xl"
+              ? "fixed inset-x-0 bottom-0 z-40 block"
               : "hidden"
-          } scroll-mt-48 border border-[#BCBCBC] bg-[#f9f9f9] p-4 md:static md:z-auto md:mb-20 md:block md:max-h-none md:overflow-visible md:rounded-none md:p-8`}
+          } scroll-mt-48 md:static md:z-auto md:mb-20 md:block`}
         >
-          <div className="mb-3 flex items-center justify-between md:hidden">
-            <p className="text-lg font-semibold">방명록 남기기</p>
             <button
               type="button"
               onClick={() => {
@@ -762,17 +760,24 @@ export default function Guestbook() {
                 setIsRecipientDropdownOpen(false);
               }}
               aria-label="방명록 작성 닫기"
-              className="flex h-9 w-9 items-center justify-center text-2xl leading-none"
+              className="absolute bottom-full left-1/2 mb-1 flex h-11 w-11 -translate-x-1/2 items-center justify-center md:hidden"
             >
-              ×
+              <span
+                aria-hidden="true"
+                className="h-8 w-8 bg-[#45bee6]"
+                style={{
+                  mask: "url('/images/icon/x.svg') center / contain no-repeat",
+                  WebkitMask: "url('/images/icon/x.svg') center / contain no-repeat",
+                }}
+              />
             </button>
-          </div>
+          <div className="max-h-[calc(100dvh-132px)] overflow-y-auto rounded-none border border-[#BCBCBC] bg-[#f9f9f9] p-4 md:max-h-none md:overflow-visible md:p-8">
           <form
             onSubmit={handleSubmit}
-            className="grid grid-cols-1 md:min-h-[360px] md:grid-cols-[420px_1fr]"
+            className="relative grid grid-cols-1 md:min-h-[360px] md:grid-cols-[420px_1fr]"
           >
           {/* 왼쪽 */}
-          <div className="border-b border-[#BCBCBC] p-3 md:border-b-0 md:border-r md:p-8 md:pr-16">
+          <div className="border-[#BCBCBC] p-3 md:border-r md:p-8 md:pr-16">
             <div className="mb-3 grid grid-cols-[56px_1fr] items-center gap-2 md:mb-6 md:grid-cols-[70px_1fr] md:gap-4">
               <p className="text-lg font-semibold">
                 TO. 
@@ -858,11 +863,11 @@ export default function Guestbook() {
                   setFrom(event.target.value)
                 }
                 placeholder={randomPlaceholderName}
-                className="min-w-0 w-full border-b border-neutral-300 bg-transparent px-2 py-2 text-lg font-semibold outline-none placeholder:text-lg placeholder:font-medium placeholder:text-[#bcbcbc] md:py-3"
+                className="min-w-0 w-full rounded-none border-b border-neutral-300 bg-transparent px-2 py-2 text-lg font-semibold outline-none placeholder:text-lg placeholder:font-medium placeholder:text-[#bcbcbc] md:py-3"
               />
             </div>
 
-            <div className="relative mt-2 h-20 w-16 md:mt-12 md:h-[130px] md:w-[105px]">
+            <div className="absolute bottom-3 left-3 h-[130px] w-[105px] md:relative md:bottom-auto md:left-auto md:mt-12">
               <img
                 src="/images/stamp-frame.png"
                 alt="우표 프레임"
@@ -892,10 +897,10 @@ export default function Guestbook() {
                   ? "응원의 한마디를 남겨주세요."
                   : "상단의 오브젝트를 선택하여 응원의 한마디를 남겨주세요."
               }
-              className="min-h-[120px] flex-1 resize-none bg-transparent text-medium outline-none placeholder:text-neutral-300 md:min-h-[220px]"
+              className="min-h-[120px] flex-1 resize-none rounded-none bg-transparent text-medium outline-none placeholder:text-neutral-300 md:min-h-[220px]"
             />
 
-            <div className="flex justify-end">
+            <div className="mt-3 flex min-h-[130px] items-end justify-end pl-32 md:mt-0 md:min-h-0 md:pl-0">
               <button
                 type="submit"
                 disabled={isSubmitting}
@@ -908,6 +913,7 @@ export default function Guestbook() {
             </div>
           </div>
           </form>
+          </div>
         </section>
       </div>
 
@@ -1056,7 +1062,7 @@ export default function Guestbook() {
           setIsRecipientDropdownOpen(false);
         }}
         aria-label="방명록 작성 닫기"
-        className="fixed inset-x-0 bottom-0 top-[72px] z-30 bg-black/25 md:hidden"
+        className="fixed inset-x-0 bottom-0 top-[72px] z-30 bg-black/60 md:hidden"
       />
     ) : (
       <button
@@ -1070,7 +1076,7 @@ export default function Guestbook() {
             "max(1.25rem, env(safe-area-inset-bottom))",
         }}
       >
-        <span className="block border-b border-neutral-200 pb-4 text-lg font-medium text-neutral-400">
+        <span className="block pb-4 text-lg font-medium text-neutral-400">
           응원의 한마디를 남겨주세요.
         </span>
       </button>
@@ -1084,7 +1090,7 @@ export default function Guestbook() {
       type="button"
       onClick={handleGoToTop}
       aria-label="페이지 맨 위로 이동"
-      className={`fixed top-20 left-1/2 z-20 -translate-x-1/2 transition-all duration-400 hover:-translate-y-1 md:top-auto md:bottom-6 md:z-[9998]
+      className={`fixed top-[88px] left-1/2 z-20 -translate-x-1/2 transition-all duration-400 hover:-translate-y-1 md:top-auto md:bottom-6 md:z-[9998]
         ${isMobileComposerOpen ? "hidden md:block" : ""}
         ${
           isGoTopVisible
