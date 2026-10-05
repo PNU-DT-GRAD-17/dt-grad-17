@@ -99,6 +99,9 @@ const DesignerDetail = () => {
   const detail = designer.detail;
   const instagramUsername = detail?.instagram?.trim().replace(/^@/, "");
   const imageNumber = String(currentIndex + 1).padStart(2, "0");
+  const profileImage =
+    detail?.profileImage ??
+    (imageNumber === "02" ? "/images/profile/individual/02_profile.jpeg" : undefined);
   const teamProject = Object.values(teamProjects).find(
     (project) => project.category === designer.team,
   );
@@ -155,9 +158,9 @@ const DesignerDetail = () => {
 
             <div className="relative mb-[8%] w-[85%] lg:mb-0 lg:w-full xl:min-h-0 xl:flex-1">
               <section className="aspect-[3/4] w-full overflow-hidden bg-[#dedede] xl:h-full xl:aspect-auto">
-                {detail?.profileImage ? (
+                {profileImage ? (
                   <img
-                    src={detail.profileImage}
+                    src={profileImage}
                     alt={`${designer.name} 디자이너 프로필`}
                     className="h-full w-full object-cover object-center"
                   />

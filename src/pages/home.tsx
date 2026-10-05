@@ -1043,7 +1043,7 @@ function Home() {
         <div className="mx-auto mt-12 md:mt-16 grid w-full max-w-[1080px] gap-10 xl:grid-cols-[minmax(0,1.05fr)_minmax(420px,0.95fr)] xl:items-center xl:gap-[clamp(56px,7vw,112px)]">
           <div className="aspect-[3/2] min-w-0 w-full overflow-hidden">
             <img
-              src="/images/profile/total/total_raw.jpeg"
+              src="/images/profile/total/total.jpeg"
               alt="전시 참여 인원 단체사진"
               className="block h-full w-full object-cover"
             />
