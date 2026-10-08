@@ -9,31 +9,6 @@ import { teamProjects, type TeamCategory } from "../data/team";
 
 const categories: TeamCategory[] = ["BRANDING", "DP", "OPENING", "WEB"];
 
-const getYoutubeEmbedUrl = (value?: string) => {
-  if (!value) return undefined;
-
-  try {
-    const url = new URL(value);
-    const host = url.hostname.replace(/^www\./, "");
-    if (url.protocol !== "https:" && url.protocol !== "http:") return undefined;
-
-    let videoId: string | null | undefined;
-    if (host === "youtu.be") {
-      videoId = url.pathname.split("/")[1];
-    } else if (["youtube.com", "m.youtube.com", "youtube-nocookie.com"].includes(host)) {
-      const [, kind, id] = url.pathname.split("/");
-      videoId = kind === "watch" ? url.searchParams.get("v") :
-        ["embed", "shorts", "live"].includes(kind) ? id : undefined;
-    }
-
-    return videoId && /^[a-zA-Z0-9_-]{11}$/.test(videoId)
-      ? `https://www.youtube-nocookie.com/embed/${videoId}`
-      : undefined;
-  } catch {
-    return undefined;
-  }
-};
-
 const defaultDescription =
   "우리는 사용자의 행동 패턴을 분석하여 가장 직관적이고 편리한 UI/UX 인터페이스를 설계합니다. 복잡한 과정을 최소화하고, 누구나 쉽게 이해할 수 있는 디지털 환경을 만드는 것이 우리의 목표입니다. 지금 새로운 변화를 경험해 보세요.";
 
@@ -42,12 +17,13 @@ type MediaPanelProps = {
   alt: string;
   className?: string;
   imageClassName?: string;
+  transparent?: boolean;
 };
 
-const MediaPanel = ({ src, alt, className = "", imageClassName = "object-cover" }: MediaPanelProps) => (
-  <div className={`overflow-hidden bg-white/30 ${className}`}>
+const MediaPanel = ({ src, alt, className = "", imageClassName = "h-full w-full object-cover", transparent = false }: MediaPanelProps) => (
+  <div className={`overflow-hidden ${transparent ? "bg-transparent" : "bg-white/30"} ${className}`}>
     {src ? (
-      <img src={src} alt={alt} className={`h-full w-full ${imageClassName}`} />
+      <img src={src} alt={alt} className={imageClassName} />
     ) : (
       <span className="sr-only">{alt} 준비 중</span>
     )}
@@ -277,7 +253,6 @@ const TeamProjectDetail = () => {
   const videoDescription = project.videoDescription || defaultDescription;
   const interactionDescription = project.interactionDescription || defaultDescription;
   const detail = project.projectDetail;
-  const filmEmbedUrl = getYoutubeEmbedUrl(detail?.filmUrl);
   const backgroundImage = detail?.motionPosterImage ?? `/images/team-object/teamObject_${category}.png`;
 
   return (
@@ -395,19 +370,7 @@ const TeamProjectDetail = () => {
             </section>
 
             <section id="mobile-team-film" className="h-full w-full shrink-0 snap-start touch-pan-x overflow-hidden pb-12" aria-label="팀 영상 및 소개">
-              {filmEmbedUrl ? (
-                <iframe
-                  key={filmEmbedUrl}
-                  src={filmEmbedUrl}
-                  title={`${project.videoTitle} 팀 필름`}
-                  className="aspect-video w-full border-0 bg-black"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  allowFullScreen
-                />
-              ) : (
-                <MediaPanel src={detail?.filmImage} alt={`${project.videoTitle} 팀 영상`} className="aspect-video w-full" />
-              )}
+              <MediaPanel src="/images/comingsoon.png" alt={`${project.videoTitle} 팀 영상 준비 중`} className="aspect-video w-full" imageClassName="mx-auto h-full w-[37.5%] object-contain" transparent />
               <div className="px-5 pt-7">
               <h2 className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-3xl font-semibold">
                 <span>{project.videoTitle || "영상 제목"}</span>
@@ -486,19 +449,7 @@ const TeamProjectDetail = () => {
           </div>
 
           <div className="grid gap-8 lg:grid-cols-[3.6fr_1.4fr] lg:items-start">
-            {filmEmbedUrl ? (
-              <iframe
-                key={filmEmbedUrl}
-                src={filmEmbedUrl}
-                title={`${project.videoTitle} 팀 필름`}
-                className="aspect-video w-[90%] border-0 bg-black lg:w-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-              />
-            ) : (
-              <MediaPanel src={detail?.filmImage} alt={`${project.videoTitle} 영상`} className="aspect-video w-[90%] lg:w-full" />
-            )}
+            <MediaPanel src="/images/comingsoon.png" alt={`${project.videoTitle} 팀 영상 준비 중`} className="aspect-video w-[90%] lg:w-full" imageClassName="mx-auto h-full w-[37.5%] object-contain" transparent />
             <section>
               <h3 className="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-2xl font-semibold">
                 {project.videoTitle || "영상 제목"}
@@ -547,7 +498,6 @@ const TeamProjectDetail = () => {
 
       {isScenarioVideoOpen && (
         <ScenarioVideoModal
-          embedUrl={getYoutubeEmbedUrl(detail?.scenarioUrl)}
           onClose={() => setIsScenarioVideoOpen(false)}
         />
       )}

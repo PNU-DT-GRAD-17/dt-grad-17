@@ -85,9 +85,6 @@ const professorItem: Variants = {
   },
 };
 
-// 유튜브 영상 링크
-const OPENING_YOUTUBE_URL = "https://www.youtube.com/watch?v=SXdVfDNvYUk&t=640s";
-
 const EXHIBITION_MEMBER_GROUPS = [
   { label: "위원장", members: ["김예원"] },
   { label: "부위원장", members: ["이수현"] },
@@ -127,23 +124,6 @@ const PROFESSORS = [
 const exhibitionDesigners = new Map(
   designers.filter((designer) => designer.id !== "all").map((designer) => [designer.name, designer]),
 );
-
-const getYoutubeEmbedUrl = (url: string) => {
-  if (!url) return "";
-
-  try {
-    const parsedUrl = new URL(url);
-    const videoId = parsedUrl.hostname.includes("youtu.be")
-      ? parsedUrl.pathname.slice(1)
-      : parsedUrl.searchParams.get("v") ?? parsedUrl.pathname.split("/").pop();
-
-    return videoId
-      ? `https://www.youtube-nocookie.com/embed/${videoId}`
-      : "";
-  } catch {
-    return "";
-  }
-};
 
 const BANNER_OBJECTS: BannerObject[] = [
   {
@@ -412,7 +392,6 @@ function Home() {
     ({ id, x, y, mobileX, mobileY, rotate, scale, mobileScale }) =>
       `${id}:${x}:${y}:${mobileX}:${mobileY}:${rotate}:${scale}:${mobileScale}`,
   ).join("|");
-  const openingEmbedUrl = getYoutubeEmbedUrl(OPENING_YOUTUBE_URL);
 
   const baseCursorSize = getCursorSize(sceneSize.width);
   const activeCursorSize = {
@@ -1013,21 +992,8 @@ function Home() {
           오프닝 영상
         </h2>
 
-        <div className="mx-auto mt-12 aspect-video w-full max-w-[1080px] overflow-hidden bg-[#d9d9d9]">
-          {openingEmbedUrl ? (
-            <iframe
-              className="h-full w-full"
-              src={openingEmbedUrl}
-              title="오프닝 영상"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerPolicy="strict-origin-when-cross-origin"
-              allowFullScreen
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center text-center text-sm font-medium text-[#777] sm:text-base">
-              오프닝 영상
-            </div>
-          )}
+        <div className="mx-auto mt-12 aspect-video w-full max-w-[1080px] overflow-hidden">
+          <img src="/images/comingsoon.png" alt="오프닝 영상 준비 중" className="mx-auto h-full w-[37.5%] object-contain" />
         </div>
       </section>
 

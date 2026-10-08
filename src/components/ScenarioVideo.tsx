@@ -2,10 +2,8 @@ import { useEffect, useRef } from "react";
 
 export const ScenarioVideoModal = ({
   onClose,
-  embedUrl = "https://www.youtube.com/embed/LqWsTYJKwLA",
 }: {
   onClose: () => void;
-  embedUrl?: string;
 }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -55,14 +53,7 @@ export const ScenarioVideoModal = ({
             />
           </svg>
         </button>
-        <iframe
-          src={embedUrl}
-          title="시연 영상 YouTube 플레이어"
-          className="aspect-video w-full border-0 bg-black"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowFullScreen
-          referrerPolicy="strict-origin-when-cross-origin"
-        />
+        <img src="/images/comingsoon.png" alt="시연 영상 준비 중" className="aspect-video w-[37.5%] object-contain" />
       </div>
     </dialog>
   );

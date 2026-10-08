@@ -35,8 +35,10 @@ const MediaPanel = ({ label, src, hoverTitle, to }: MediaPanelProps) => {
         <h2 className="mb-1 text-base font-bold uppercase lg:text-sm xl:mb-1 xl:text-[clamp(12px,1.15vw,18px)]">
           {label}
         </h2>
-        <div className="relative aspect-video w-full shrink-0 overflow-hidden bg-[#d9d9d9]">
-          {src ? (
+        <div className={`relative aspect-video w-full shrink-0 overflow-hidden ${label === "TEAM FILM" ? "bg-transparent" : "bg-[#d9d9d9]"}`}>
+          {label === "TEAM FILM" ? (
+            <img src="/images/comingsoon.png" alt="팀 영상 준비 중" className="mx-auto h-full w-[37.5%] object-contain" />
+          ) : src ? (
             <video
               className="h-full w-full object-cover"
               playsInline
