@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 
 import Footer from "../components/Footer";
 
+const SHOW_COMING_SOON = true;
+
 // 유튜브 영상 주소가 정해지면 이 값만 교체해 주세요.
 // watch, youtu.be, shorts 주소를 모두 사용할 수 있습니다.
 const MAKING_FILM_URL = "";
@@ -136,8 +138,7 @@ function Behind() {
 
   return (
     <main
-      className="min-h-screen bg-top text-[#000101] max-lg:bg-[length:400%_auto] max-lg:bg-repeat-y"
-      style={{ backgroundImage: "url('/images/background.png')" }}
+      className="min-h-screen bg-[url('/images/background.png')] bg-[length:400%_auto] bg-top bg-repeat-y text-[#000101] lg:bg-cover lg:bg-center lg:bg-no-repeat"
     >
       <div className="mx-auto w-full max-w-[1180px] px-5 pb-40 pt-[clamp(64px,8vw,118px)] sm:px-8 lg:px-12 lg:pb-48">
         <h1 className="flex justify-center">
@@ -264,4 +265,19 @@ function Behind() {
   );
 }
 
-export default Behind;
+function BehindPage() {
+  if (SHOW_COMING_SOON) {
+    return (
+      <main
+        className="flex min-h-[calc(100svh-var(--header-height))] items-center justify-center bg-[url('/images/background.png')] bg-[length:400%_auto] bg-top bg-repeat-y px-6 lg:bg-cover lg:bg-center lg:bg-no-repeat"
+      >
+        <h1 className="sr-only">비하인드 페이지 준비 중</h1>
+        <img src="/images/comingsoon.png" alt="COMING SOON" className="w-full max-w-[420px]" />
+      </main>
+    );
+  }
+
+  return <Behind />;
+}
+
+export default BehindPage;

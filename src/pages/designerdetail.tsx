@@ -35,18 +35,9 @@ const MediaPanel = ({ label, src, hoverTitle, to }: MediaPanelProps) => {
         <h2 className="mb-1 text-base font-bold uppercase lg:text-sm xl:mb-1 xl:text-[clamp(12px,1.15vw,18px)]">
           {label}
         </h2>
-        <div className={`relative aspect-video w-full shrink-0 overflow-hidden ${label === "TEAM FILM" ? "bg-transparent" : "bg-[#d9d9d9]"}`}>
-          {label === "TEAM FILM" ? (
-            <img src="/images/comingsoon.png" alt="팀 영상 준비 중" className="mx-auto h-full w-[37.5%] object-contain" />
-          ) : src ? (
-            <video
-              className="h-full w-full object-cover"
-              playsInline
-              preload="metadata"
-            >
-              <source src={src} />
-              브라우저에서 영상을 재생할 수 없습니다.
-            </video>
+        <div className="relative aspect-video w-full shrink-0 overflow-hidden bg-[#d9d9d9]">
+          {src ? (
+            <img src={src} alt={`${hoverTitle} 썸네일`} className="h-full w-full object-cover" />
           ) : (
             <div
               className="flex h-full items-center justify-center text-xs text-[#777]"
@@ -81,6 +72,16 @@ const MediaPanel = ({ label, src, hoverTitle, to }: MediaPanelProps) => {
 const getEnglishName = (designer: Designer) =>
   designer.detail?.nameEn ?? designer.id.replaceAll("-", " ").toUpperCase();
 
+const profileImages: Record<string, string> = {
+  "02": "/images/profile/individual/02_profile.jpeg",
+  "04": "/images/profile/individual/04_profile.jpg",
+  "06": "/images/profile/individual/06_profile.jpg",
+  "08": "/images/profile/individual/08_profile.png",
+  "11": "/images/profile/individual/11_profile.jpg",
+  "16": "/images/profile/individual/16_profile.jpg",
+  "17": "/images/profile/individual/17_profile.JPG",
+};
+
 const DesignerDetail = () => {
   const { designerId } = useParams();
 
@@ -101,12 +102,17 @@ const DesignerDetail = () => {
   const detail = designer.detail;
   const instagramUsername = detail?.instagram?.trim().replace(/^@/, "");
   const imageNumber = String(currentIndex + 1).padStart(2, "0");
-  const profileImage =
-    detail?.profileImage ??
-    (imageNumber === "02" ? "/images/profile/individual/02_profile.jpeg" : undefined);
+  const profileImage = detail?.profileImage ?? profileImages[imageNumber];
   const teamProject = Object.values(teamProjects).find(
     (project) => project.category === designer.team,
   );
+  const individualInteractionImage = `/images/poster/horizontal/individual/${imageNumber}.${imageNumber === "11" ? "jpg" : "png"}`;
+  const teamFilmImage = teamProject
+    ? `/images/poster/horizontal/team_video/${teamProject.category.toLowerCase()}.png`
+    : undefined;
+  const teamInteractionImage = teamProject
+    ? `/images/poster/horizontal/team_inter/${teamProject.category.toLowerCase()}.png`
+    : undefined;
 
   return (
     <main className="bg-[url('/images/background.png')] text-[#111] max-lg:bg-[length:400%_auto] max-lg:bg-top max-lg:bg-repeat-y">
@@ -270,19 +276,19 @@ const DesignerDetail = () => {
           <div className="mt-[110px] grid gap-5 text-[#000101] ssm:grid-cols-3 lg:col-span-2 lg:mt-0 xl:col-span-1 xl:col-start-5 xl:flex xl:min-h-0 xl:flex-col xl:justify-between xl:gap-5 xl:self-stretch">
             <MediaPanel
               label="INDIVIDUAL INTERACTION"
-              src={detail?.individualInteraction}
+              src={individualInteractionImage}
               hoverTitle={designer.conceptName || "UNTITLED"}
               to={`/project/${designer.id}#individual-interaction`}
             />
             <MediaPanel
               label="TEAM FILM"
-              src={detail?.teamFilm}
+              src={teamFilmImage}
               hoverTitle={teamProject?.videoTitle || "UNTITLED"}
               to={`${teamProject?.link ?? "/project"}#team-film`}
             />
             <MediaPanel
               label="TEAM INTERACTION"
-              src={detail?.teamInteraction}
+              src={teamInteractionImage}
               hoverTitle={teamProject?.interactionTitle || "UNTITLED"}
               to={`${teamProject?.link ?? "/project"}#team-interaction`}
             />

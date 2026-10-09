@@ -2,6 +2,7 @@ import { type MouseEvent, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { designers } from "../data/designers";
+import { getVerticalPosterImage } from "../data/posters";
 import { teamProjects } from "../data/team";
 
 const categories = ["ALL", "BRANDING", "DP", "OPENING", "WEB"] as const;
@@ -109,7 +110,7 @@ const projects: ProjectItem[] = designers.slice(1).map((designer, index) => ({
   interactionTitle: designer.interactionTitle,
   designer: designer.name,
   objectImage: designer.selectedObjectImage,
-  thumbnailImage: designer.projectDetail?.motionPosterImage,
+  thumbnailImage: getVerticalPosterImage(index + 1) ?? designer.projectDetail?.motionPosterImage,
 }));
 
 const Project = () => {
@@ -346,7 +347,7 @@ const Project = () => {
                         aria-label={`${teamProject.title}, ${category} 팀 프로젝트`}
                       >
                         <img
-                          src={teamProject.objectImage}
+                          src={`/images/poster/team_concept/${category.toLowerCase()}.png`}
                           alt={teamProject.title}
                           onError={(event) => {
                             event.currentTarget.style.display = "none";

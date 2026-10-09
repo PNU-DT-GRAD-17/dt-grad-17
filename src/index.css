@@ -50,25 +50,6 @@ html, body, #root{
   }
 }
 
-.project-detail__mouse-hint {
-  background-color: #d1d5d8;
-  -webkit-mask: url('/images/icon/mouseclick.svg') center / contain no-repeat;
-  mask: url('/images/icon/mouseclick.svg') center / contain no-repeat;
-  opacity: 0.5;
-  animation: project-mouse-hint-pulse 2.4s ease-in-out infinite;
-}
-
-@keyframes project-mouse-hint-pulse {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.65; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .project-detail__mouse-hint {
-    animation: none;
-  }
-}
-
 .project-detail__poster {
   filter: blur(7px);
   transform: scale(1.035);

@@ -26,6 +26,7 @@ type GuestbookMessage = {
   from: string;
   message: string;
   createdAt: Timestamp | null;
+  visibleByDefault: boolean;
 };
 
 const randomNames = [
@@ -137,7 +138,13 @@ function PostcardMessage({
   );
 }
 
-export default function Guestbook() {
+export default function Guestbook({
+  showPastMessages,
+  onObjectLogoClick,
+}: {
+  showPastMessages: boolean;
+  onObjectLogoClick: () => void;
+}) {
    /*
     * 방명록 카드 영역과
     * GO TO TOP 버튼 표시 여부
@@ -382,6 +389,9 @@ export default function Guestbook() {
 
               createdAt:
                 data.createdAt ?? null,
+
+              visibleByDefault:
+                data.visibleByDefault === true,
             };
           });
 
@@ -536,14 +546,17 @@ export default function Guestbook() {
    * 상단 방명록 확인 필터
    */
   const filteredMessages = useMemo(() => {
+    const visibleMessages = messages.filter(
+      (item) => item.visibleByDefault || showPastMessages
+    );
     if (selectedToId === "all") {
-      return messages;
+      return visibleMessages;
     }
-    return messages.filter(
+    return visibleMessages.filter(
       (item) =>
         item.recipientId === selectedToId
     );
-  }, [messages, selectedToId]);
+  }, [messages, selectedToId, showPastMessages]);
 
   /*
    * 위쪽 오브제 클릭
@@ -552,6 +565,7 @@ export default function Guestbook() {
     designerId: string
   ) => {
     setFormToId(designerId);
+    if (designerId === "all") onObjectLogoClick();
   };
 
   /*
@@ -613,6 +627,8 @@ export default function Guestbook() {
           message: message.trim(),
 
           createdAt: serverTimestamp(),
+
+          visibleByDefault: true,
         }
       );
 
@@ -991,7 +1007,7 @@ export default function Guestbook() {
       <section ref={guestbookCardsRef}>
       {filteredMessages.length === 0 ? (
         <div className="py-20 text-center text-neutral-500">
-          아직 남겨진 방명록이 없습니다.
+          {showPastMessages ? "아직 남겨진 방명록이 없습니다." : "방명록을 남겨주세요."}
         </div>
       ) : (
         <ul className="grid grid-cols-1 gap-x-10 gap-y-12 md:grid-cols-2 lg:grid-cols-3">

@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link, Navigate, useLocation, useParams } from "react-router-dom";
 
 import Footer from "../components/Footer";
@@ -6,12 +6,25 @@ import InteractionDrawings from "../components/InteractionDrawings";
 import MobileProjectHeader from "../components/MobileProjectHeader";
 import { ScenarioVideoLink, ScenarioVideoModal } from "../components/ScenarioVideo";
 import { designers } from "../data/designers";
+import { getVerticalPosterImage } from "../data/posters";
 
 const defaultDescription =
   "우리는 사용자의 행동 패턴을 분석하여 가장 직관적이고 편리한 경험을 설계합니다. 복잡한 과정을 최소화하고, 누구나 쉽게 이해할 수 있는 디지털 환경을 만드는 것이 우리의 목표입니다.";
 
 const DesktopMotionPoster = ({ image, video, title }: { image: string; video?: string; title: string }) => {
+  const posterRef = useRef<HTMLDivElement>(null);
+  const hintTimerRef = useRef<number | null>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [isHintVisible, setIsHintVisible] = useState(true);
+
+  const showHint = useCallback(() => {
+    if (hintTimerRef.current !== null) window.clearTimeout(hintTimerRef.current);
+    setIsHintVisible(true);
+    hintTimerRef.current = window.setTimeout(() => {
+      setIsHintVisible(false);
+      hintTimerRef.current = null;
+    }, 1000);
+  }, []);
 
   useEffect(() => {
     const desktop = window.matchMedia("(min-width: 1024px)");
@@ -22,13 +35,36 @@ const DesktopMotionPoster = ({ image, video, title }: { image: string; video?: s
     return () => desktop.removeEventListener("change", stopOnMobile);
   }, []);
 
+  useEffect(() => {
+    const poster = posterRef.current;
+    if (!poster) return;
+
+    showHint();
+    let wasVisible = false;
+    const observer = new IntersectionObserver(([entry]) => {
+      const isVisible = entry.intersectionRatio >= 0.5;
+      if (isVisible && !wasVisible) showHint();
+      if (!isVisible) setIsHovered(false);
+      wasVisible = isVisible;
+    }, { threshold: 0.5 });
+    observer.observe(poster);
+    return () => {
+      observer.disconnect();
+      if (hintTimerRef.current !== null) window.clearTimeout(hintTimerRef.current);
+    };
+  }, [showHint]);
+
   return (
     <div
+      ref={posterRef}
       className="absolute inset-y-0 left-0 aspect-[9/16] h-full shrink-0 overflow-hidden bg-white/30 lg:relative"
       onPointerEnter={(event) => {
         if (event.pointerType === "mouse" && window.innerWidth >= 1024) setIsHovered(true);
       }}
-      onPointerLeave={() => setIsHovered(false)}
+      onPointerLeave={() => {
+        setIsHovered(false);
+        showHint();
+      }}
     >
       <img src={image} alt={`${title} 모션 포스터`} className="h-full w-full object-cover" />
       {video && isHovered && (
@@ -43,10 +79,11 @@ const DesktopMotionPoster = ({ image, video, title }: { image: string; video?: s
           playsInline
         />
       )}
-      <span
-        aria-hidden="true"
-        className="project-detail__mouse-hint pointer-events-none absolute left-1/2 top-6 z-20 h-8 w-8 -translate-x-1/2"
-      />
+      {!isHovered && isHintVisible && (
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[#000101]/30" aria-hidden="true">
+          <img src="/images/icon/hover.svg" alt="" className="h-12 w-12" />
+        </div>
+      )}
     </div>
   );
 };
@@ -333,7 +370,9 @@ const ProjectDetail = () => {
   const previous = projectDesigners[(currentIndex - 1 + projectDesigners.length) % projectDesigners.length];
   const next = projectDesigners[(currentIndex + 1) % projectDesigners.length];
   const detail = designer.projectDetail;
-  const backgroundImage = detail?.motionPosterImage ?? designer.selectedObjectImage;
+  const backgroundImage = getVerticalPosterImage(currentIndex + 1) ?? detail?.motionPosterImage ?? designer.selectedObjectImage;
+  const motionPosterVideo = detail?.motionPosterVideoUrl
+    ?? `/motionPoster/${String(currentIndex + 1).padStart(2, "0")}_motionPoster.mp4`;
   const conceptDescription = designer.conceptDescription ?? defaultDescription;
   const motionPosterDescription = designer.motionPosterDescription ?? defaultDescription;
   const interactionDescription = designer.interactionDescription ?? defaultDescription;
@@ -428,7 +467,7 @@ const ProjectDetail = () => {
             <section className="h-full min-w-full snap-start touch-pan-x overflow-hidden" aria-label="모션 포스터">
               <MobileMotionPoster
                 key={designer.id}
-                video={detail?.motionPosterVideoUrl}
+                video={motionPosterVideo}
                 image={backgroundImage}
                 title={designer.motionPosterTitle || designer.name}
               />
@@ -464,7 +503,7 @@ const ProjectDetail = () => {
           <DesktopMotionPoster
             key={designer.id}
             image={backgroundImage}
-            video={detail?.motionPosterVideoUrl}
+            video={motionPosterVideo}
             title={designer.motionPosterTitle || designer.name}
           />
 

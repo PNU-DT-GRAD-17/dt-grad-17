@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import Home from './pages/home'
@@ -11,6 +12,8 @@ import Guestbook from './pages/guestbook'
 import Header from './components/header'
 
 function App() {
+  const [guestbookObjectLogoClicks, setGuestbookObjectLogoClicks] = useState(0)
+  const arePastGuestbookMessagesVisible = guestbookObjectLogoClicks >= 5
 
   return (
 
@@ -33,7 +36,15 @@ function App() {
 
         <Route path="/behind" element={<Behind />} />
 
-        <Route path="/guestbook" element={<Guestbook />} />
+        <Route
+          path="/guestbook"
+          element={
+            <Guestbook
+              showPastMessages={arePastGuestbookMessagesVisible}
+              onObjectLogoClick={() => setGuestbookObjectLogoClicks((count) => Math.min(count + 1, 5))}
+            />
+          }
+        />
         
       </Routes>
 

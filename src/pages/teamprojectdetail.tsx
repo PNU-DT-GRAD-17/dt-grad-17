@@ -253,7 +253,7 @@ const TeamProjectDetail = () => {
   const videoDescription = project.videoDescription || defaultDescription;
   const interactionDescription = project.interactionDescription || defaultDescription;
   const detail = project.projectDetail;
-  const backgroundImage = detail?.motionPosterImage ?? `/images/team-object/teamObject_${category}.png`;
+  const backgroundImage = `/images/poster/team_concept/${category.toLowerCase()}.png`;
 
   return (
     <main

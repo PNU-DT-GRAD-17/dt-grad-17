@@ -160,7 +160,12 @@ function Header() {
             lg:px-[clamp(40px,4vw,70px)]
           "
         >
-          <NavLink to="/" end className="shrink-0">
+          <NavLink
+            to="/"
+            end
+            className="shrink-0"
+            onClick={releasePointerFocus}
+          >
             <img
               src="/images/navBar_logo.png"
               alt="잔향 로고"
