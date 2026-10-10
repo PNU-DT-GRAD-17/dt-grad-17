@@ -215,10 +215,10 @@ const DesignerDetail = () => {
                 <span className="text-[clamp(16px,2vw,24px)] font-regular text-[#4A4B51] tracking-[-0.02em]">{getEnglishName(designer)}</span>
               </h1>
 
-              <dl className="mt-0 grid max-w-[570px] grid-cols-1 gap-x-12 gap-y-6 text-sm [&>div]:grid [&>div]:grid-cols-[110px_minmax(0,1fr)] [&>div]:items-baseline [&>div>dd]:min-w-0 lg:mt-8 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] lg:gap-x-[196px] lg:[&>div]:block xl:mt-12 xl:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] xl:gap-x-[236px] xl:gap-y-10 xl:text-[clamp(16px,1.05vw,20px)]">
+              <dl className="mt-0 grid max-w-[570px] grid-cols-1 gap-x-12 gap-y-6 text-sm [&>div]:grid [&>div]:grid-cols-[100px_minmax(0,1fr)] [&>div]:items-baseline [&>div>dd]:min-w-0 lg:mt-8 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] lg:gap-x-[196px] lg:[&>div]:block xl:mt-12 xl:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] xl:gap-x-[236px] xl:gap-y-10 xl:text-[clamp(16px,1.05vw,20px)]">
                 <div className="lg:col-span-2">
-                  <dt className="mb-0 text-[#888A96] text-[clamp(14px,1.15vw,16px)] lg:mb-1">team</dt>
-                  <dd className="text-lg text-[#000101] font-semibold text-[clamp(18px,1.15vw,20px)]">
+                  <dt className="mb-0 text-[#888A96] text-[clamp(12px,1.15vw,16px)] lg:mb-1">team</dt>
+                  <dd className="text-lg text-[#000101] font-semibold text-[clamp(16px,1.15vw,20px)]">
                     {teamProject ? (
                       <Link
                         to={teamProject.link}
@@ -234,14 +234,14 @@ const DesignerDetail = () => {
                 </div>
 
                 <div>
-                  <dt className="mb-0 text-[#888A96] text-[clamp(14px,1.15vw,16px)] lg:mb-1">e-mail</dt>
-                  <dd className="text-lg text-[#000101] font-semibold text-[clamp(18px,1.15vw,20px)]">
+                  <dt className="mb-0 text-[#888A96] text-[clamp(12px,1.15vw,16px)] lg:mb-1">e-mail</dt>
+                  <dd className="text-lg text-[#000101] font-semibold text-[clamp(16px,1.15vw,20px)]">
                     {detail?.email ?? "-"}
                   </dd>
                 </div>
                 <div>
-                  <dt className="mb-0 text-[#888A96] text-[clamp(14px,1.15vw,16px)] lg:mb-1">instagram</dt>
-                  <dd className="text-lg text-[#000101] font-semibold text-[clamp(18px,1.15vw,20px)]">
+                  <dt className="mb-0 text-[#888A96] text-[clamp(12px,1.15vw,16px)] lg:mb-1">instagram</dt>
+                  <dd className="text-lg text-[#000101] font-semibold text-[clamp(16px,1.15vw,20px)]">
                     {instagramUsername ? (
                       <a
                         href={`https://www.instagram.com/${encodeURIComponent(instagramUsername)}/`}
@@ -253,8 +253,8 @@ const DesignerDetail = () => {
                   </dd>
                 </div>
                 <div>
-                  <dt className="mb-0 text-[#888A96] text-[clamp(14px,1.15vw,16px)] lg:mb-1">portfolio</dt>
-                  <dd className="text-lg text-[#000101] font-semibold text-[clamp(18px,1.15vw,20px)]">
+                  <dt className="mb-0 text-[#888A96] text-[clamp(12px,1.15vw,16px)] lg:mb-1">portfolio</dt>
+                  <dd className="text-lg text-[#000101] font-semibold text-[clamp(16px,1.15vw,20px)]">
                     {detail?.portfolio ? (
                       <a
                         href={detail.portfolio}
@@ -266,8 +266,8 @@ const DesignerDetail = () => {
                   </dd>
                 </div>
                 <div>
-                  <dt className="mb-0 text-[#888A96] text-[clamp(14px,1.15vw,16px)] lg:mb-1">phone number</dt>
-                  <dd className="text-lg text-[#000101] font-semibold text-[clamp(18px,1.15vw,20px)]">{detail?.phone ?? "-"}</dd>
+                  <dt className="mb-0 text-[#888A96] text-[clamp(12px,1.15vw,16px)] lg:mb-1">phone number</dt>
+                  <dd className="text-lg text-[#000101] font-semibold text-[clamp(16px,1.15vw,20px)]">{detail?.phone ?? "-"}</dd>
                 </div>
               </dl>
             </div>
