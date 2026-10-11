@@ -73,13 +73,24 @@ const getEnglishName = (designer: Designer) =>
   designer.detail?.nameEn ?? designer.id.replaceAll("-", " ").toUpperCase();
 
 const profileImages: Record<string, string> = {
+  "01": "/images/profile/individual/01_profile.jpg",
   "02": "/images/profile/individual/02_profile.jpeg",
+  "03": "/images/profile/individual/03_profile.jpeg",
   "04": "/images/profile/individual/04_profile.jpg",
+  "05": "/images/profile/individual/05_profile.jpeg",
   "06": "/images/profile/individual/06_profile.jpg",
+  "07": "/images/profile/individual/07_profile.jpeg",
   "08": "/images/profile/individual/08_profile.png",
+  "09": "/images/profile/individual/09_profile.jpeg",
+  "10": "/images/profile/individual/10_profile.jpeg",
   "11": "/images/profile/individual/11_profile.jpg",
+  "12": "/images/profile/individual/12_profile.jpeg",
+  "13": "/images/profile/individual/13_profile.jpeg",
+  "14": "/images/profile/individual/14_profile.jpeg",
+  "15": "/images/profile/individual/15_profile.jpeg",
   "16": "/images/profile/individual/16_profile.jpg",
   "17": "/images/profile/individual/17_profile.JPG",
+  "18": "/images/profile/individual/18_profile.JPG",
 };
 
 const DesignerDetail = () => {
