@@ -37,7 +37,7 @@ const MediaPanel = ({ label, src, hoverTitle, to }: MediaPanelProps) => {
         </h2>
         <div className="relative aspect-video w-full shrink-0 overflow-hidden bg-[#d9d9d9]">
           {src ? (
-            <img src={src} alt={`${hoverTitle} 썸네일`} className="h-full w-full object-cover" />
+            <img src={src} alt={`${hoverTitle} 썸네일`} loading="lazy" decoding="async" className="h-full w-full object-cover" />
           ) : (
             <div
               className="flex h-full items-center justify-center text-xs text-[#777]"
@@ -72,27 +72,6 @@ const MediaPanel = ({ label, src, hoverTitle, to }: MediaPanelProps) => {
 const getEnglishName = (designer: Designer) =>
   designer.detail?.nameEn ?? designer.id.replaceAll("-", " ").toUpperCase();
 
-const profileImages: Record<string, string> = {
-  "01": "/images/profile/individual/01_profile.jpg",
-  "02": "/images/profile/individual/02_profile.jpeg",
-  "03": "/images/profile/individual/03_profile.jpeg",
-  "04": "/images/profile/individual/04_profile.jpg",
-  "05": "/images/profile/individual/05_profile.jpeg",
-  "06": "/images/profile/individual/06_profile.jpg",
-  "07": "/images/profile/individual/07_profile.jpeg",
-  "08": "/images/profile/individual/08_profile.png",
-  "09": "/images/profile/individual/09_profile.jpeg",
-  "10": "/images/profile/individual/10_profile.jpeg",
-  "11": "/images/profile/individual/11_profile.jpg",
-  "12": "/images/profile/individual/12_profile.jpeg",
-  "13": "/images/profile/individual/13_profile.jpeg",
-  "14": "/images/profile/individual/14_profile.jpeg",
-  "15": "/images/profile/individual/15_profile.jpeg",
-  "16": "/images/profile/individual/16_profile.jpg",
-  "17": "/images/profile/individual/17_profile.JPG",
-  "18": "/images/profile/individual/18_profile.JPG",
-};
-
 const DesignerDetail = () => {
   const { designerId } = useParams();
 
@@ -113,7 +92,7 @@ const DesignerDetail = () => {
   const detail = designer.detail;
   const instagramUsername = detail?.instagram?.trim().replace(/^@/, "");
   const imageNumber = String(currentIndex + 1).padStart(2, "0");
-  const profileImage = detail?.profileImage ?? profileImages[imageNumber];
+  const profileImage = detail?.profileImage ?? `/images/profile/optimized/${imageNumber}.jpg`;
   const teamProject = Object.values(teamProjects).find(
     (project) => project.category === designer.team,
   );
@@ -126,7 +105,7 @@ const DesignerDetail = () => {
     : undefined;
 
   return (
-    <main className="bg-[url('/images/background.png')] text-[#111] max-lg:bg-[length:400%_auto] max-lg:bg-top max-lg:bg-repeat-y">
+    <main className="bg-[url('/images/background.jpg')] text-[#111] max-lg:bg-[length:400%_auto] max-lg:bg-top max-lg:bg-repeat-y">
       <div className="relative mx-auto flex min-h-[calc(100svh-72px)] max-w-[2100px] flex-col px-6 pb-12 pt-[39px] sm:px-10 lg:min-h-[calc(100svh-var(--header-height))] lg:px-[clamp(40px,2.5vw,52px)] lg:pb-12 lg:pt-6 xl:max-w-none xl:px-0 xl:pb-[clamp(48px,6svh,72px)] xl:pt-[clamp(28px,3.5svh,40px)]">
         <div className="grid min-h-0 flex-1 items-start gap-y-0 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1.25fr)] lg:gap-x-[clamp(28px,2.5vw,36px)] lg:gap-y-10 xl:mx-auto xl:w-[calc(100%_-_104px)] xl:max-w-[1962px] xl:grid-cols-[minmax(0,1.45fr)_clamp(28px,2.5vw,36px)_minmax(0,1.25fr)_clamp(62px,3.2vw,73px)_clamp(378px,27.3vw,567px)] xl:items-stretch xl:gap-0">
           <div className="flex w-full flex-col justify-end xl:col-start-1 xl:min-h-0 xl:justify-start">
@@ -181,6 +160,8 @@ const DesignerDetail = () => {
                   <img
                     src={profileImage}
                     alt={`${designer.name} 디자이너 프로필`}
+                    fetchPriority="high"
+                    decoding="async"
                     className="h-full w-full object-cover object-center"
                   />
                 ) : (
