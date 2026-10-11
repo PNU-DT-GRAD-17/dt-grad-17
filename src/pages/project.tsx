@@ -187,7 +187,7 @@ const Project = () => {
       </section>
 
       <div className="flex w-full items-start">
-        <aside className="sticky top-0 hidden h-dvh w-[clamp(160px,16vw,320px)] shrink-0 self-start overflow-hidden bg-white px-6 py-8 lg:block">
+        <aside className="sticky top-0 hidden h-dvh w-[clamp(160px,16vw,320px)] shrink-0 self-start overflow-x-hidden overflow-y-auto overscroll-y-contain bg-white px-6 py-8 lg:block">
           <nav
             aria-label="프로젝트 카테고리"
             className="flex flex-col items-start"
