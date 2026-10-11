@@ -18,7 +18,7 @@ const Footer = () => {
             </Link>
 
             <div className="absolute right-0 top-0 flex items-center gap-[1.8vw]">
-              <a href="https://www.instagram.com/pnu.dt.16/" target="_blank" rel="noreferrer" aria-label="인스타그램" className="transition-transform duration-200 hover:scale-105">
+              <a href="https://www.instagram.com/pnu.dt.17/" target="_blank" rel="noreferrer" aria-label="인스타그램" className="transition-transform duration-200 hover:scale-105">
                 <img src="/images/icon/instagram.svg" alt="" className="w-[clamp(28px,3vw,40px)] object-contain" />
               </a>
 
@@ -60,7 +60,7 @@ const Footer = () => {
               </Link>
 
               <div className="flex items-center gap-[clamp(10px,3vw,16px)]">
-                <a href="https://www.instagram.com/pnu.dt.16/" target="_blank" rel="noreferrer" aria-label="인스타그램">
+                <a href="https://www.instagram.com/pnu.dt.17/" target="_blank" rel="noreferrer" aria-label="인스타그램">
                   <img src="/images/icon/instagram.svg" alt="" className="h-9 w-9 object-contain" />
                 </a>
 
