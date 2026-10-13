@@ -289,24 +289,24 @@ const ProjectDetail = () => {
 
       const frameHeight = container.clientHeight - 64;
       const lastFrameTop = frameHeight;
+      const snapPoints = [0, lastFrameTop];
       const isEnteringFooter =
         event.deltaY > 0 && container.scrollTop >= lastFrameTop - 1;
       const isLeavingFooter =
         event.deltaY < 0 && container.scrollTop > lastFrameTop + 1;
 
-      if (isWheelGestureLockedRef.current) {
-        event.preventDefault();
-
-        if (!isSnappingRef.current) {
-          releaseWheelGestureAfterIdle();
-        }
-
+      // 두 번째 화면에 도착한 뒤에는 잠금 해제를 기다리지 않고 콘텐츠를 바로 스크롤합니다.
+      if (!isSnappingRef.current && (isEnteringFooter || isLeavingFooter)) {
         return;
       }
 
-      // The footer keeps native scrolling in both directions. Once it reaches
-      // the final project frame again, the presentation-style navigation resumes.
-      if (isEnteringFooter || isLeavingFooter) {
+      // 중간 위치에 멈춘 경우에도 다음 휠 입력으로 다시 이동할 수 있어야 합니다.
+      if (!isSnappingRef.current && snapPoints.every((point) => Math.abs(point - container.scrollTop) > 1)) {
+        isWheelGestureLockedRef.current = false;
+      }
+
+      if (isWheelGestureLockedRef.current) {
+        event.preventDefault();
         return;
       }
 
@@ -321,24 +321,13 @@ const ProjectDetail = () => {
       }
 
       event.preventDefault();
-      const snapPoints = [0, lastFrameTop];
-      const currentFrameIndex = snapPoints.reduce(
-        (closestIndex, point, index) =>
-          Math.abs(point - container.scrollTop) <
-          Math.abs(snapPoints[closestIndex] - container.scrollTop)
-            ? index
-            : closestIndex,
-        0,
-      );
-      const direction = event.deltaY > 0 ? 1 : -1;
-      const targetFrameIndex = Math.min(
-        snapPoints.length - 1,
-        Math.max(0, currentFrameIndex + direction),
-      );
+      const targetTop = event.deltaY > 0
+        ? snapPoints.find((point) => point > container.scrollTop + 1)
+        : snapPoints.findLast((point) => point < container.scrollTop - 1);
 
-      if (targetFrameIndex !== currentFrameIndex) {
+      if (targetTop !== undefined) {
         isWheelGestureLockedRef.current = true;
-        snapTo(snapPoints[targetFrameIndex]);
+        snapTo(targetTop);
       }
     };
 
@@ -558,7 +547,7 @@ const ProjectDetail = () => {
           </div>
         </section>
 
-        <section id="individual-interaction" className="h-[calc(100svh-var(--header-height))] overflow-hidden px-12 py-16 lg:pb-24 lg:pt-12">
+        <section id="individual-interaction" className="min-h-[calc(100svh-var(--header-height))] px-12 py-16 lg:pb-24 lg:pt-12">
           <div className="mb-7 flex items-end justify-between gap-6">
             <h2 className="text-[clamp(22px,2vw,32px)] font-semibold tracking-[-0.02em]">INDIVIDUAL INTERACTION</h2>
           </div>

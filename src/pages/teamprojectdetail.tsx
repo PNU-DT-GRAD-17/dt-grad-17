@@ -169,24 +169,40 @@ const TeamProjectDetail = () => {
       if (window.innerWidth < 768) return;
       const frameHeight = container.clientHeight - 64;
       const lastFrameTop = frameHeight * 2;
+      const snapPoints = [0, frameHeight, lastFrameTop];
+      const film = document.getElementById("team-film");
+      const atFilmFrame = Math.abs(container.scrollTop - frameHeight) <= 1;
       const isEnteringFooter =
         event.deltaY > 0 && container.scrollTop >= lastFrameTop - 1;
       const isLeavingFooter =
         event.deltaY < 0 && container.scrollTop > lastFrameTop + 1;
 
-      if (isWheelGestureLockedRef.current) {
-        event.preventDefault();
+      if (!isSnappingRef.current && atFilmFrame) {
+        const canScrollFilm = film && (
+          (event.deltaY > 0 && film.scrollTop + film.clientHeight < film.scrollHeight - 1) ||
+          (event.deltaY < 0 && film.scrollTop > 1)
+        );
 
-        if (!isSnappingRef.current) {
-          releaseWheelGestureAfterIdle();
+        if (canScrollFilm && film.contains(event.target as Node)) {
+          return;
         }
 
+        // 필름 섹션을 다 읽은 다음 입력은 다음 화면 전환에 바로 사용합니다.
+        isWheelGestureLockedRef.current = false;
+      }
+
+      // 마지막 화면에 도착한 뒤에는 잠금 해제를 기다리지 않고 콘텐츠를 바로 스크롤합니다.
+      if (!isSnappingRef.current && (isEnteringFooter || isLeavingFooter)) {
         return;
       }
 
-      // The footer keeps native scrolling in both directions. Once it reaches
-      // the final project frame again, the presentation-style navigation resumes.
-      if (isEnteringFooter || isLeavingFooter) {
+      // 중간 위치에 멈춘 경우에도 다음 휠 입력으로 다시 이동할 수 있어야 합니다.
+      if (!isSnappingRef.current && snapPoints.every((point) => Math.abs(point - container.scrollTop) > 1)) {
+        isWheelGestureLockedRef.current = false;
+      }
+
+      if (isWheelGestureLockedRef.current) {
+        event.preventDefault();
         return;
       }
 
@@ -201,24 +217,13 @@ const TeamProjectDetail = () => {
       }
 
       event.preventDefault();
-      const snapPoints = [0, frameHeight, lastFrameTop];
-      const currentFrameIndex = snapPoints.reduce(
-        (closestIndex, point, index) =>
-          Math.abs(point - container.scrollTop) <
-          Math.abs(snapPoints[closestIndex] - container.scrollTop)
-            ? index
-            : closestIndex,
-        0,
-      );
-      const direction = event.deltaY > 0 ? 1 : -1;
-      const targetFrameIndex = Math.min(
-        snapPoints.length - 1,
-        Math.max(0, currentFrameIndex + direction),
-      );
+      const targetTop = event.deltaY > 0
+        ? snapPoints.find((point) => point > container.scrollTop + 1)
+        : snapPoints.findLast((point) => point < container.scrollTop - 1);
 
-      if (targetFrameIndex !== currentFrameIndex) {
+      if (targetTop !== undefined) {
         isWheelGestureLockedRef.current = true;
-        snapTo(snapPoints[targetFrameIndex]);
+        snapTo(targetTop);
       }
     };
 
@@ -443,13 +448,13 @@ const TeamProjectDetail = () => {
           </div>
         </section>
 
-        <section id="team-film" className="h-[calc(100svh-var(--header-height)-4rem)] overflow-hidden px-12 py-16 lg:pb-24 lg:pt-12">
+        <section id="team-film" className="h-[calc(100svh-var(--header-height)-4rem)] overflow-y-auto px-12 pb-[clamp(24px,4svh,40px)] pt-[clamp(20px,4svh,48px)]">
           <div className="mb-7 flex items-end justify-between gap-6">
             <SectionTitle>TEAM FILM</SectionTitle>
           </div>
 
-          <div className="grid gap-8 lg:grid-cols-[3.6fr_1.4fr] lg:items-start">
-            <MediaPanel src="/images/comingsoon.png" alt={`${project.videoTitle} 팀 영상 준비 중`} className="aspect-video w-[90%] lg:w-full" imageClassName="mx-auto h-full w-[37.5%] object-contain" transparent />
+          <div className="grid gap-8 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] md:items-start">
+            <MediaPanel src="/images/comingsoon.png" alt={`${project.videoTitle} 팀 영상 준비 중`} className="aspect-video w-full" imageClassName="mx-auto h-full w-[37.5%] object-contain" transparent />
             <section>
               <h3 className="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-2xl font-semibold">
                 {project.videoTitle || "영상 제목"}
@@ -460,7 +465,7 @@ const TeamProjectDetail = () => {
           </div>
         </section>
 
-        <section id="team-interaction" className="h-[calc(100svh-var(--header-height))] overflow-hidden px-12 py-16 lg:pb-24 lg:pt-12">
+        <section id="team-interaction" className="min-h-[calc(100svh-var(--header-height))] px-12 py-16 lg:pb-24 lg:pt-12">
           <div className="mb-7 flex items-end justify-between gap-6">
             <SectionTitle>TEAM INTERACTION</SectionTitle>
           </div>
