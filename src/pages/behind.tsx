@@ -16,11 +16,11 @@ type BCut = {
 
 // 실제 비하인드 사진이 준비되면 src, date, title을 교체해 주세요.
 const B_CUTS: BCut[] = [
-  { src: "/images/object/original/01_ori.png", date: "00.00.00", title: "사진 제목 01" },
-  { src: "/images/object/original/02_ori.png", date: "00.00.00", title: "사진 제목 02" },
-  { src: "/images/object/original/03_ori.png", date: "00.00.00", title: "사진 제목 03" },
-  { src: "/images/object/original/04_ori.png", date: "00.00.00", title: "사진 제목 04" },
-  { src: "/images/object/original/05_ori.png", date: "00.00.00", title: "사진 제목 05" },
+  { src: "/images/object/original/01_ori.webp", date: "00.00.00", title: "사진 제목 01" },
+  { src: "/images/object/original/02_ori.webp", date: "00.00.00", title: "사진 제목 02" },
+  { src: "/images/object/original/03_ori.webp", date: "00.00.00", title: "사진 제목 03" },
+  { src: "/images/object/original/04_ori.webp", date: "00.00.00", title: "사진 제목 04" },
+  { src: "/images/object/original/05_ori.webp", date: "00.00.00", title: "사진 제목 05" },
 ];
 
 const MAX_STACK_SIZE = 5;
@@ -138,7 +138,7 @@ function Behind() {
 
   return (
     <main
-      className="min-h-screen bg-[url('/images/background.jpg')] bg-[length:400%_auto] bg-top bg-repeat-y text-[#000101] lg:bg-cover lg:bg-center lg:bg-no-repeat"
+      className="min-h-screen bg-[url('/images/background.webp')] bg-[length:400%_auto] bg-top bg-repeat-y text-[#000101] lg:bg-cover lg:bg-center lg:bg-no-repeat"
     >
       <div className="mx-auto w-full max-w-[1180px] px-5 pb-40 pt-[clamp(64px,8vw,118px)] sm:px-8 lg:px-12 lg:pb-48">
         <h1 className="flex justify-center">
@@ -269,10 +269,10 @@ function BehindPage() {
   if (SHOW_COMING_SOON) {
     return (
       <main
-        className="flex min-h-[calc(100svh-var(--header-height))] items-center justify-center bg-[url('/images/background.jpg')] bg-[length:400%_auto] bg-top bg-repeat-y px-6 lg:bg-cover lg:bg-center lg:bg-no-repeat"
+        className="flex min-h-[calc(100svh-var(--header-height))] items-center justify-center bg-[url('/images/background.webp')] bg-[length:400%_auto] bg-top bg-repeat-y px-6 lg:bg-cover lg:bg-center lg:bg-no-repeat"
       >
         <h1 className="sr-only">비하인드 페이지 준비 중</h1>
-        <img src="/images/comingsoon.png" alt="COMING SOON" className="w-full max-w-[420px]" />
+        <img src="/images/comingsoon.webp" alt="COMING SOON" className="w-full max-w-[420px]" />
       </main>
     );
   }

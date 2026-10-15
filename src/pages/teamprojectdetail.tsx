@@ -23,7 +23,7 @@ type MediaPanelProps = {
 const MediaPanel = ({ src, alt, className = "", imageClassName = "h-full w-full object-cover", transparent = false }: MediaPanelProps) => (
   <div className={`overflow-hidden ${transparent ? "bg-transparent" : "bg-white/30"} ${className}`}>
     {src ? (
-      <img src={src} alt={alt} className={imageClassName} />
+      <img src={src} alt={alt} loading="lazy" decoding="async" className={imageClassName} />
     ) : (
       <span className="sr-only">{alt} 준비 중</span>
     )}
@@ -259,7 +259,7 @@ const TeamProjectDetail = () => {
   const interactionDescription = project.interactionDescription || defaultDescription;
   const detail = project.projectDetail;
   const scenarioImages = detail?.interactionImages?.slice(2) ?? [];
-  const backgroundImage = `/images/poster/team_concept/${category.toLowerCase()}.png`;
+  const backgroundImage = `/images/poster/team_concept/${category.toLowerCase()}.webp`;
 
   return (
     <main
@@ -376,7 +376,7 @@ const TeamProjectDetail = () => {
             </section>
 
             <section id="mobile-team-film" className="h-full w-full shrink-0 snap-start touch-pan-x overflow-hidden pb-12" aria-label="팀 영상 및 소개">
-              <MediaPanel src="/images/comingsoon.png" alt={`${project.videoTitle} 팀 영상 준비 중`} className="aspect-video w-full" imageClassName="mx-auto h-full w-[37.5%] object-contain" transparent />
+              <MediaPanel src="/images/comingsoon.webp" alt={`${project.videoTitle} 팀 영상 준비 중`} className="aspect-video w-full" imageClassName="mx-auto h-full w-[37.5%] object-contain" transparent />
               <div className="px-5 pt-7">
               <h2 className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-3xl font-semibold">
                 <span>{project.videoTitle || "영상 제목"}</span>
@@ -455,7 +455,7 @@ const TeamProjectDetail = () => {
           </div>
 
           <div className="grid gap-8 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] md:items-start">
-            <MediaPanel src="/images/comingsoon.png" alt={`${project.videoTitle} 팀 영상 준비 중`} className="aspect-video w-full" imageClassName="mx-auto h-full w-[37.5%] object-contain" transparent />
+            <MediaPanel src="/images/comingsoon.webp" alt={`${project.videoTitle} 팀 영상 준비 중`} className="aspect-video w-full" imageClassName="mx-auto h-full w-[37.5%] object-contain" transparent />
             <section>
               <h3 className="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-2xl font-semibold">
                 {project.videoTitle || "영상 제목"}
@@ -513,7 +513,7 @@ const TeamProjectDetail = () => {
         className="project-detail__navigator fixed inset-x-0 bottom-0 z-20 hidden h-16 grid-cols-3 items-center bg-[#0066AD] px-5 text-base md:grid sm:px-10 lg:px-[clamp(56px,6.25vw,120px)]"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(0, 102, 173, 0.5), rgba(0, 102, 173, 0.5)), url('/images/blue_bg-upscaled.png')",
+            "linear-gradient(rgba(0, 102, 173, 0.5), rgba(0, 102, 173, 0.5)), url('/images/blue_bg-upscaled.webp')",
           backgroundPosition: "center, center",
           backgroundRepeat: "no-repeat, no-repeat",
           backgroundSize: "100% 100%, 106% auto",

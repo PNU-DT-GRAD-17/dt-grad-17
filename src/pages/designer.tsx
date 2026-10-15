@@ -30,7 +30,7 @@ const Designer = () => {
       className="min-h-screen max-lg:bg-[length:400%_auto] max-lg:bg-top max-lg:bg-repeat-y"
       style={{
         backgroundImage:
-          "url('/images/background.jpg')",
+          "url('/images/background.webp')",
       }}
     >
       <img
@@ -73,20 +73,26 @@ const Designer = () => {
                 </p>
 
                 <img
-                  src={`/images/object/paper/${imageNumber}.png`}
+                  src={`/images/object/paper/${imageNumber}.webp`}
                   alt={`${designer.name} 오브제`}
+                  loading="lazy"
+                  decoding="async"
                   className={`${imageClassName} mix-blend-hard-light`}
                 />
                 <img
-                  src={`/images/object/paper/${imageNumber}_paper.png`}
+                  src={`/images/object/paper/${imageNumber}_paper.webp`}
                   alt=""
                   aria-hidden="true"
+                  loading="lazy"
+                  decoding="async"
                   className={`${imageClassName} designer-hover-paper z-10 transition-opacity duration-300`}
                 />
                 <img
-                  src={`/images/object/original/${imageNumber}_ori.png`}
+                  src={`/images/object/original/${imageNumber}_ori.webp`}
                   alt=""
                   aria-hidden="true"
+                  loading="lazy"
+                  decoding="async"
                   className={`${imageClassName} designer-hover-original z-20 opacity-0`}
                 />
                 <span

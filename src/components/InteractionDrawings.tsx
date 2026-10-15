@@ -5,7 +5,7 @@ const views = ["탑뷰", "사이드뷰"];
 function DrawingImage({ src, label }: { src?: string; label: string }) {
   return (
     <div className="aspect-square w-full shrink-0 overflow-hidden bg-white/30">
-      {src ? <img src={src} alt={label} className="h-full w-full object-contain" /> : <span className="sr-only">{label} 준비 중</span>}
+      {src ? <img src={src} alt={label} loading="lazy" decoding="async" className="h-full w-full object-contain" /> : <span className="sr-only">{label} 준비 중</span>}
     </div>
   );
 }

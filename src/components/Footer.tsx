@@ -10,7 +10,7 @@ const Footer = () => {
       <footer className="relative w-full overflow-hidden text-[#fff]">
         {/* PC */}
         <div className="relative hidden aspect-[1920/400] w-full lg:block">
-          <img src="/images/footer_background.png" alt="" className="absolute inset-0 h-full w-full object-cover object-center" />
+          <img src="/images/footer_background.webp" alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover object-center" />
 
           <div className="absolute inset-x-[9.4%] inset-y-[15%] z-10 xl:inset-y-[17%]">
             <Link to="/" onClick={handleLogoClick} aria-label="홈으로 이동" className="absolute left-0 top-0 w-[12.3%]">
@@ -51,7 +51,7 @@ const Footer = () => {
 
         {/* 모바일 */}
         <div className="relative px-[9.4%] py-[clamp(56px,12vw,88px)] lg:hidden">
-          <img src="/images/footer_background.png" alt="" className="absolute inset-0 h-full w-full object-cover object-center" />
+          <img src="/images/footer_background.webp" alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover object-center" />
 
           <div className="relative z-10 flex flex-col">
             <div className="flex items-start justify-between">

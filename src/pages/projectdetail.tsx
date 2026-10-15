@@ -145,7 +145,7 @@ const MediaPlaceholder = ({
 }) => (
   <div className={`${className} overflow-hidden bg-white/30`}>
     {src ? (
-      <img src={src} alt={alt} className={`h-full w-full ${imageClassName}`} />
+      <img src={src} alt={alt} loading="lazy" decoding="async" className={`h-full w-full ${imageClassName}`} />
     ) : (
       <span className="sr-only">이미지 준비 중</span>
     )}
@@ -595,7 +595,7 @@ const ProjectDetail = () => {
         className="project-detail__navigator relative mx-2 z-20 hidden h-14 grid-cols-2 lg:fixed lg:inset-x-0 lg:bottom-0 lg:mx-0 lg:grid lg:h-16 lg:grid-cols-3 items-center bg-[#0066AD] px-5 text-base sm:px-10 lg:px-[clamp(56px,6.25vw,120px)]"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(0, 102, 173, 0.5), rgba(0, 102, 173, 0.5)), url('/images/blue_bg-upscaled.png')",
+            "linear-gradient(rgba(0, 102, 173, 0.5), rgba(0, 102, 173, 0.5)), url('/images/blue_bg-upscaled.webp')",
           backgroundPosition: "center, center",
           backgroundRepeat: "no-repeat, no-repeat",
           backgroundSize: "100% 100%, 106% auto",

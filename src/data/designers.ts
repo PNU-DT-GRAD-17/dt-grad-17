@@ -40,11 +40,11 @@ const getIndividualInteractionImages = (index: number) => {
   const path = `/images/inter/individual/${number}`;
 
   return [
-    `${path}/top-view.png`,
-    `${path}/side-view.png`,
-    `${path}/scenario-01.png`,
-    `${path}/scenario-02.png`,
-    `${path}/scenario-03.png`,
+    `${path}/top-view.webp`,
+    `${path}/side-view.webp`,
+    `${path}/scenario-01.webp`,
+    `${path}/scenario-02.webp`,
+    `${path}/scenario-03.webp`,
   ];
 };
 
@@ -188,7 +188,7 @@ const designerSources: DesignerSource[] = [
     id: "yoon-seohyun",
     name: "윤서현",
     projectDetail: {
-      motionPosterImage: "/images/poster/vertical/09.png",
+      motionPosterImage: "/images/poster/vertical/09.webp",
       motionPosterVideoUrl: "/motionPoster/09_motionPoster.mp4",
     },
     team: "OPENING",
@@ -363,8 +363,8 @@ export const designers: Designer[] = [
     id: "all",
     name: "ALL",
     team: "",
-    objectImage: "/images/object/black/000.png",
-    selectedObjectImage: "/images/object/color/000.png",
+    objectImage: "/images/object/black/000.webp",
+    selectedObjectImage: "/images/object/color/000.webp",
     conceptName: "",
     motionPosterTitle: "",
     interactionTitle: "",
@@ -374,8 +374,8 @@ export const designers: Designer[] = [
 
     return {
       ...designer,
-      objectImage: `/images/object/black/${imageNumber}.png`,
-      selectedObjectImage: `/images/object/color/${imageNumber}.png`,
+      objectImage: `/images/object/black/${imageNumber}.webp`,
+      selectedObjectImage: `/images/object/color/${imageNumber}.webp`,
       projectDetail: {
         ...designer.projectDetail,
         interactionImages: getIndividualInteractionImages(index),

@@ -128,7 +128,7 @@ const exhibitionDesigners = new Map(
 const BANNER_OBJECTS: BannerObject[] = [
   {
     id: "key",
-    file: "dp.png",
+    file: "dp.webp",
     x: 18,
     y: 28,
     mobileX: 16,
@@ -139,7 +139,7 @@ const BANNER_OBJECTS: BannerObject[] = [
   },
   {
     id: "spider-web",
-    file: "web.png",
+    file: "web.webp",
     x: 90,
     y: 16,
     mobileX: 80,
@@ -150,7 +150,7 @@ const BANNER_OBJECTS: BannerObject[] = [
   },
   {
     id: "flower",
-    file: "branding.png",
+    file: "branding.webp",
     x: 8,
     y: 74,
     mobileX: 18,
@@ -161,7 +161,7 @@ const BANNER_OBJECTS: BannerObject[] = [
   },
   {
     id: "hourglass",
-    file: "opening.png",
+    file: "opening.webp",
     x: 74,
     y: 70,
     mobileX: 90,
@@ -172,7 +172,7 @@ const BANNER_OBJECTS: BannerObject[] = [
   },
   {
     id: "logo",
-    file: "logo.png",
+    file: "logo.webp",
     x: 49,
     y: 50,
     mobileX: 49,
@@ -864,7 +864,7 @@ function Home() {
     : {};
 
   return (
-    <main className="relative min-h-screen w-full bg-[url('/images/background.jpg')] bg-[length:400%_auto] bg-top bg-repeat-y text-[#111] lg:bg-cover lg:bg-center lg:bg-no-repeat">
+    <main className="relative min-h-screen w-full bg-[url('/images/background.webp')] bg-[length:400%_auto] bg-top bg-repeat-y text-[#111] lg:bg-cover lg:bg-center lg:bg-no-repeat">
       <HomeSectionNav />
       <section
         id="main-banner"
@@ -993,7 +993,7 @@ function Home() {
         </h2>
 
         <div className="mx-auto mt-12 flex aspect-video w-full max-w-[1080px] flex-col items-center justify-center overflow-hidden bg-[#E3E7ED]">
-          <img src="/images/comingsoon.png" alt="오프닝 영상 준비 중" className="w-[37.5%] object-contain" />
+          <img src="/images/comingsoon.webp" alt="오프닝 영상 준비 중" loading="lazy" decoding="async" className="w-[37.5%] object-contain" />
           <p className="mt-4 text-center text-sm font-medium text-[#000101] sm:text-base lg:text-[clamp(18px,2vw,24px)]">
             2026. 11. 06 5PM
           </p>
@@ -1012,8 +1012,10 @@ function Home() {
         <div className="mx-auto mt-12 md:mt-16 grid w-full max-w-[1080px] gap-10 xl:grid-cols-[minmax(0,1.05fr)_minmax(420px,0.95fr)] xl:items-center xl:gap-[clamp(56px,7vw,112px)]">
           <div className="aspect-[3/2] min-w-0 w-full overflow-hidden">
             <img
-              src="/images/profile/total/total.jpeg"
+              src="/images/profile/total/total.webp"
               alt="전시 참여 인원 단체사진"
+              loading="lazy"
+              decoding="async"
               className="block h-full w-full object-cover"
             />
           </div>

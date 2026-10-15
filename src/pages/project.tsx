@@ -2,7 +2,7 @@ import { type MouseEvent, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { designers } from "../data/designers";
-import { getVerticalPosterImage, getVerticalPosterThumbnailImage } from "../data/posters";
+import { getVerticalPosterThumbnailImage } from "../data/posters";
 import { teamProjects } from "../data/team";
 
 const categories = ["ALL", "BRANDING", "DP", "OPENING", "WEB"] as const;
@@ -18,7 +18,6 @@ type ProjectItem = {
   interactionTitle: string;
   objectImage: string;
   thumbnailImage?: string;
-  optimizedThumbnailImage?: string;
 };
 
 type GalleryImageSlot = {
@@ -111,8 +110,7 @@ const projects: ProjectItem[] = designers.slice(1).map((designer, index) => ({
   interactionTitle: designer.interactionTitle,
   designer: designer.name,
   objectImage: designer.selectedObjectImage,
-  thumbnailImage: getVerticalPosterImage(index + 1) ?? designer.projectDetail?.motionPosterImage,
-  optimizedThumbnailImage: getVerticalPosterThumbnailImage(index + 1),
+  thumbnailImage: getVerticalPosterThumbnailImage(index + 1) ?? designer.projectDetail?.motionPosterImage,
 }));
 
 const Project = () => {
@@ -169,7 +167,7 @@ const Project = () => {
   };
 
   return (
-    <main className="min-h-screen bg-[url('/images/background.jpg')] bg-[length:400%_auto] bg-top bg-repeat-y text-[#121212] lg:bg-cover lg:bg-center lg:bg-fixed lg:bg-no-repeat lg:pt-[var(--header-height)]">
+    <main className="min-h-screen bg-[url('/images/background.webp')] bg-[length:400%_auto] bg-top bg-repeat-y text-[#121212] lg:bg-cover lg:bg-center lg:bg-fixed lg:bg-no-repeat lg:pt-[var(--header-height)]">
       <section
         ref={projectLabelRef}
         data-project-label
@@ -178,7 +176,7 @@ const Project = () => {
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: "url('/images/project_background.png')",
+            backgroundImage: "url('/images/project_background.webp')",
           }}
         />
         <img
@@ -350,13 +348,9 @@ const Project = () => {
                         className="group relative block h-full w-full overflow-hidden"
                         aria-label={`${teamProject.title}, ${category} 팀 프로젝트`}
                       >
-                        <picture className="absolute inset-0 block h-full w-full">
-                          <source
-                            srcSet={`/images/poster/team_concept/optimized/${category.toLowerCase()}.webp`}
-                            type="image/webp"
-                          />
+                        <div className="absolute inset-0 block h-full w-full">
                           <img
-                            src={`/images/poster/team_concept/${category.toLowerCase()}.png`}
+                            src={`/images/poster/team_concept/optimized/${category.toLowerCase()}.webp`}
                             alt={teamProject.title}
                             loading={category === "BRANDING" ? "eager" : "lazy"}
                             decoding="async"
@@ -367,7 +361,7 @@ const Project = () => {
                               activePreviewId === `team-${category}` ? "scale-105" : ""
                             }`}
                           />
-                        </picture>
+                        </div>
 
                         <div
                           className={`pointer-events-none absolute inset-0 z-10 transition-opacity duration-300 group-hover:opacity-0 group-focus-visible:opacity-0 ${
@@ -498,10 +492,7 @@ const Project = () => {
                             className="group relative block h-full w-full overflow-hidden"
                             aria-label={`${project.conceptName}, ${project.designer}`}
                           >
-                            <picture>
-                              {project.optimizedThumbnailImage && (
-                                <source srcSet={project.optimizedThumbnailImage} type="image/webp" />
-                              )}
+                            <div>
                               <img
                                 src={project.thumbnailImage ?? project.objectImage}
                                 alt=""
@@ -511,7 +502,7 @@ const Project = () => {
                                   activePreviewId === project.id ? "scale-110" : ""
                                 }`}
                               />
-                            </picture>
+                            </div>
 
                             <div
                               className={`absolute inset-0 z-10 bg-[#252525] transition-opacity duration-300 group-hover:opacity-60 group-focus-visible:opacity-60 ${

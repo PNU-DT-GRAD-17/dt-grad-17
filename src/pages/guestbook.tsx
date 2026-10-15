@@ -659,17 +659,17 @@ export default function Guestbook({
       (designer) =>
         designer.objectImage
           .split("?")[0]
-          .endsWith("/000.png")
+          .endsWith("/000.webp")
     );
 
-    // 000.png를 찾지 못하면 기존 순서 유지
+    // 000.webp를 찾지 못하면 기존 순서 유지
     if (targetIndex === -1) {
       return designers;
     }
 
     const targetDesigner = designers[targetIndex];
 
-    // 원본 배열을 변경하지 않고 000.png만 제외
+    // 원본 배열을 변경하지 않고 000.webp만 제외
     const remainingDesigners = designers.filter(
       (_, index) => index !== targetIndex
     );
@@ -708,7 +708,7 @@ export default function Guestbook({
               const is000Image =
                 designer.objectImage
                   .split("?")[0]
-                  .endsWith("/000.png");
+                  .endsWith("/000.webp");
 
               const objectScale = is000Image ? 1.7 : 1.4;
               const isSelected =

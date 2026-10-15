@@ -53,7 +53,7 @@ export const ScenarioVideoModal = ({
             />
           </svg>
         </button>
-        <img src="/images/comingsoon.png" alt="시연 영상 준비 중" className="aspect-video w-[37.5%] object-contain" />
+        <img src="/images/comingsoon.webp" alt="시연 영상 준비 중" loading="lazy" decoding="async" className="aspect-video w-[37.5%] object-contain" />
       </div>
     </dialog>
   );
