@@ -258,6 +258,7 @@ const TeamProjectDetail = () => {
   const videoDescription = project.videoDescription || defaultDescription;
   const interactionDescription = project.interactionDescription || defaultDescription;
   const detail = project.projectDetail;
+  const scenarioImages = detail?.interactionImages?.slice(2) ?? [];
   const backgroundImage = `/images/poster/team_concept/${category.toLowerCase()}.png`;
 
   return (
@@ -365,10 +366,10 @@ const TeamProjectDetail = () => {
                 <ScenarioVideoLink onClick={() => setIsScenarioVideoOpen(true)} />
               </div>
               <div className="min-h-0 flex-1 space-y-6 overflow-y-auto px-5 pb-12">
-                {[2, 3, 4].map((index) => (
-                  <figure key={index}>
-                    <MediaPanel src={detail?.interactionImages?.[index]} alt={`${project.interactionTitle} 시나리오 ${index - 1}`} className="aspect-video" />
-                    <figcaption className="mt-3 text-sm text-white font-regular">{detail?.scenarioDescriptions?.[index - 2] || "시나리오 설명"}</figcaption>
+                {scenarioImages.map((src, index) => (
+                  <figure key={src}>
+                    <MediaPanel src={src} alt={`${project.interactionTitle} 시나리오 ${index + 1}`} className="aspect-video" />
+                    <figcaption className="mt-3 text-sm font-light text-white/70">{detail?.scenarioDescriptions?.[index] || `시나리오 ${index + 1}`}</figcaption>
                   </figure>
                 ))}
               </div>
@@ -480,16 +481,16 @@ const TeamProjectDetail = () => {
               <ScenarioVideoLink onClick={() => setIsScenarioVideoOpen(true)} />
             </section>
             <div className="grid w-4/5 grid-cols-2 justify-self-end overflow-hidden">
-              <MediaPanel src={detail?.interactionImages?.[0]} alt={`${project.interactionTitle} 화면 1`} className="aspect-square" imageClassName="object-contain" />
-              <MediaPanel src={detail?.interactionImages?.[1]} alt={`${project.interactionTitle} 화면 2`} className="aspect-square" imageClassName="object-contain" />
+              <MediaPanel src={detail?.interactionImages?.[0]} alt={`${project.interactionTitle} 탑뷰 배치도`} className="aspect-square" imageClassName="object-contain" />
+              <MediaPanel src={detail?.interactionImages?.[1]} alt={`${project.interactionTitle} 사이드뷰 배치도`} className="aspect-square" imageClassName="object-contain" />
             </div>
           </div>
 
           <div className="mt-[24px] grid gap-8 sm:grid-cols-3">
-            {[2, 3, 4].map((index) => (
-              <figure key={index}>
-                <MediaPanel src={detail?.interactionImages?.[index]} alt={`${project.interactionTitle} 시나리오 ${index - 1}`} className="aspect-video" />
-                <figcaption className="mt-3 text-xs text-white/70">{detail?.scenarioDescriptions?.[index - 2] || "시나리오 설명"}</figcaption>
+            {scenarioImages.map((src, index) => (
+              <figure key={src}>
+                <MediaPanel src={src} alt={`${project.interactionTitle} 시나리오 ${index + 1}`} className="aspect-video" />
+                <figcaption className="mt-3 text-sm text-white/70">{detail?.scenarioDescriptions?.[index] || `시나리오 ${index + 1}`}</figcaption>
               </figure>
             ))}
           </div>

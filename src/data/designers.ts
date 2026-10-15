@@ -1,3 +1,5 @@
+import { individualScenarioDescriptions } from "./individualScenarios";
+
 export type Designer = {
   id: string;
   name: string;
@@ -16,6 +18,7 @@ export type Designer = {
     motionPosterVideoUrl?: string;
     scenarioUrl?: string;
     interactionImages?: string[];
+    scenarioDescriptions?: string[];
   };
   detail?: {
     nameEn?: string;
@@ -32,6 +35,19 @@ export type Designer = {
 
 type DesignerSource = Omit<Designer, "objectImage" | "selectedObjectImage">;
 
+const getIndividualInteractionImages = (index: number) => {
+  const number = String(index + 1).padStart(2, "0");
+  const path = `/images/inter/individual/${number}`;
+
+  return [
+    `${path}/top-view.png`,
+    `${path}/side-view.png`,
+    `${path}/scenario-01.png`,
+    `${path}/scenario-02.png`,
+    `${path}/scenario-03.png`,
+  ];
+};
+
 const designerSources: DesignerSource[] = [
   {
     id: "kang-yeju",
@@ -40,9 +56,9 @@ const designerSources: DesignerSource[] = [
     conceptName: "각인",
     conceptDescription: "기억은 의식 속에서 서서히 흐려진다. 그러나 무의식에 남아 우리를 의지와 상관없는 행동과 선택으로 이끈다. 우리 안에 잔재하는 기억으로써 작용하는 잔향에 주목해 보자. 우리는 과연 그 기억으로부터 벗어날 수 있는가? 인식을 넘어 남아있는 잔향을 시각화하여, 사라지지 않는 각인의 존재를 포착해 본다. ",
     motionPosterTitle: "모든 기억",
-    motionPosterDescription: "기사의 장갑 속, 당신은 어떤 기억이 보이는가? 마음속에 자란 가시는 우리를 옭아맨다.\n\n\"아직도 여기에 피 냄새가 남아있어. 아라비아의 온갖 향수를 다 쏟아부어도 이 작은 손을 향기롭게 만들 수 없겠지.\" 셰익스피어, 『맥베스』 중",
+    motionPosterDescription: "마음속에 자란 가시는 우리를 옭아맨다. 기사의 장갑 속, 당신은 어떤 기억이 보이는가?\n\n\"아직도 여기에 피 냄새가 남아있어. 아라비아의 온갖 향수를 다 쏟아부어도 이 작은 손을 향기롭게 만들 수 없겠지.\" ─ 셰익스피어, 『맥베스』 중",
     interactionTitle: "씻어내다",
-    interactionDescription: "우리가 행하는 모든 순간은 하나의 사건이 되어 몸에 고스란히 남는다. 신체 부위 중에서도 우리가 가장 자유롭게 사용하는 손에 집중한다. 손을 씻어내는 동안 사라졌던 기억이 다시 나타나는 순간. 몸에 남은 기억의 시각화를 통해 지워지지 않는 각인을 두 손으로 체득한다.",
+    interactionDescription: "일부러 잊고 싶은 기억이 있는가? 충격, 슬픔, 상실. 부정적 경험은 우리의 의식 속 유난히 깊은 곳에 새겨지곤 한다. 기억을 씻어내려 시도하는 동안은 잠시나마 벗어날 수 있지만, 멈추는 순간 다시 모습을 드러낸다.\n\n작품은 우리의 가장 많은 행동을 담당하는 손을 기억의 매체로 삼는다. 신체에 남은 기억의 시각화를 통해 지워지지 않는 각인을 두 손으로 체득한다.",
     detail: {
       nameEn: "Kang Yeju",
       email: "zdpslmo26@gmail.com",
@@ -263,7 +279,7 @@ const designerSources: DesignerSource[] = [
     conceptName: "기억의 왜곡",
     conceptDescription: "기억은 떠올리는 순간 원래의 모습 그대로 되돌아오는 것이 아니라, 시간과 감정, 현재의 시선에 따라 조금씩 변형된다. 그렇게 어긋난 기억은 완전히 사라지지 않고 흔적처럼 남으며, 그 지속되는 감각을 잔향으로 보았다.",
     motionPosterTitle: "MEMORY",
-    motionPosterDescription: "기억을 형성하는 뉴런과 신경망의 구조를 모티브로, 어둠 속 작은 빛과 세포들이 움직이며 서로 연결되는 과정을 표현한다.하나의 망을 이루고 확장되는 모습을 통해 기억이 재구성되고 축적되는 흐름을 시각화하여 보여준다.",
+    motionPosterDescription: "기억을 형성하는 뉴런과 신경망의 구조를 모티브로, 어둠 속 작은 빛과 세포들이 움직이며 서로 연결되는 과정을 표현한다. 하나의 망을 이루고 확장되는 모습을 통해 기억이 재구성되고 축적되는 흐름을 시각화하여 보여준다.",
     interactionTitle: "가까워질수록",
     interactionDescription: "작품 속 망 아래의 사진은 관객의 거리에 따라 다른 결로 바뀐다. 하나의 이미지 안에서 원본과 각기 다른 필터의 모습이 교차하고, 가까워지고 멀어지는 사이 원래의 모습은 서서히 어긋나며 변형된 잔상으로 남는다.",
     detail: {
@@ -360,6 +376,11 @@ export const designers: Designer[] = [
       ...designer,
       objectImage: `/images/object/black/${imageNumber}.png`,
       selectedObjectImage: `/images/object/color/${imageNumber}.png`,
+      projectDetail: {
+        ...designer.projectDetail,
+        interactionImages: getIndividualInteractionImages(index),
+        scenarioDescriptions: individualScenarioDescriptions[designer.id],
+      },
     };
   }),
 ];

@@ -2,7 +2,7 @@ import { type MouseEvent, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { designers } from "../data/designers";
-import { getVerticalPosterImage } from "../data/posters";
+import { getVerticalPosterImage, getVerticalPosterThumbnailImage } from "../data/posters";
 import { teamProjects } from "../data/team";
 
 const categories = ["ALL", "BRANDING", "DP", "OPENING", "WEB"] as const;
@@ -18,6 +18,7 @@ type ProjectItem = {
   interactionTitle: string;
   objectImage: string;
   thumbnailImage?: string;
+  optimizedThumbnailImage?: string;
 };
 
 type GalleryImageSlot = {
@@ -111,6 +112,7 @@ const projects: ProjectItem[] = designers.slice(1).map((designer, index) => ({
   designer: designer.name,
   objectImage: designer.selectedObjectImage,
   thumbnailImage: getVerticalPosterImage(index + 1) ?? designer.projectDetail?.motionPosterImage,
+  optimizedThumbnailImage: getVerticalPosterThumbnailImage(index + 1),
 }));
 
 const Project = () => {
@@ -182,6 +184,8 @@ const Project = () => {
         <img
           src="/images/label-project.png"
           alt="Project"
+          fetchPriority="high"
+          decoding="async"
           className="relative z-10 h-auto w-[clamp(200px,20vw,360px)]"
         />
       </section>
@@ -346,16 +350,24 @@ const Project = () => {
                         className="group relative block h-full w-full overflow-hidden"
                         aria-label={`${teamProject.title}, ${category} 팀 프로젝트`}
                       >
-                        <img
-                          src={`/images/poster/team_concept/${category.toLowerCase()}.png`}
-                          alt={teamProject.title}
-                          onError={(event) => {
-                            event.currentTarget.style.display = "none";
-                          }}
-                          className={`h-full w-full object-cover transition-transform duration-700 group-hover:scale-105 ${
-                            activePreviewId === `team-${category}` ? "scale-105" : ""
-                          }`}
-                        />
+                        <picture className="absolute inset-0 block h-full w-full">
+                          <source
+                            srcSet={`/images/poster/team_concept/optimized/${category.toLowerCase()}.webp`}
+                            type="image/webp"
+                          />
+                          <img
+                            src={`/images/poster/team_concept/${category.toLowerCase()}.png`}
+                            alt={teamProject.title}
+                            loading={category === "BRANDING" ? "eager" : "lazy"}
+                            decoding="async"
+                            onError={(event) => {
+                              event.currentTarget.style.display = "none";
+                            }}
+                            className={`h-full w-full object-cover transition-transform duration-700 group-hover:scale-105 ${
+                              activePreviewId === `team-${category}` ? "scale-105" : ""
+                            }`}
+                          />
+                        </picture>
 
                         <div
                           className={`pointer-events-none absolute inset-0 z-10 transition-opacity duration-300 group-hover:opacity-0 group-focus-visible:opacity-0 ${
@@ -366,6 +378,7 @@ const Project = () => {
                             src="/images/team_bd_gradient.png"
                             alt=""
                             aria-hidden="true"
+                            decoding="async"
                             className="absolute inset-0 h-full w-full object-cover"
                           />
                         </div>
@@ -455,6 +468,8 @@ const Project = () => {
                             <img
                               src={slot.src}
                               alt={slot.alt}
+                              loading="lazy"
+                              decoding="async"
                               onError={(event) => {
                                 event.currentTarget.style.display = "none";
                               }}
@@ -483,13 +498,20 @@ const Project = () => {
                             className="group relative block h-full w-full overflow-hidden"
                             aria-label={`${project.conceptName}, ${project.designer}`}
                           >
-                            <img
-                              src={project.thumbnailImage ?? project.objectImage}
-                              alt=""
-                              className={`absolute inset-0 m-auto ${project.thumbnailImage ? "h-full w-full object-cover" : "h-1/2 w-3/4 object-contain"} transition-transform duration-500 group-hover:scale-110 ${
-                                activePreviewId === project.id ? "scale-110" : ""
-                              }`}
-                            />
+                            <picture>
+                              {project.optimizedThumbnailImage && (
+                                <source srcSet={project.optimizedThumbnailImage} type="image/webp" />
+                              )}
+                              <img
+                                src={project.thumbnailImage ?? project.objectImage}
+                                alt=""
+                                loading={category === "BRANDING" && slotIndex === 0 ? "eager" : "lazy"}
+                                decoding="async"
+                                className={`absolute inset-0 m-auto ${project.thumbnailImage ? "h-full w-full object-cover" : "h-1/2 w-3/4 object-contain"} transition-transform duration-500 group-hover:scale-110 ${
+                                  activePreviewId === project.id ? "scale-110" : ""
+                                }`}
+                              />
+                            </picture>
 
                             <div
                               className={`absolute inset-0 z-10 bg-[#252525] transition-opacity duration-300 group-hover:opacity-60 group-focus-visible:opacity-60 ${

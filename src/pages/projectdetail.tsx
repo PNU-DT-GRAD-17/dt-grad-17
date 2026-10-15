@@ -365,6 +365,7 @@ const ProjectDetail = () => {
   const conceptDescription = designer.conceptDescription ?? defaultDescription;
   const motionPosterDescription = designer.motionPosterDescription ?? defaultDescription;
   const interactionDescription = designer.interactionDescription ?? defaultDescription;
+  const scenarioDescriptions = detail?.scenarioDescriptions ?? [];
 
   return (
     <main
@@ -444,10 +445,10 @@ const ProjectDetail = () => {
                 <ScenarioVideoLink onClick={() => setIsScenarioVideoOpen(true)} />
               </div>
               <div className="min-h-0 flex-1 space-y-6 overflow-y-auto px-5 pb-8">
-                {[2, 3, 4].map((index) => (
+                {scenarioDescriptions.map((description, index) => (
                   <figure key={index}>
-                    <MediaPlaceholder className="aspect-[16/9]" src={detail?.interactionImages?.[index]} alt={`${designer.interactionTitle} 시나리오 ${index - 1}`} />
-                    <figcaption className="mt-3 text-sm text-white">시나리오 설명</figcaption>
+                    <MediaPlaceholder className="aspect-[16/9]" src={detail?.interactionImages?.[index + 2]} alt={`${designer.interactionTitle} 시나리오 ${index + 1}`} />
+                    <figcaption className="mt-3 text-sm font-light text-white/70">{description}</figcaption>
                   </figure>
                 ))}
               </div>
@@ -563,16 +564,16 @@ const ProjectDetail = () => {
             </section>
 
             <div className="grid w-4/5 grid-cols-2 justify-self-end overflow-hidden">
-              <MediaPlaceholder className="aspect-square" imageClassName="object-contain" src={detail?.interactionImages?.[0]} alt={`${designer.interactionTitle} 인터랙션 화면 1`} />
-              <MediaPlaceholder className="aspect-square" imageClassName="object-contain" src={detail?.interactionImages?.[1]} alt={`${designer.interactionTitle} 인터랙션 화면 2`} />
+              <MediaPlaceholder className="aspect-square" imageClassName="object-contain" src={detail?.interactionImages?.[0]} alt={`${designer.interactionTitle} 탑뷰 도면`} />
+              <MediaPlaceholder className="aspect-square" imageClassName="object-contain" src={detail?.interactionImages?.[1]} alt={`${designer.interactionTitle} 사이드뷰 도면`} />
             </div>
           </div>
 
           <div className="mt-[24px] grid gap-8 sm:grid-cols-3">
-            {[2, 3, 4].map((index) => (
+            {scenarioDescriptions.map((description, index) => (
               <figure key={index}>
-                <MediaPlaceholder src={detail?.interactionImages?.[index]} alt={`${designer.interactionTitle} 시나리오 ${index - 1}`} />
-                <figcaption className="mt-3 text-xs text-white/70">시나리오 설명</figcaption>
+                <MediaPlaceholder src={detail?.interactionImages?.[index + 2]} alt={`${designer.interactionTitle} 시나리오 ${index + 1}`} />
+                <figcaption className="mt-3 text-sm text-white/70">{description}</figcaption>
               </figure>
             ))}
           </div>

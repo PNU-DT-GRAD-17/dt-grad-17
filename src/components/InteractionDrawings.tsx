@@ -67,6 +67,9 @@ export default function InteractionDrawings({ images, title }: { images?: string
       >
         {views.map((view, index) => <DrawingImage key={view} src={images?.[index]} label={`${title} ${view}`} />)}
       </button>
+      <p className="mt-3 text-center text-sm text-white/60">
+        배치 이미지를 클릭하면 확대해서 볼 수 있습니다.
+      </p>
       {isOpen && <DrawingModal images={[images?.[0], images?.[1]]} title={title} onClose={() => setIsOpen(false)} />}
     </>
   );

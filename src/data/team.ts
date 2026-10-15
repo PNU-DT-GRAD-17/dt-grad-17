@@ -29,6 +29,17 @@ export type TeamProject = {
 const getTeamMembers = (category: TeamCategory) =>
   designers.filter((designer) => designer.team === category);
 
+const getTeamInteractionImages = (category: TeamCategory) => {
+  const path = `/images/inter/team/${category.toLowerCase()}`;
+  return [
+    `${path}/top-view.png`,
+    `${path}/side-view.png`,
+    `${path}/scenario-01.png`,
+    `${path}/scenario-02.png`,
+    `${path}/scenario-03.png`,
+  ];
+};
+
 export const teamProjects: Record<TeamCategory, TeamProject> = {
   BRANDING: {
     category: "BRANDING",
@@ -47,6 +58,14 @@ export const teamProjects: Record<TeamCategory, TeamProject> = {
     objectImage : "/images/team/branding.png",
     link: "/project/team/branding",
     members: getTeamMembers("BRANDING"),
+    projectDetail: {
+      interactionImages: getTeamInteractionImages("BRANDING"),
+      scenarioDescriptions: [
+        "준비된 막대기를 든다",
+        "막대기를 들고 이리저리 휘둘러보며 브랜딩팀이 정의한 “청춘\" 글귀를 천천히 읽어본다.",
+        "움직임이 멈추면 빛의 흔적이 서서히 사라진다.",
+      ],
+    },
   },
 
   DP: {
@@ -62,6 +81,14 @@ export const teamProjects: Record<TeamCategory, TeamProject> = {
     objectImage: "/images/team/dp.png",
     link: "/project/team/dp",
     members: getTeamMembers("DP"),
+    projectDetail: {
+      interactionImages: getTeamInteractionImages("DP"),
+      scenarioDescriptions: [
+        "화면 앞에서 브이 포즈를 취한다",
+        "번호와 서명란이 찍힌 도트 초상 사진이 출력된다.",
+        "앞선 관람자들의 영수증 사이 벽면에 출력된 영수증을 부착한다.",
+      ],
+    },
   },
 
   OPENING: {
@@ -83,6 +110,14 @@ export const teamProjects: Record<TeamCategory, TeamProject> = {
     objectImage: "/images/team/opening.png",
     link: "/project/team/opening",
     members: getTeamMembers("OPENING"),
+    projectDetail: {
+      interactionImages: getTeamInteractionImages("OPENING"),
+      scenarioDescriptions: [
+        "테이블에 놓여있는 명함을 고릅니다.",
+        "명함을 인식 영역에 맞추어 웹캠에 인식시킵니다.",
+        "그 사람의 비하인드를 감상합니다.",
+      ],
+    },
   },
 
   WEB: {
@@ -96,23 +131,17 @@ export const teamProjects: Record<TeamCategory, TeamProject> = {
 우리는 기나긴 과정을 지나 더 넓은 세계로 발을 내디딘다. 게임 속 캐릭터처럼 ‘레벨업’을 거치며 우리는 이전과 다른 자신이 된다.`,
     interactionTitle: "Fill - Up",
     interactionDescription: "비어 있던 공간은 관람객의 참여가 하나씩 더해지며 새로운 모습으로 채워진다. 서로 다른 관람객의 경험이 모여 하나의 작품을 완성해 나가며, 전시는 관람객의 참여를 통해 비로소 완전한 형태를 갖게 된다.",
-    description: "웹팀은 전시회 작업물을 아카이빙하는 졸업 논문 대체 웹 사이트 제작과 SNS 채널 관리를 통해 전시회의 디지털 기록과 홍보를 담당합니다.",
+    description: "전시회 작업물을 아카이빙하는 졸업 논문 대체 웹 사이트 제작과 SNS 채널 관리를 통해 전시회의 디지털 기록과 홍보를 담당합니다.",
     objectImage: "/images/team/web.png",
     link: "/project/team/web",
     members: getTeamMembers("WEB"),
     projectDetail: {
       filmUrl: "https://www.youtube.com/watch?v=KIed24YqaL0",
-      interactionImages: [
-        "/images/team/web-interaction/top-view.png",
-        "/images/team/web-interaction/side-view.png",
-        "/images/team/web-interaction/scenario-01.png",
-        "/images/team/web-interaction/scenario-02.png",
-        "/images/team/web-interaction/scenario-03.png",
-      ],
+      interactionImages: getTeamInteractionImages("WEB"),
       scenarioDescriptions: [
-        "개별 작품과 상호작용하며 빈 도장판을 하나씩 채워나갑니다.",
-        "모든 체험이 담긴 도장판을 지정된 카메라에 인식시킵니다.",
-        "서로 다른 관람객의 흔적이 모여 화면의 픽셀로 변환되어 작품을 완성해 나갑니다.",
+        "개별 작품과 상호작용하며 도장판에 스티커를 하나씩 채워간다.",
+        "모든 작품을 체험한 후 도장판을 지정된 카메라에 인식시킨다.",
+        "서로 다른 관람객의 흔적이 화면의 픽셀로 변환되어 작품을 완성해 나간다.",
       ],
     },
   },
