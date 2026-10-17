@@ -99,7 +99,7 @@ const MobileMotionPoster = ({ image, video, title }: { image: string; video?: st
         src={video}
         poster={image}
         aria-label={`${title} 모션 포스터 영상`}
-        className="block h-full w-full object-contain object-top"
+        className="block h-full w-full object-cover object-top"
         playsInline
         loop
         preload="metadata"
@@ -489,7 +489,7 @@ const ProjectDetail = () => {
 
         {/* 데스크톱 전용 레이아웃 (1024px 이상): 모바일 디자인 수정 시 이 영역은 유지합니다. */}
         <div className="hidden lg:block">
-        <section className="relative mx-auto flex h-[calc(100svh-var(--header-height)-4rem)] max-w-[1920px] overflow-hidden">
+        <section className="relative flex h-[calc(100svh-var(--header-height)-4rem)] w-full overflow-hidden">
           <DesktopMotionPoster
             key={designer.id}
             image={backgroundImage}
