@@ -31,7 +31,7 @@ type GalleryImageSlot = {
 const webFeaturedSlot: GalleryImageSlot = {
   kind: "image",
   id: "web-featured-image",
-  src: "/images/team-object/teamObject_WEB.png",
+  src: "/images/team-object/teamObject_WEB.webp",
   alt: "WEB 프로젝트 이미지",
   span: 1,
 };
@@ -39,7 +39,7 @@ const webFeaturedSlot: GalleryImageSlot = {
 const openingFeaturedSlot: GalleryImageSlot = {
   kind: "image",
   id: "opening-featured-image",
-  src: "/images/team-object/teamObject_OPENING.png",
+  src: "/images/team-object/teamObject_OPENING.webp",
   alt: "OPENING 프로젝트 이미지",
   span: 2,
 };
@@ -47,7 +47,7 @@ const openingFeaturedSlot: GalleryImageSlot = {
 const dpFeaturedSlot: GalleryImageSlot = {
   kind: "image",
   id: "dp-featured-image",
-  src: "/images/team-object/teamObject_DP.png",
+  src: "/images/team-object/teamObject_DP.webp",
   alt: "DP 프로젝트 이미지",
   span: 1,
 };
@@ -55,7 +55,7 @@ const dpFeaturedSlot: GalleryImageSlot = {
 const brandingFeaturedSlot: GalleryImageSlot = {
   kind: "image",
   id: "branding-featured-image",
-  src: "/images/team-object/teamObject_BRANDING.png",
+  src: "/images/team-object/teamObject_BRANDING.webp",
   alt: "BRANDING 프로젝트 이미지",
   span: 2,
 };
@@ -180,7 +180,7 @@ const Project = () => {
           }}
         />
         <img
-          src="/images/label-project.png"
+          src="/images/label-project.webp"
           alt="Project"
           fetchPriority="high"
           decoding="async"
@@ -369,7 +369,7 @@ const Project = () => {
                           }`}
                         >
                           <img
-                            src="/images/team_bd_gradient.png"
+                            src="/images/team_bd_gradient.webp"
                             alt=""
                             aria-hidden="true"
                             decoding="async"

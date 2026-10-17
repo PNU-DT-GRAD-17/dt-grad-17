@@ -510,7 +510,7 @@ function Home() {
       return { image, object };
     });
     const eraseImage = new Image();
-    eraseImage.src = `${ASSET_ROOT}/cursor.png`;
+    eraseImage.src = `${ASSET_ROOT}/cursor.webp`;
     eraseImageRef.current = eraseImage;
 
     const waitForImage = (image: HTMLImageElement) =>
@@ -848,8 +848,8 @@ function Home() {
 
   const revealMaskStyle: CSSProperties = visibleCursorPosition
     ? {
-        WebkitMaskImage: `url("${ASSET_ROOT}/cursor.png")`,
-        maskImage: `url("${ASSET_ROOT}/cursor.png")`,
+        WebkitMaskImage: `url("${ASSET_ROOT}/cursor.webp")`,
+        maskImage: `url("${ASSET_ROOT}/cursor.webp")`,
         WebkitMaskRepeat: "no-repeat",
         maskRepeat: "no-repeat",
         WebkitMaskSize: `${activeCursorSize.width}px ${activeCursorSize.height}px`,
@@ -897,7 +897,7 @@ function Home() {
             }}
           >
             <img
-              src={`${ASSET_ROOT}/cursor.png`}
+              src={`${ASSET_ROOT}/cursor.webp`}
               alt=""
               draggable={false}
               className="block h-full w-full"
@@ -933,7 +933,7 @@ function Home() {
           className="main-scroll-cue absolute bottom-[clamp(0px,1vh,10px)] left-1/2 z-50 flex h-40 w-40 -translate-x-1/2 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0"
         >
           <img
-            src="/images/icon/arrowDown_main.png"
+            src="/images/icon/arrowDown_main.webp"
             alt=""
             draggable={false}
             className="h-[72px] w-[72px] object-contain"

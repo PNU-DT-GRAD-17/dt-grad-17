@@ -167,7 +167,7 @@ function Header() {
             onClick={releasePointerFocus}
           >
             <img
-              src="/images/navBar_logo.png"
+              src="/images/navBar_logo.webp"
               alt="잔향 로고"
               className="
                 h-[clamp(32px,3.15vw,40px)]

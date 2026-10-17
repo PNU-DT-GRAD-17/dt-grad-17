@@ -506,7 +506,7 @@ const ProjectDetail = () => {
               className="pointer-events-auto group absolute right-6 top-8 inline-flex items-center gap-2 text-lg font-semibold text-white/40 transition-colors hover:text-white sm:right-10 lg:right-[clamp(48px,5svh,96px)] lg:top-[clamp(28px,5svh,64px)]"
             >
               <img
-                src="/images/icon/arrowLeft.png"
+                src="/images/icon/arrowLeft.webp"
                 alt=""
                 className="h-5 w-5 transition-transform group-hover:-translate-x-1"
                 aria-hidden="true"
@@ -604,7 +604,7 @@ const ProjectDetail = () => {
       >
         <Link to={`/project/${previous.id}`} className="group flex items-center gap-2 justify-self-start">
           <img
-            src="/images/icon/arrowLeft.png"
+            src="/images/icon/arrowLeft.webp"
             alt=""
             className="h-5 w-auto opacity-70 transition-all duration-200 group-hover:opacity-100"
             aria-hidden="true"
@@ -617,7 +617,7 @@ const ProjectDetail = () => {
         <Link to={`/project/${next.id}`} className="group flex items-center gap-2 justify-self-end">
           <span className="opacity-70 transition-opacity duration-200 group-hover:opacity-100 text-lg">{next.name}</span>
           <img
-            src="/images/icon/arrowRight.png"
+            src="/images/icon/arrowRight.webp"
             alt=""
             className="h-5 w-auto opacity-70 transition-all duration-200 group-hover:opacity-100"
             aria-hidden="true"

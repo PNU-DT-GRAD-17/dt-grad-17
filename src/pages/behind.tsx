@@ -48,7 +48,7 @@ const getYoutubeEmbedUrl = (url: string) => {
 };
 
 const ArrowIcon = ({ direction }: { direction: "left" | "right" }) => {
-  const blueArrow = direction === "left" ? "arrowLeftBlue.png" : "arrowRightBlue.png";
+  const blueArrow = direction === "left" ? "arrowLeftBlue.webp" : "arrowRightBlue.webp";
 
   return (
     <span aria-hidden="true" className="relative block h-6 w-6">
@@ -143,7 +143,7 @@ function Behind() {
       <div className="mx-auto w-full max-w-[1180px] px-5 pb-40 pt-[clamp(64px,8vw,118px)] sm:px-8 lg:px-12 lg:pb-48">
         <h1 className="flex justify-center">
           <img
-            src="/images/label-behind.png"
+            src="/images/label-behind.webp"
             alt="비하인드"
             className="h-auto w-[clamp(220px,20vw,380px)] object-contain"
           />

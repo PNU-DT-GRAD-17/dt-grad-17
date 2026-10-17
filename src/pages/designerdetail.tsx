@@ -118,12 +118,12 @@ const DesignerDetail = () => {
                 aria-hidden="true"
               >
                 <img
-                  src="/images/icon/arrowLeftGray.png"
+                  src="/images/icon/arrowLeftGray.webp"
                   alt=""
                   className="absolute inset-0 h-full w-full object-contain transition-opacity group-hover:opacity-0 group-focus-visible:opacity-0"
                 />
                 <img
-                  src="/images/icon/arrowLeftBlack.png"
+                  src="/images/icon/arrowLeftBlack.webp"
                   alt=""
                   className="absolute inset-0 h-full w-full object-contain opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
                 />
@@ -139,12 +139,12 @@ const DesignerDetail = () => {
               >
                 <span className="relative h-7 w-7" aria-hidden="true">
                   <img
-                    src="/images/icon/arrowLeftGray.png"
+                    src="/images/icon/arrowLeftGray.webp"
                     alt=""
                     className="absolute inset-0 h-full w-full object-contain transition-opacity group-hover:opacity-0 group-focus-visible:opacity-0"
                   />
                   <img
-                    src="/images/icon/arrowLeftBlack.png"
+                    src="/images/icon/arrowLeftBlack.webp"
                     alt=""
                     className="absolute inset-0 h-full w-full object-contain opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
                   />

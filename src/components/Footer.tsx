@@ -14,7 +14,7 @@ const Footer = () => {
 
           <div className="absolute inset-x-[9.4%] inset-y-[15%] z-10 xl:inset-y-[17%]">
             <Link to="/" onClick={handleLogoClick} aria-label="홈으로 이동" className="absolute left-0 top-0 w-[12.3%]">
-              <img src="/images/footer_logo.png" alt="잔향" className="h-auto w-full object-contain" />
+              <img src="/images/footer_logo.webp" alt="잔향" className="h-auto w-full object-contain" />
             </Link>
 
             <div className="absolute right-0 top-0 flex items-center gap-[1.8vw]">
@@ -37,12 +37,12 @@ const Footer = () => {
 
             <div className="absolute bottom-0 right-0 flex flex-col items-end gap-[0.5vw] text-[clamp(10px,1.05vw,12px)]">
               <a href="https://design.pusan.ac.kr/" target="_blank" rel="noreferrer" className="group flex items-center gap-[0.7vw]">
-                <img src="/images/icon/pnu_logo.png" alt="" className="h-[clamp(15px,1.5vw,23px)] w-[clamp(15px,1.5vw,23px)] flex-shrink-0 object-contain" />
+                <img src="/images/icon/pnu_logo.webp" alt="" className="h-[clamp(15px,1.5vw,23px)] w-[clamp(15px,1.5vw,23px)] flex-shrink-0 object-contain" />
                 <span className="whitespace-nowrap border-b border-[#CBD0D7] text-[#CBD0D7] leading-[1.25] group-hover:font-semibold">부산대학교 디자인학과 공식 홈페이지</span>
               </a>
 
               <a href="https://inter.pusan.ac.kr/designtech/index.do" target="_blank" rel="noreferrer" className="group flex items-center gap-[0.7vw]">
-                <img src="/images/icon/pnu_logo.png" alt="" className="h-[clamp(15px,1.5vw,23px)] w-[clamp(15px,1.5vw,23px)] flex-shrink-0 object-contain" />
+                <img src="/images/icon/pnu_logo.webp" alt="" className="h-[clamp(15px,1.5vw,23px)] w-[clamp(15px,1.5vw,23px)] flex-shrink-0 object-contain" />
                 <span className="whitespace-nowrap border-b border-[#CBD0D7] text-[#CBD0D7] leading-[1.25] group-hover:font-semibold">부산대학교 디자인테크놀로지전공 공식 홈페이지</span>
               </a>
             </div>
@@ -56,7 +56,7 @@ const Footer = () => {
           <div className="relative z-10 flex flex-col">
             <div className="flex items-start justify-between">
               <Link to="/" onClick={handleLogoClick} aria-label="홈으로 이동">
-                <img src="/images/footer_logo.png" alt="잔향" className="w-[120px] object-contain" />
+                <img src="/images/footer_logo.webp" alt="잔향" className="w-[120px] object-contain" />
               </Link>
 
               <div className="flex items-center gap-[clamp(10px,3vw,16px)]">
@@ -80,12 +80,12 @@ const Footer = () => {
 
               <div className="mt-8 flex flex-col items-start gap-[clamp(8px,2.5vw,12px)] text-[10px] sm:text-[11px]">
                 <a href="https://design.pusan.ac.kr/" target="_blank" rel="noreferrer" className="group flex items-center gap-2">
-                  <img src="/images/icon/pnu_logo.png" alt="" className="h-4 w-4 flex-shrink-0 object-contain" />
+                  <img src="/images/icon/pnu_logo.webp" alt="" className="h-4 w-4 flex-shrink-0 object-contain" />
                   <span className="border-b border-[#CBD0D7] text-[#CBD0D7] group-hover:font-semibold group-focus-visible:font-semibold group-active:font-semibold">부산대학교 디자인학과 공식 홈페이지</span>
                 </a>
 
                 <a href="https://inter.pusan.ac.kr/designtech/index.do" target="_blank" rel="noreferrer" className="group flex items-center gap-2">
-                  <img src="/images/icon/pnu_logo.png" alt="" className="h-4 w-4 flex-shrink-0 object-contain" />
+                  <img src="/images/icon/pnu_logo.webp" alt="" className="h-4 w-4 flex-shrink-0 object-contain" />
                   <span className="border-b border-[#CBD0D7] text-[#CBD0D7] group-hover:font-semibold group-focus-visible:font-semibold group-active:font-semibold">부산대학교 디자인테크놀로지전공 공식 홈페이지</span>
                 </a>
               </div>

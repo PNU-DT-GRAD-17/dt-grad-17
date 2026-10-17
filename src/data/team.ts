@@ -55,7 +55,7 @@ export const teamProjects: Record<TeamCategory, TeamProject> = {
 
 짧고 강렬하게 피었다 사라지는 글귀를 통해, 청춘이 가진 찰나의 강렬함과 그 잔향을 표현한 작품입니다.`,
     description: "브랜딩팀은 전시의 주제와 메세지를 시각적으로 구체화하고, 전시 전반에 일관된 이미지를 구축하는 역할을 담당합니다. 로고, 컬러, 서체, 그래픽 요소 등 전시의 아이덴티티를 개발하고 이를 포스터, 초대장, 리플렛, 도록과 같은 다양한 인쇄물과 굿즈에 적용합니다. 또한 제작한 그래픽 시스템이 웹과 전시장 등 여러 매체에서도 통일감 있게 활용될 수 있도록 기준과 에셋을 공유하며, 관람객이 전시를 하나의 완성된 시각 경험으로 인식할 수 있도록 합니다.",
-    objectImage: "/images/team-object/teamObject_BRANDING.png",
+    objectImage: "/images/team-object/teamObject_BRANDING.webp",
     link: "/project/team/branding",
     members: getTeamMembers("BRANDING"),
     projectDetail: {
@@ -78,7 +78,7 @@ export const teamProjects: Record<TeamCategory, TeamProject> = {
     interactionTitle: "현상",
     interactionDescription: "잔향은 물러난 자리에서 생겨난다. 현상도 그렇다. 지나간 사람이 남긴 모습들은 그의 축소판이 아니라 그가 사라진 뒤에 생긴 것이다. 되돌릴 원본은 없고 알아볼 듯 알아볼 수 없는 점들만 남는다. 지나가는 사람은 자신이 남긴 것을 알지 못하고, 머무는 사람만이 그것을 본다. 관람자가 남긴 흔적, 그것이 잔향이다.",
     description: "DP팀은 전시의 전체 틀을 짜는 팀입니다. 개별 작품이 놓일 공간의 질서를 구상하고, 관람 동선과 작품 간의 호응 관계를 설계합니다. 그 틀에 맞춰 각 작품의 배치를 결정하며, 흩어진 작업들이 하나의 전시로 읽히게 만듭니다.",
-    objectImage: "/images/team-object/teamObject_DP.png",
+    objectImage: "/images/team-object/teamObject_DP.webp",
     link: "/project/team/dp",
     members: getTeamMembers("DP"),
     projectDetail: {
@@ -107,7 +107,7 @@ export const teamProjects: Record<TeamCategory, TeamProject> = {
 명함을 인식하면 참여자의 짧은 비하인드가 재생되며, 한 장 너머에 있는 각자의 모습을 만나볼 수 있습니다.`,
     description: `오프닝 팀은 전시의 시작을 알리는 오프닝 영상을 기획하고 제작하는 팀입니다.
 전시의 주제와 분위기를 영상으로 풀어내 관람객에게 전시의 첫인상을 전달하며, 전시를 준비하는 과정 또한 비하인드 영상으로 기록합니다.`,
-    objectImage: "/images/team-object/teamObject_OPENING.png",
+    objectImage: "/images/team-object/teamObject_OPENING.webp",
     link: "/project/team/opening",
     members: getTeamMembers("OPENING"),
     projectDetail: {
@@ -132,7 +132,7 @@ export const teamProjects: Record<TeamCategory, TeamProject> = {
     interactionTitle: "Fill - Up",
     interactionDescription: "비어 있던 공간은 관람객의 참여가 하나씩 더해지며 새로운 모습으로 채워진다. 서로 다른 관람객의 경험이 모여 하나의 작품을 완성해 나가며, 전시는 관람객의 참여를 통해 비로소 완전한 형태를 갖게 된다.",
     description: "전시회 작업물을 아카이빙하는 졸업 논문 대체 웹 사이트 제작과 SNS 채널 관리를 통해 전시회의 디지털 기록과 홍보를 담당합니다.",
-    objectImage: "/images/team-object/teamObject_WEB.png",
+    objectImage: "/images/team-object/teamObject_WEB.webp",
     link: "/project/team/web",
     members: getTeamMembers("WEB"),
     projectDetail: {

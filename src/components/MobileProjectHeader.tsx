@@ -51,7 +51,7 @@ export default function MobileProjectHeader({ label, currentPath, designerPath }
   return (
     <div ref={headerRef} className="relative z-40 flex h-12 shrink-0 items-center justify-center bg-[#000101] text-lg font-medium text-white">
       <Link to="/project" aria-label="프로젝트 목록으로 돌아가기" className="absolute inset-y-0 left-2 flex w-11 items-center justify-center">
-        <img src="/images/icon/arrowLeft.png" alt="" className="h-5 w-auto" />
+        <img src="/images/icon/arrowLeft.webp" alt="" className="h-5 w-auto" />
       </Link>
       <div className="relative flex h-full items-center justify-center">
         {designerPath ? (

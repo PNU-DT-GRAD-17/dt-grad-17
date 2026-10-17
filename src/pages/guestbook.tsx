@@ -72,7 +72,7 @@ const objectLayouts = [
   { left: 25, top: 84},
   { left: 50, top: 83},
   { left: 74, top: 83},
-  { left: 50, top: 45}, // 000.png 위치
+  { left: 50, top: 45}, // 000.webp 위치
 ];
 
 function getRandomName() {
@@ -819,8 +819,8 @@ export default function Guestbook({
                   <img
                     src={
                       formToId === "all"
-                        ? "/images/icon/arrowDown.png"
-                        : "/images/icon/arrowDownSelected.png"
+                        ? "/images/icon/arrowDown.webp"
+                        : "/images/icon/arrowDownSelected.webp"
                     }
                     alt=""
                     className={`pointer-events-none h-6 w-6 object-contain ${
@@ -885,7 +885,7 @@ export default function Guestbook({
 
             <div className="absolute bottom-3 left-3 h-[130px] w-[105px] md:relative md:bottom-auto md:left-auto md:mt-12">
               <img
-                src="/images/stamp-frame.png"
+                src="/images/stamp-frame.webp"
                 alt="우표 프레임"
                 className="pointer-events-none absolute inset-0 h-full w-full object-contain"
               />
@@ -955,7 +955,7 @@ export default function Guestbook({
             </span>
 
             <img
-              src="/images/icon/arrowDown.png"
+              src="/images/icon/arrowDown.webp"
               alt=""
               className={`pointer-events-none h-6 w-6 object-contain ${
                 isFilterDropdownOpen
@@ -1026,7 +1026,7 @@ export default function Guestbook({
               >
                 {/* 방명록 프레임 */}
                 <img
-                  src="/images/guestbook_frame.png"
+                  src="/images/guestbook_frame.webp"
                   alt=""
                   className="pointer-events-none absolute inset-0 h-full w-full object-fill"
                 />
@@ -1117,7 +1117,7 @@ export default function Guestbook({
     >
       {/* 실제 버튼 이미지 */}
       <img
-        src="/images/btn:gototop.png"
+        src="/images/btn:gototop.webp"
         className="relative block h-auto w-16 drop-shadow-[0_0_8px_rgba(0,73,123,0.3)]"
       />
     </button>

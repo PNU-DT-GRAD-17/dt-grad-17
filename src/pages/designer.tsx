@@ -34,7 +34,7 @@ const Designer = () => {
       }}
     >
       <img
-        src="/images/label-designer.png"
+        src="/images/label-designer.webp"
         alt="label"
         className="mx-auto mt-16 mb-12 w-[clamp(240px,20vw,400px)] object-contain md:mt-28 md:mb-24"
       />

@@ -410,7 +410,7 @@ const TeamProjectDetail = () => {
               className="group absolute right-6 top-8 inline-flex items-center gap-2 text-lg font-semibold text-white/40 transition-colors hover:text-white focus-visible:text-white sm:right-10 lg:right-[clamp(48px,5vw,96px)] lg:top-[clamp(28px,5svh,64px)]"
             >
               <img
-                src="/images/icon/arrowLeft.png"
+                src="/images/icon/arrowLeft.webp"
                 alt=""
                 className="h-5 w-5 transition-transform group-hover:-translate-x-1"
                 aria-hidden="true"
@@ -521,7 +521,7 @@ const TeamProjectDetail = () => {
         aria-label="다른 팀 프로젝트"
       >
         <Link to={`/project/team/${previous.toLowerCase()}`} className="group flex min-w-0 items-center gap-2 justify-self-start">
-          <img src="/images/icon/arrowLeft.png" alt="" className="h-5 w-auto opacity-70 transition-opacity duration-200 group-hover:opacity-100" aria-hidden="true" />
+          <img src="/images/icon/arrowLeft.webp" alt="" className="h-5 w-auto opacity-70 transition-opacity duration-200 group-hover:opacity-100" aria-hidden="true" />
           <span className="truncate text-lg opacity-70 transition-opacity duration-200 group-hover:opacity-100">{previous}</span>
         </Link>
 
@@ -533,7 +533,7 @@ const TeamProjectDetail = () => {
 
         <Link to={`/project/team/${next.toLowerCase()}`} className="group flex min-w-0 items-center gap-2 justify-self-end">
           <span className="truncate text-lg opacity-70 transition-opacity duration-200 group-hover:opacity-100">{next}</span>
-          <img src="/images/icon/arrowRight.png" alt="" className="h-5 w-auto opacity-70 transition-opacity duration-200 group-hover:opacity-100" aria-hidden="true" />
+          <img src="/images/icon/arrowRight.webp" alt="" className="h-5 w-auto opacity-70 transition-opacity duration-200 group-hover:opacity-100" aria-hidden="true" />
         </Link>
       </nav>
     </main>
