@@ -56,7 +56,9 @@ const TeamProjectDetail = () => {
 
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
-    const targetId = location.hash.slice(1);
+    const targetId = ["#team-film", "#team-interaction"].includes(location.hash)
+      ? location.hash.slice(1)
+      : "";
 
     if (targetId) {
       const resolvedId = window.innerWidth < 768 && ["team-film", "team-interaction"].includes(targetId)
@@ -67,7 +69,7 @@ const TeamProjectDetail = () => {
       scrollContainerRef.current?.scrollTo(0, 0);
       mobileGalleryRef.current?.scrollTo(0, 0);
     }
-  }, [categoryParam, location.hash]);
+  }, [categoryParam, location.key, location.hash]);
 
   useEffect(() => {
     const container = scrollContainerRef.current;

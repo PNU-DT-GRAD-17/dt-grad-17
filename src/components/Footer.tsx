@@ -1,10 +1,6 @@
 import { Link } from "react-router-dom";
 
 const Footer = () => {
-  const handleLogoClick = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   return (
     <div className="relative z-10 w-full shadow-[0_-8px_30px_rgba(53,73,98,0.18)]">
       <footer className="relative w-full overflow-hidden text-[#fff]">
@@ -13,7 +9,7 @@ const Footer = () => {
           <img src="/images/footer_background.webp" alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover object-center" />
 
           <div className="absolute inset-x-[9.4%] inset-y-[15%] z-10 xl:inset-y-[17%]">
-            <Link to="/" onClick={handleLogoClick} aria-label="홈으로 이동" className="absolute left-0 top-0 w-[12.3%]">
+            <Link to="/" aria-label="홈으로 이동" className="absolute left-0 top-0 w-[12.3%]">
               <img src="/images/footer_logo.webp" alt="잔향" className="h-auto w-full object-contain" />
             </Link>
 
@@ -55,7 +51,7 @@ const Footer = () => {
 
           <div className="relative z-10 flex flex-col">
             <div className="flex items-start justify-between">
-              <Link to="/" onClick={handleLogoClick} aria-label="홈으로 이동">
+              <Link to="/" aria-label="홈으로 이동">
                 <img src="/images/footer_logo.webp" alt="잔향" className="w-[120px] object-contain" />
               </Link>
 

@@ -686,7 +686,7 @@ export default function Guestbook({
 
   return (
   <main
-    className="min-h-screen bg-repeat-y bg-top text-neutral-900"
+    className="min-h-screen bg-[url('/images/background.webp')] bg-[length:400%_auto] bg-top bg-repeat-y text-neutral-900 lg:bg-cover lg:bg-center lg:bg-no-repeat"
   >
     {/* <div className="text-2xl font-semibold text-center py-4">
       감사합니다!

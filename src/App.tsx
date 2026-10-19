@@ -10,6 +10,7 @@ import TeamProjectDetail from './pages/teamprojectdetail'
 import Behind from './pages/behind'
 import Guestbook from './pages/guestbook'
 import Header from './components/header'
+import ScrollToTop from './components/ScrollToTop'
 
 function App() {
   const [guestbookObjectLogoClicks, setGuestbookObjectLogoClicks] = useState(0)
@@ -19,6 +20,7 @@ function App() {
 
     <BrowserRouter>
       <Header />
+      <ScrollToTop />
 
       <Routes>
 

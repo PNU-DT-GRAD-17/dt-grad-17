@@ -171,7 +171,7 @@ const ProjectDetail = () => {
 
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
-    const targetId = location.hash.slice(1);
+    const targetId = location.hash === "#individual-interaction" ? "individual-interaction" : "";
 
     if (targetId) {
       // 모바일에서는 아래 모바일 전용 인터랙션 섹션으로 이동합니다.
@@ -183,7 +183,7 @@ const ProjectDetail = () => {
       scrollContainerRef.current?.scrollTo(0, 0);
       mobileGalleryRef.current?.scrollTo(0, 0);
     }
-  }, [designerId, location.hash]);
+  }, [designerId, location.key, location.hash]);
 
   useEffect(() => {
     const container = scrollContainerRef.current;
