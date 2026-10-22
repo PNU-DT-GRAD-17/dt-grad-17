@@ -1079,7 +1079,7 @@ function Home() {
       <section
         id="offline-information"
         aria-labelledby="offline-information-title"
-        className="px-6 pb-[clamp(96px,12vw,180px)] pt-[clamp(64px,8vw,120px)] sm:px-10 lg:px-[clamp(80px,13vw,200px)]"
+        className="px-6 pb-[clamp(96px,12vw,180px)] pt-[clamp(64px,8vw,120px)] text-[#000101] sm:px-10 lg:px-[clamp(80px,13vw,200px)]"
       >
         <h2
           id="offline-information-title"
@@ -1092,7 +1092,7 @@ function Home() {
           <div className="w-full max-w-[500px] min-w-0 justify-self-center">
             <motion.div
               ref={offlineAnimationRef}
-              className="text-[clamp(13px,1.15vw,16px)] text-[#000101]"
+              className="text-[clamp(13px,1.15vw,16px)]"
               variants={container}
               initial="hidden"
               animate={offlineAnimationControls}
@@ -1108,8 +1108,8 @@ function Home() {
               </motion.div>
 
               <motion.div variants={item} className="pt-6">
-                <p className="font-semibold text-[clamp(18px,1.4vw,20px)] text-[#0072C1]">2026.11.06(FRI) - 11.08(SUN)</p>
-                <p className="mt-2 text-[#0072C1]">10AM - 6PM</p>
+                <p className="font-semibold text-[clamp(18px,1.4vw,20px)]">2026.11.06(FRI) - 11.08(SUN)</p>
+                <p className="mt-2">10AM - 6PM</p>
               </motion.div>
             </motion.div>
           </div>

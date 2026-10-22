@@ -29,6 +29,16 @@ type GuestbookMessage = {
   visibleByDefault: boolean;
 };
 
+const createdAtFormatter = new Intl.DateTimeFormat("sv-SE", {
+  timeZone: "Asia/Seoul",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  hourCycle: "h23",
+});
+
 const randomNames = [
   "솔리플로어",
   "플로럴 부케",
@@ -49,6 +59,31 @@ const randomNames = [
   "앰버",
   "푸제르",
 ];
+
+const teamRecipients = [
+  {
+    id: "team-branding",
+    name: "BRANDING",
+    selectedObjectImage: "/images/main_banner/color/branding.webp",
+  },
+  {
+    id: "team-dp",
+    name: "DP",
+    selectedObjectImage: "/images/main_banner/color/dp.webp",
+  },
+  {
+    id: "team-opening",
+    name: "OPENING",
+    selectedObjectImage: "/images/main_banner/color/opening.webp",
+  },
+  {
+    id: "team-web",
+    name: "WEB",
+    selectedObjectImage: "/images/main_banner/color/web.webp",
+  },
+];
+
+const recipientOptions = [...designers, ...teamRecipients];
 
 const objectLayouts = [
   { left: 10, top: 18},
@@ -336,11 +371,10 @@ export default function Guestbook({
   /*
    * 현재 방명록 작성 폼에서 선택된 수신인
    */
-  const selectedDesigner =
-    designers.find(
-      (designer) =>
-        designer.id === formToId
-    ) ?? designers[0];
+  const selectedRecipient =
+    recipientOptions.find(
+      (recipient) => recipient.id === formToId
+    ) ?? recipientOptions[0];
 
 
   useEffect(() => {
@@ -363,11 +397,12 @@ export default function Guestbook({
             const legacyRecipientName =
               data.to ?? "ALL";
 
-            const legacyDesigner =
-              designers.find(
-                (designer) =>
-                  designer.name ===
-                  legacyRecipientName
+            const legacyRecipient =
+              recipientOptions.find(
+                (recipient) =>
+                  recipient.name === legacyRecipientName ||
+                  (recipient.id.startsWith("team-") &&
+                    `Team ${recipient.name}` === legacyRecipientName)
               );
 
             return {
@@ -375,7 +410,7 @@ export default function Guestbook({
 
               recipientId:
                 data.recipientId ??
-                legacyDesigner?.id ??
+                legacyRecipient?.id ??
                 "all",
 
               recipientName:
@@ -602,7 +637,7 @@ export default function Guestbook({
       return;
     }
 
-    if (!selectedDesigner) {
+    if (!selectedRecipient) {
       alert("수신인을 선택해주세요.");
       return;
     }
@@ -617,10 +652,10 @@ export default function Guestbook({
         ),
         {
           recipientId:
-            selectedDesigner.id,
+            selectedRecipient.id,
 
           recipientName:
-            selectedDesigner.name,
+            selectedRecipient.name,
 
           from: finalFrom,
 
@@ -814,7 +849,7 @@ export default function Guestbook({
                       : "text-[#45BFE6]"
                   }`}
                 >
-                  <span>{selectedDesigner.name}</span>
+                  <span>{selectedRecipient.name}</span>
 
                   <img
                     src={
@@ -836,13 +871,13 @@ export default function Guestbook({
                     role="listbox"
                     className="absolute left-0 top-full z-50 max-h-[220px] w-full overflow-y-auto bg-white shadow-md [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                   >
-                    {designers.map((designer) => {
+                    {recipientOptions.map((recipient) => {
                       const isCurrent =
-                        designer.id === formToId;
+                        recipient.id === formToId;
 
                       return (
                         <li
-                          key={designer.id}
+                          key={recipient.id}
                           className="border-x border-t border-[#BCBCBC] last:border-b"
                         >
                           <button
@@ -850,7 +885,7 @@ export default function Guestbook({
                             role="option"
                             aria-selected={isCurrent}
                             onClick={() => {
-                              setFormToId(designer.id);
+                              setFormToId(recipient.id);
                               setIsRecipientDropdownOpen(false);
                             }}
                             className={`w-full px-4 py-2 text-left text-md font-medium ${
@@ -859,7 +894,7 @@ export default function Guestbook({
                                 : "bg-white hover:bg-[#DFDFDF]"
                             }`}
                           >
-                            {designer.name}
+                            {recipient.name}
                           </button>
                         </li>
                       );
@@ -891,10 +926,14 @@ export default function Guestbook({
               />
               <img
                 src={
-                  selectedDesigner.selectedObjectImage
+                  selectedRecipient.selectedObjectImage
                 }
-                alt="선택된 오브제"
-                className="absolute left-1/2 top-1/2 h-[70%] -translate-x-1/2 -translate-y-1/2 object-contain opacity-50"
+                alt="선택된 수신인 이미지"
+                className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 object-contain opacity-50 ${
+                  selectedRecipient.id === "team-branding"
+                    ? "h-[56%]"
+                    : "h-[70%]"
+                }`}
               />
             </div>
           </div>
@@ -935,7 +974,7 @@ export default function Guestbook({
 
       {/* 필터 */}
       <section className="mt-10 mb-10 md:mt-0">
-        <div className="relative w-full md:w-[160px]">
+        <div className="relative w-full md:w-[210px]">
           <button
             type="button"
             onClick={() =>
@@ -948,9 +987,9 @@ export default function Guestbook({
             className="flex w-full items-center justify-between border-b border-[#000101] bg-transparent px-6 py-3 text-left text-lg font-semibold text-neutral-900 outline-none md:px-2"
           >
             <span>
-              {designers.find(
-                (designer) =>
-                  designer.id === selectedToId
+              {recipientOptions.find(
+                (recipient) =>
+                  recipient.id === selectedToId
               )?.name ?? "ALL"}
             </span>
 
@@ -970,13 +1009,13 @@ export default function Guestbook({
               role="listbox"
               className="absolute left-0 top-full z-50 max-h-[220px] w-full overflow-y-auto bg-white shadow-md [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
-              {designers.map((designer) => {
+              {recipientOptions.map((recipient) => {
                 const isCurrent =
-                  designer.id === selectedToId;
+                  recipient.id === selectedToId;
 
                 return (
                   <li
-                    key={designer.id}
+                    key={recipient.id}
                     className="border-x border-t border-[#BCBCBC] last:border-b"
                   >
                     <button
@@ -985,7 +1024,7 @@ export default function Guestbook({
                       aria-selected={isCurrent}
                       onClick={() => {
                         setSelectedToId(
-                          designer.id
+                          recipient.id
                         );
                         setIsFilterDropdownOpen(
                           false
@@ -993,7 +1032,7 @@ export default function Guestbook({
                       }}
                       className="block w-full bg-white px-6 py-3 text-left text-md font-medium leading-none text-[#000101] hover:bg-[#DFDFDF] md:px-4"
                     >
-                      {designer.name}
+                      {recipient.name}
                     </button>
                   </li>
                 );
@@ -1012,12 +1051,11 @@ export default function Guestbook({
       ) : (
         <ul className="grid grid-cols-1 gap-x-10 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
           {filteredMessages.map((item) => {
-            const messageDesigner =
-              designers.find(
-                (designer) =>
-                  designer.id ===
-                  item.recipientId
+            const messageRecipient =
+              recipientOptions.find(
+                (recipient) => recipient.id === item.recipientId
               );
+            const createdDate = item.createdAt?.toDate();
 
             return (
               <li
@@ -1033,17 +1071,29 @@ export default function Guestbook({
 
                 {/* 카드 안의 실제 내용 */}
                 <div className="absolute inset-0 z-10 flex min-h-0 flex-col overflow-hidden px-[14%] py-[13%]">
-                  <p className="relative z-10 mb-6 shrink-0 text-xl font-bold">
-                    TO. {item.recipientName}
-                  </p>
+                  <div className="relative z-10 mb-6 flex shrink-0 items-start justify-between gap-2">
+                    <p className="text-xl font-bold">
+                      TO. {messageRecipient?.name ?? item.recipientName}
+                    </p>
+                    {createdDate && (
+                      <time
+                        dateTime={createdDate.toISOString()}
+                        className="shrink-0 whitespace-nowrap pt-1 text-right text-[10px] font-medium leading-4 text-[#CDD2D9] sm:text-[11px]"
+                      >
+                        {createdAtFormatter
+                          .format(createdDate)
+                          .replaceAll("-", ".")}
+                      </time>
+                    )}
+                  </div>
 
                   <PostcardMessage
                     message={item.message}
                   />
 
-                  {messageDesigner && (
+                  {messageRecipient && (
                     <img
-                      src={messageDesigner.selectedObjectImage}
+                      src={messageRecipient.selectedObjectImage}
                       alt=""
                       className="
                         pointer-events-none

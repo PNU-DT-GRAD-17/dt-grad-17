@@ -61,7 +61,7 @@ export const teamProjects: Record<TeamCategory, TeamProject> = {
     projectDetail: {
       interactionImages: getTeamInteractionImages("BRANDING"),
       scenarioDescriptions: [
-        "준비된 막대기를 든다",
+        "준비된 Spark 막대기를 든다.",
         "막대기를 들고 이리저리 휘둘러보며 브랜딩팀이 정의한 “청춘\" 글귀를 천천히 읽어본다.",
         "움직임이 멈추면 빛의 흔적이 서서히 사라진다.",
       ],

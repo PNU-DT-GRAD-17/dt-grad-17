@@ -4,6 +4,7 @@ import Footer from "../components/Footer";
 
 import { designers, type Designer } from "../data/designers";
 import { teamProjects } from "../data/team";
+import { useDetailBack } from "../hooks/useDetailBack";
 
 type MediaPanelProps = {
   label: string;
@@ -73,6 +74,7 @@ const getEnglishName = (designer: Designer) =>
   designer.detail?.nameEn ?? designer.id.replaceAll("-", " ").toUpperCase();
 
 const DesignerDetail = () => {
+  const goBack = useDetailBack("/designer");
   const { designerId } = useParams();
 
   useLayoutEffect(() => {
@@ -89,6 +91,12 @@ const DesignerDetail = () => {
   }
 
   const designer = designerList[currentIndex];
+  const mobileObjectLeft = designer.id === "kang-yeju"
+    ? "-left-[18px]"
+    : designer.id === "bae-myeonghwan" ? "-left-[14px]" : "";
+  const desktopObjectLeft = designer.id === "kang-yeju"
+    ? "-left-[46px]"
+    : designer.id === "bae-myeonghwan" ? "-left-[42px]" : "-left-7";
   const detail = designer.detail;
   const instagramUsername = detail?.instagram?.trim().replace(/^@/, "");
   const imageNumber = String(currentIndex + 1).padStart(2, "0");
@@ -109,9 +117,11 @@ const DesignerDetail = () => {
       <div className="relative mx-auto flex min-h-[calc(100svh-72px)] max-w-[2100px] flex-col px-6 pb-12 pt-[39px] sm:px-10 lg:min-h-[calc(100svh-var(--header-height))] lg:px-[clamp(40px,2.5vw,52px)] lg:pb-12 lg:pt-6 xl:max-w-none xl:px-0 xl:pb-[clamp(48px,6svh,72px)] xl:pt-[clamp(28px,3.5svh,40px)]">
         <div className="grid min-h-0 flex-1 items-start gap-y-0 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1.25fr)] lg:gap-x-[clamp(28px,2.5vw,36px)] lg:gap-y-10 xl:mx-auto xl:w-[calc(100%_-_104px)] xl:max-w-[1962px] xl:grid-cols-[minmax(0,1.45fr)_clamp(28px,2.5vw,36px)_minmax(0,1.25fr)_clamp(62px,3.2vw,73px)_clamp(378px,27.3vw,567px)] xl:items-stretch xl:gap-0">
           <div className="flex w-full flex-col justify-end xl:col-start-1 xl:min-h-0 xl:justify-start">
-            <Link
-              to="/designer"
-              className="group z-20 mb-4 hidden w-fit shrink-0 items-center gap-1 text-lg font-semibold text-[#a7adb1] transition-colors hover:text-[#000101] focus-visible:text-[#000101] lg:inline-flex lg:text-2xl xl:mb-6"
+            <button
+              type="button"
+              onClick={goBack}
+              aria-label="이전 페이지로 돌아가기"
+              className="group z-20 mb-4 hidden w-fit shrink-0 items-center gap-1 text-lg font-semibold text-[#a7adb1] transition-colors hover:text-[#000101] focus-visible:text-[#000101] lg:mb-12 lg:inline-flex lg:text-2xl"
             >
               <span
                 className="relative h-7 w-7 shrink-0 lg:h-9 lg:w-9"
@@ -129,13 +139,28 @@ const DesignerDetail = () => {
                 />
               </span>
               <span>BACK</span>
-            </Link>
+            </button>
 
-            <h1 className="mb-4 flex flex-wrap items-baseline gap-x-2 gap-y-1 lg:hidden">
-              <Link
-                to="/designer"
+            <div className={`relative top-2 mb-3 aspect-square w-[clamp(140px,42vw,220px)] lg:hidden ${mobileObjectLeft}`}>
+              <img
+                src={`/images/object/paper/${imageNumber}.webp`}
+                alt={`${designer.name} 디자이너 오브제`}
+                className="absolute inset-0 h-full w-full object-contain mix-blend-hard-light"
+              />
+              <img
+                src={`/images/object/paper/${imageNumber}_paper.webp`}
+                alt=""
+                aria-hidden="true"
+                className="absolute inset-0 z-10 h-full w-full object-contain"
+              />
+            </div>
+
+            <h1 className="mb-8 flex flex-wrap items-baseline gap-x-2 gap-y-1 lg:hidden">
+              <button
+                type="button"
+                onClick={goBack}
                 className="group inline-flex shrink-0 self-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0066AD]"
-                aria-label="디자이너 목록으로 돌아가기"
+                aria-label="이전 페이지로 돌아가기"
               >
                 <span className="relative h-7 w-7" aria-hidden="true">
                   <img
@@ -149,7 +174,7 @@ const DesignerDetail = () => {
                     className="absolute inset-0 h-full w-full object-contain opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
                   />
                 </span>
-              </Link>
+              </button>
               <span className="text-[32px] font-bold text-[#000101]">{designer.name}</span>
               <span className="text-[clamp(16px,2vw,24px)] font-regular text-[#4A4B51] tracking-[-0.02em]">{getEnglishName(designer)}</span>
             </h1>
@@ -170,24 +195,11 @@ const DesignerDetail = () => {
                   </div>
                 )}
               </section>
-              <div className="pointer-events-none absolute left-[90%] top-[95%] -ml-[27.5%] -mt-[27.5%] aspect-square w-[55%] lg:hidden">
-                <img
-                  src={`/images/object/paper/${imageNumber}.webp`}
-                  alt={`${designer.name} 디자이너 오브제`}
-                  className="absolute inset-0 z-10 h-full w-full object-contain mix-blend-hard-light"
-                />
-                <img
-                  src={`/images/object/paper/${imageNumber}_paper.webp`}
-                  alt=""
-                  aria-hidden="true"
-                  className="absolute inset-0 z-20 h-full w-full object-contain"
-                />
-              </div>
             </div>
           </div>
 
           <section className="relative flex flex-col justify-end lg:min-h-0 lg:self-stretch xl:col-start-3">
-            <div className="absolute left-[-28px] top-0 hidden h-[clamp(200px,8vw,320px)] w-[clamp(200px,8vw,320px)] lg:block xl:top-[60px]">
+            <div className={`relative top-2 mb-4 hidden aspect-square w-[clamp(200px,8vw,320px)] shrink-0 lg:block ${desktopObjectLeft}`}>
               <img
                 src={`/images/object/paper/${imageNumber}.webp`}
                 alt={`${designer.name} 디자이너 오브제`}

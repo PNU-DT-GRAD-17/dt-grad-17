@@ -5,7 +5,9 @@ import Footer from "../components/Footer";
 import InteractionDrawings from "../components/InteractionDrawings";
 import MobileProjectHeader from "../components/MobileProjectHeader";
 import { ScenarioVideoLink, ScenarioVideoModal } from "../components/ScenarioVideo";
+import { getProjectNeighbors } from "../data/projectNavigation";
 import { teamProjects, type TeamCategory } from "../data/team";
+import { useDetailBack } from "../hooks/useDetailBack";
 
 const categories: TeamCategory[] = ["BRANDING", "DP", "OPENING", "WEB"];
 
@@ -37,6 +39,7 @@ const SectionTitle = ({ children }: { children: string }) => (
 );
 
 const TeamProjectDetail = () => {
+  const goBack = useDetailBack("/project");
   const [isScenarioVideoOpen, setIsScenarioVideoOpen] = useState(false);
   const [isMobileConceptOpen, setIsMobileConceptOpen] = useState(false);
   const [mobileSlideIndex, setMobileSlideIndex] = useState(0);
@@ -254,8 +257,7 @@ const TeamProjectDetail = () => {
   }
 
   const project = teamProjects[category];
-  const previous = categories[(currentIndex - 1 + categories.length) % categories.length];
-  const next = categories[(currentIndex + 1) % categories.length];
+  const { previous, next } = getProjectNeighbors(project.link);
   const conceptDescription = project.conceptDescription || project.description || defaultDescription;
   const videoDescription = project.videoDescription || defaultDescription;
   const interactionDescription = project.interactionDescription || defaultDescription;
@@ -277,7 +279,7 @@ const TeamProjectDetail = () => {
 
       <div className="relative z-10">
         <div className="flex h-[calc(100svh-var(--header-height))] flex-col md:hidden">
-          <MobileProjectHeader key={category} label={category} currentPath={`/project/team/${category.toLowerCase()}`} />
+          <MobileProjectHeader key={category} label={category} currentPath={`/project/team/${category.toLowerCase()}`} onBack={goBack} />
 
           <div
             ref={mobileGalleryRef}
@@ -397,7 +399,7 @@ const TeamProjectDetail = () => {
         </div>
 
         <div className="hidden md:block">
-        <section className="relative mx-auto flex h-[calc(100svh-var(--header-height)-4rem)] max-w-[1920px] overflow-hidden">
+        <section className="relative flex h-[calc(100svh-var(--header-height)-4rem)] w-full overflow-hidden">
           <MediaPanel
             src={backgroundImage}
             alt={`${project.title} 대표 이미지`}
@@ -407,8 +409,10 @@ const TeamProjectDetail = () => {
           <div className="absolute inset-0 bg-gradient-to-r from-[#07151d]/35 via-[#07151d]/90 to-[#07151d] lg:hidden" aria-hidden="true" />
 
           <div className="relative z-10 flex min-w-0 flex-1 flex-col px-6 pb-[clamp(28px,5svh,64px)] pt-[clamp(28px,5svh,64px)] sm:px-10 lg:px-[clamp(48px,5vw,52px)]">
-            <Link
-              to="/project"
+            <button
+              type="button"
+              onClick={goBack}
+              aria-label="이전 페이지로 돌아가기"
               className="group absolute right-6 top-8 inline-flex items-center gap-2 text-lg font-semibold text-white/40 transition-colors hover:text-white focus-visible:text-white sm:right-10 lg:right-[clamp(48px,5vw,96px)] lg:top-[clamp(28px,5svh,64px)]"
             >
               <img
@@ -418,7 +422,7 @@ const TeamProjectDetail = () => {
                 aria-hidden="true"
               />
               BACK
-            </Link>
+            </button>
 
             <dl className="text-sm leading-relaxed">
               <div>
@@ -446,7 +450,7 @@ const TeamProjectDetail = () => {
                 {project.conceptName || "컨셉"}
                 <span className="text-sm font-medium text-[#45BFE6]">team concept</span>
               </h1>
-              <p className="mt-4 max-w-[920px] whitespace-pre-line text-sm leading-7 text-white">{conceptDescription}</p>
+              <p className={`mt-4 ${category === "WEB" ? "max-w-[1040px]" : "max-w-[920px]"} whitespace-pre-line text-sm leading-7 text-white`}>{conceptDescription}</p>
             </section>
           </div>
         </section>
@@ -512,19 +516,12 @@ const TeamProjectDetail = () => {
 
       <nav
         ref={navigatorRef}
-        className="project-detail__navigator fixed inset-x-0 bottom-0 z-20 hidden h-16 grid-cols-3 items-center bg-[#0066AD] px-5 text-base md:grid sm:px-10 lg:px-[clamp(56px,6.25vw,120px)]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(0, 102, 173, 0.5), rgba(0, 102, 173, 0.5)), url('/images/blue_bg-upscaled.webp')",
-          backgroundPosition: "center, center",
-          backgroundRepeat: "no-repeat, no-repeat",
-          backgroundSize: "100% 100%, 106% auto",
-        }}
-        aria-label="다른 팀 프로젝트"
+        className="project-detail__navigator fixed inset-x-0 bottom-0 z-20 hidden h-16 grid-cols-3 items-center bg-[#0072c1] px-5 text-base md:grid sm:px-10 lg:px-[clamp(56px,6.25vw,120px)]"
+        aria-label="다른 프로젝트"
       >
-        <Link to={`/project/team/${previous.toLowerCase()}`} className="group flex min-w-0 items-center gap-2 justify-self-start">
+        <Link to={previous.to} className="group flex min-w-0 items-center gap-2 justify-self-start">
           <img src="/images/icon/arrowLeft.webp" alt="" className="h-5 w-auto opacity-70 transition-opacity duration-200 group-hover:opacity-100" aria-hidden="true" />
-          <span className="truncate text-lg opacity-70 transition-opacity duration-200 group-hover:opacity-100">{previous}</span>
+          <span className="truncate text-lg opacity-70 transition-opacity duration-200 group-hover:opacity-100">{previous.label}</span>
         </Link>
 
         <Link to="/project" aria-label="프로젝트 목록" className="grid grid-cols-2 gap-1 justify-self-center p-3 opacity-80 transition-opacity hover:opacity-100">
@@ -533,8 +530,8 @@ const TeamProjectDetail = () => {
           ))}
         </Link>
 
-        <Link to={`/project/team/${next.toLowerCase()}`} className="group flex min-w-0 items-center gap-2 justify-self-end">
-          <span className="truncate text-lg opacity-70 transition-opacity duration-200 group-hover:opacity-100">{next}</span>
+        <Link to={next.to} className="group flex min-w-0 items-center gap-2 justify-self-end">
+          <span className="truncate text-lg opacity-70 transition-opacity duration-200 group-hover:opacity-100">{next.label}</span>
           <img src="/images/icon/arrowRight.webp" alt="" className="h-5 w-auto opacity-70 transition-opacity duration-200 group-hover:opacity-100" aria-hidden="true" />
         </Link>
       </nav>

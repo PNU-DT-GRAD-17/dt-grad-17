@@ -14,7 +14,7 @@ const projects = [
   })),
 ];
 
-export default function MobileProjectHeader({ label, currentPath, designerPath }: { label: string; currentPath: string; designerPath?: string }) {
+export default function MobileProjectHeader({ label, currentPath, designerPath, onBack }: { label: string; currentPath: string; designerPath?: string; onBack: () => void }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isNameActive, setIsNameActive] = useState(false);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -50,9 +50,9 @@ export default function MobileProjectHeader({ label, currentPath, designerPath }
 
   return (
     <div ref={headerRef} className="relative z-40 flex h-12 shrink-0 items-center justify-center bg-[#000101] text-lg font-medium text-white">
-      <Link to="/project" aria-label="프로젝트 목록으로 돌아가기" className="absolute inset-y-0 left-2 flex w-11 items-center justify-center">
+      <button type="button" onClick={onBack} aria-label="이전 페이지로 돌아가기" className="absolute inset-y-0 left-2 flex w-11 cursor-pointer items-center justify-center">
         <img src="/images/icon/arrowLeft.webp" alt="" className="h-5 w-auto" />
-      </Link>
+      </button>
       <div className="relative flex h-full items-center justify-center">
         {designerPath ? (
           <Link
@@ -90,6 +90,13 @@ export default function MobileProjectHeader({ label, currentPath, designerPath }
       {isOpen && (
         <div id={listId} ref={listRef} className="absolute inset-x-0 top-full h-[min(224px,50svh)] overflow-y-auto overscroll-y-contain bg-[#000101]" aria-label="프로젝트 선택">
           <nav className="pb-[calc(min(224px,50svh)-48px)]">
+            <Link
+              to="/project"
+              className="flex h-12 items-center justify-center text-white transition-colors hover:text-[#45bee6] focus-visible:text-[#45bee6]"
+              onClick={() => setIsOpen(false)}
+            >
+              ALL
+            </Link>
             {projects.map((project) => (
               <Link
                 key={project.path}

@@ -27,19 +27,19 @@ const Footer = () => {
               <p className="font-light">부산대학교 디자인학과 디자인앤테크놀로지 전공 17회 졸업전시</p>
               <p className="font-light">Dept. of Design, Design and Technology 17th Graduation Show</p>
               <br/>
-              <p className="font-medium text-[#CBD0D7]">본 사이트는 2026 졸업논문을 대체합니다.</p>
-              <p className="font-medium text-[#CBD0D7]">©2026 Pusan National University Design&amp;Technology all rights reserved.</p>
+              <p className="font-medium">본 사이트는 2026 졸업논문을 대체합니다.</p>
+              <p className="font-medium">©2026 Pusan National University Design&amp;Technology all rights reserved.</p>
             </div>
 
             <div className="absolute bottom-0 right-0 flex flex-col items-end gap-[0.5vw] text-[clamp(10px,1.05vw,12px)]">
               <a href="https://design.pusan.ac.kr/" target="_blank" rel="noreferrer" className="group flex items-center gap-[0.7vw]">
                 <img src="/images/icon/pnu_logo.webp" alt="" className="h-[clamp(15px,1.5vw,23px)] w-[clamp(15px,1.5vw,23px)] flex-shrink-0 object-contain" />
-                <span className="whitespace-nowrap border-b border-[#CBD0D7] text-[#CBD0D7] leading-[1.25] group-hover:font-semibold">부산대학교 디자인학과 공식 홈페이지</span>
+                <span className="whitespace-nowrap border-b border-current leading-[1.25] group-hover:font-semibold">부산대학교 디자인학과 공식 홈페이지</span>
               </a>
 
               <a href="https://inter.pusan.ac.kr/designtech/index.do" target="_blank" rel="noreferrer" className="group flex items-center gap-[0.7vw]">
                 <img src="/images/icon/pnu_logo.webp" alt="" className="h-[clamp(15px,1.5vw,23px)] w-[clamp(15px,1.5vw,23px)] flex-shrink-0 object-contain" />
-                <span className="whitespace-nowrap border-b border-[#CBD0D7] text-[#CBD0D7] leading-[1.25] group-hover:font-semibold">부산대학교 디자인테크놀로지전공 공식 홈페이지</span>
+                <span className="whitespace-nowrap border-b border-current leading-[1.25] group-hover:font-semibold">부산대학교 디자인테크놀로지전공 공식 홈페이지</span>
               </a>
             </div>
           </div>
@@ -70,19 +70,19 @@ const Footer = () => {
               <div className="whitespace-nowrap text-[9.5px]">
                 <p className="font-light">부산대학교 디자인학과 디자인앤테크놀로지 전공 17회 졸업전시</p>
                 <p className="font-light">Dept. of Design, Design and Technology 17th Graduation Show</p><br/>
-                <p className="font-medium text-[#CBD0D7]">본 사이트는 2026 졸업논문을 대체합니다.</p>
-                <p className="font-medium text-[#CBD0D7]">©2026 Pusan National University Design&amp;Technology all rights reserved.</p>
+                <p className="font-medium">본 사이트는 2026 졸업논문을 대체합니다.</p>
+                <p className="font-medium">©2026 Pusan National University Design&amp;Technology all rights reserved.</p>
               </div>
 
               <div className="mt-8 flex flex-col items-start gap-[clamp(8px,2.5vw,12px)] text-[10px] sm:text-[11px]">
                 <a href="https://design.pusan.ac.kr/" target="_blank" rel="noreferrer" className="group flex items-center gap-2">
                   <img src="/images/icon/pnu_logo.webp" alt="" className="h-4 w-4 flex-shrink-0 object-contain" />
-                  <span className="border-b border-[#CBD0D7] text-[#CBD0D7] group-hover:font-semibold group-focus-visible:font-semibold group-active:font-semibold">부산대학교 디자인학과 공식 홈페이지</span>
+                  <span className="border-b border-current group-hover:font-semibold group-focus-visible:font-semibold group-active:font-semibold">부산대학교 디자인학과 공식 홈페이지</span>
                 </a>
 
                 <a href="https://inter.pusan.ac.kr/designtech/index.do" target="_blank" rel="noreferrer" className="group flex items-center gap-2">
                   <img src="/images/icon/pnu_logo.webp" alt="" className="h-4 w-4 flex-shrink-0 object-contain" />
-                  <span className="border-b border-[#CBD0D7] text-[#CBD0D7] group-hover:font-semibold group-focus-visible:font-semibold group-active:font-semibold">부산대학교 디자인테크놀로지전공 공식 홈페이지</span>
+                  <span className="border-b border-current group-hover:font-semibold group-focus-visible:font-semibold group-active:font-semibold">부산대학교 디자인테크놀로지전공 공식 홈페이지</span>
                 </a>
               </div>
             </div>

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link, Navigate, useLocation, useParams } from "react-router-dom";
 
 import Footer from "../components/Footer";
@@ -7,24 +7,14 @@ import MobileProjectHeader from "../components/MobileProjectHeader";
 import { ScenarioVideoLink, ScenarioVideoModal } from "../components/ScenarioVideo";
 import { designers } from "../data/designers";
 import { getVerticalPosterImage } from "../data/posters";
+import { getProjectNeighbors } from "../data/projectNavigation";
+import { useDetailBack } from "../hooks/useDetailBack";
 
 const defaultDescription =
   "우리는 사용자의 행동 패턴을 분석하여 가장 직관적이고 편리한 경험을 설계합니다. 복잡한 과정을 최소화하고, 누구나 쉽게 이해할 수 있는 디지털 환경을 만드는 것이 우리의 목표입니다.";
 
 const DesktopMotionPoster = ({ image, video, title }: { image: string; video?: string; title: string }) => {
-  const posterRef = useRef<HTMLDivElement>(null);
-  const hintTimerRef = useRef<number | null>(null);
   const [isHovered, setIsHovered] = useState(false);
-  const [isHintVisible, setIsHintVisible] = useState(true);
-
-  const showHint = useCallback(() => {
-    if (hintTimerRef.current !== null) window.clearTimeout(hintTimerRef.current);
-    setIsHintVisible(true);
-    hintTimerRef.current = window.setTimeout(() => {
-      setIsHintVisible(false);
-      hintTimerRef.current = null;
-    }, 1000);
-  }, []);
 
   useEffect(() => {
     const desktop = window.matchMedia("(min-width: 1024px)");
@@ -35,36 +25,13 @@ const DesktopMotionPoster = ({ image, video, title }: { image: string; video?: s
     return () => desktop.removeEventListener("change", stopOnMobile);
   }, []);
 
-  useEffect(() => {
-    const poster = posterRef.current;
-    if (!poster) return;
-
-    showHint();
-    let wasVisible = false;
-    const observer = new IntersectionObserver(([entry]) => {
-      const isVisible = entry.intersectionRatio >= 0.5;
-      if (isVisible && !wasVisible) showHint();
-      if (!isVisible) setIsHovered(false);
-      wasVisible = isVisible;
-    }, { threshold: 0.5 });
-    observer.observe(poster);
-    return () => {
-      observer.disconnect();
-      if (hintTimerRef.current !== null) window.clearTimeout(hintTimerRef.current);
-    };
-  }, [showHint]);
-
   return (
     <div
-      ref={posterRef}
       className="absolute inset-y-0 left-0 aspect-[9/16] h-full shrink-0 overflow-hidden bg-white/30 lg:relative"
       onPointerEnter={(event) => {
         if (event.pointerType === "mouse" && window.innerWidth >= 1024) setIsHovered(true);
       }}
-      onPointerLeave={() => {
-        setIsHovered(false);
-        showHint();
-      }}
+      onPointerLeave={() => setIsHovered(false)}
     >
       <img src={image} alt={`${title} 모션 포스터`} className="h-full w-full object-cover" />
       {video && isHovered && (
@@ -79,9 +46,9 @@ const DesktopMotionPoster = ({ image, video, title }: { image: string; video?: s
           playsInline
         />
       )}
-      {!isHovered && isHintVisible && (
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[#000101]/30" aria-hidden="true">
-          <img src="/images/icon/hover.svg" alt="" className="h-12 w-12" />
+      {!isHovered && (
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent px-5 pb-9 pt-24 text-center text-sm text-white/60">
+          이미지 위에 마우스 커서를 올리면 모션포스터가 재생됩니다.
         </div>
       )}
     </div>
@@ -153,6 +120,7 @@ const MediaPlaceholder = ({
 );
 
 const ProjectDetail = () => {
+  const goBack = useDetailBack("/project");
   const [isScenarioVideoOpen, setIsScenarioVideoOpen] = useState(false);
   const [isMobileConceptOpen, setIsMobileConceptOpen] = useState(false);
   const [mobileSlideIndex, setMobileSlideIndex] = useState(0);
@@ -356,8 +324,7 @@ const ProjectDetail = () => {
   }
 
   const designer = projectDesigners[currentIndex];
-  const previous = projectDesigners[(currentIndex - 1 + projectDesigners.length) % projectDesigners.length];
-  const next = projectDesigners[(currentIndex + 1) % projectDesigners.length];
+  const { previous, next } = getProjectNeighbors(`/project/${designer.id}`);
   const detail = designer.projectDetail;
   const backgroundImage = getVerticalPosterImage(currentIndex + 1) ?? detail?.motionPosterImage ?? designer.selectedObjectImage;
   const motionPosterVideo = detail?.motionPosterVideoUrl
@@ -381,7 +348,7 @@ const ProjectDetail = () => {
 
       <div className="relative z-10">
         <div className="flex h-[calc(100svh-var(--header-height))] flex-col lg:hidden">
-          <MobileProjectHeader key={designer.id} label={designer.name} currentPath={`/project/${designer.id}`} designerPath={`/designer/${designer.id}`} />
+          <MobileProjectHeader key={designer.id} label={designer.name} currentPath={`/project/${designer.id}`} designerPath={`/designer/${designer.id}`} onBack={goBack} />
 
           <div
             ref={mobileGalleryRef}
@@ -501,8 +468,10 @@ const ProjectDetail = () => {
 
           <div className="pointer-events-none relative z-10 flex min-w-0 flex-1 flex-col px-6 pb-[clamp(28px,5svh,64px)] pt-[clamp(28px,5svh,64px)] sm:px-10 lg:pointer-events-auto lg:px-[clamp(48px,5vw,52px)]">
 
-            <Link
-              to="/project"
+            <button
+              type="button"
+              onClick={goBack}
+              aria-label="이전 페이지로 돌아가기"
               className="pointer-events-auto group absolute right-6 top-8 inline-flex items-center gap-2 text-lg font-semibold text-white/40 transition-colors hover:text-white sm:right-10 lg:right-[clamp(48px,5svh,96px)] lg:top-[clamp(28px,5svh,64px)]"
             >
               <img
@@ -512,7 +481,7 @@ const ProjectDetail = () => {
                 aria-hidden="true"
               />
               BACK
-            </Link>
+            </button>
 
             <dl className="text-sm leading-relaxed">
               <div>
@@ -534,7 +503,7 @@ const ProjectDetail = () => {
                   {designer.conceptName || "컨셉 제목"}
                   <span className="text-sm font-medium text-[#45BFE6]">concept</span>
                 </h1>
-                <p className="mt-4 max-w-[920px] whitespace-pre-line text-sm leading-7 text-white/80">{conceptDescription}</p>
+                <p className="mt-4 max-w-[920px] whitespace-pre-line text-sm leading-7 text-white">{conceptDescription}</p>
               </section>
 
               <section>
@@ -592,30 +561,23 @@ const ProjectDetail = () => {
       {/* 이전·다음 내비게이션은 데스크톱에서만 표시합니다. */}
       <nav
         ref={navigatorRef}
-        className="project-detail__navigator relative mx-2 z-20 hidden h-14 grid-cols-2 lg:fixed lg:inset-x-0 lg:bottom-0 lg:mx-0 lg:grid lg:h-16 lg:grid-cols-3 items-center bg-[#0066AD] px-5 text-base sm:px-10 lg:px-[clamp(56px,6.25vw,120px)]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(0, 102, 173, 0.5), rgba(0, 102, 173, 0.5)), url('/images/blue_bg-upscaled.webp')",
-          backgroundPosition: "center, center",
-          backgroundRepeat: "no-repeat, no-repeat",
-          backgroundSize: "100% 100%, 106% auto",
-        }}
-        aria-label="다른 개인 프로젝트"
+        className="project-detail__navigator relative mx-2 z-20 hidden h-14 grid-cols-2 lg:fixed lg:inset-x-0 lg:bottom-0 lg:mx-0 lg:grid lg:h-16 lg:grid-cols-3 items-center bg-[#0072c1] px-5 text-base sm:px-10 lg:px-[clamp(56px,6.25vw,120px)]"
+        aria-label="다른 프로젝트"
       >
-        <Link to={`/project/${previous.id}`} className="group flex items-center gap-2 justify-self-start">
+        <Link to={previous.to} className="group flex items-center gap-2 justify-self-start">
           <img
             src="/images/icon/arrowLeft.webp"
             alt=""
             className="h-5 w-auto opacity-70 transition-all duration-200 group-hover:opacity-100"
             aria-hidden="true"
           />
-          <span className="opacity-70 transition-opacity duration-200 group-hover:opacity-100 text-lg">{previous.name}</span>
+          <span className="opacity-70 transition-opacity duration-200 group-hover:opacity-100 text-lg">{previous.label}</span>
         </Link>
         <Link to="/project" aria-label="프로젝트 목록" className="hidden grid-cols-2 gap-1 justify-self-center p-3 lg:grid opacity-80 transition-opacity hover:opacity-100">
           {Array.from({ length: 4 }).map((_, index) => <span key={index} className="h-2 w-2 border border-white" />)}
         </Link>
-        <Link to={`/project/${next.id}`} className="group flex items-center gap-2 justify-self-end">
-          <span className="opacity-70 transition-opacity duration-200 group-hover:opacity-100 text-lg">{next.name}</span>
+        <Link to={next.to} className="group flex items-center gap-2 justify-self-end">
+          <span className="opacity-70 transition-opacity duration-200 group-hover:opacity-100 text-lg">{next.label}</span>
           <img
             src="/images/icon/arrowRight.webp"
             alt=""
