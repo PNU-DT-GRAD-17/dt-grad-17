@@ -1,7 +1,7 @@
 // Individual 시트의 인터랙션 시나리오 설명
 export const individualScenarioDescriptions: Record<string, string[]> = {
   "kang-yeju": [
-    "비치된 손도장에 두 손을 맞대어 봅니다.",
+    "비치된 손모양에 두 손을 맞대어 봅니다.",
     "자신의 손에 얼룩이 생기는 걸 확인한 후 손소독제를 사용합니다.",
     "사라진 줄 알았던 얼룩이 다시 나타납니다.",
   ],
