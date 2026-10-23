@@ -91,9 +91,6 @@ const DesignerDetail = () => {
   }
 
   const designer = designerList[currentIndex];
-  const mobileObjectLeft = designer.id === "kang-yeju"
-    ? "-left-[18px]"
-    : designer.id === "bae-myeonghwan" ? "-left-[14px]" : "";
   const desktopObjectLeft = designer.id === "kang-yeju"
     ? "-left-[46px]"
     : designer.id === "bae-myeonghwan" ? "-left-[42px]" : "-left-7";
@@ -141,20 +138,6 @@ const DesignerDetail = () => {
               <span>BACK</span>
             </button>
 
-            <div className={`relative top-2 mb-3 aspect-square w-[clamp(140px,42vw,220px)] lg:hidden ${mobileObjectLeft}`}>
-              <img
-                src={`/images/object/paper/${imageNumber}.webp`}
-                alt={`${designer.name} 디자이너 오브제`}
-                className="absolute inset-0 h-full w-full object-contain mix-blend-hard-light"
-              />
-              <img
-                src={`/images/object/paper/${imageNumber}_paper.webp`}
-                alt=""
-                aria-hidden="true"
-                className="absolute inset-0 z-10 h-full w-full object-contain"
-              />
-            </div>
-
             <h1 className="mb-8 flex flex-wrap items-baseline gap-x-2 gap-y-1 lg:hidden">
               <button
                 type="button"
@@ -195,6 +178,19 @@ const DesignerDetail = () => {
                   </div>
                 )}
               </section>
+              <div className="pointer-events-none absolute left-[90%] top-[95%] -ml-[27.5%] -mt-[27.5%] aspect-square w-[55%] lg:hidden">
+                <img
+                  src={`/images/object/paper/${imageNumber}.webp`}
+                  alt={`${designer.name} 디자이너 오브제`}
+                  className="absolute inset-0 z-10 h-full w-full object-contain mix-blend-hard-light"
+                />
+                <img
+                  src={`/images/object/paper/${imageNumber}_paper.webp`}
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute inset-0 z-20 h-full w-full object-contain"
+                />
+              </div>
             </div>
           </div>
 
