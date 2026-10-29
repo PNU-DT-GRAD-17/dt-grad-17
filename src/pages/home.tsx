@@ -992,11 +992,16 @@ function Home() {
           오프닝 영상
         </h2>
 
-        <div className="mx-auto mt-12 flex aspect-video w-full max-w-[1080px] flex-col items-center justify-center overflow-hidden bg-[#E3E7ED]">
-          <img src="/images/comingsoon.webp" alt="오프닝 영상 준비 중" loading="lazy" decoding="async" className="w-[37.5%] object-contain" />
-          <p className="mt-4 text-center text-sm font-medium text-[#000101] sm:text-base lg:text-[clamp(18px,2vw,24px)]">
-            2026. 11. 06 5PM
-          </p>
+        <div className="mx-auto mt-12 aspect-video w-full max-w-[1080px] overflow-hidden bg-[#E3E7ED]">
+          <iframe
+            src="https://www.youtube.com/embed/Z5q5GcDigso"
+            title="오프닝 영상"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+            referrerPolicy="strict-origin-when-cross-origin"
+            className="h-full w-full border-0"
+          />
         </div>
       </section>
 
