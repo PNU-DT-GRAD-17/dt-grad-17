@@ -5,8 +5,8 @@
     "date": "26.09.05",
     "originalSrc": "/images/behind/001.png",
     "thumbnail": "/images/behind/thumbnails/001.webp",
-    "width": 312,
-    "height": 416
+    "width": 624,
+    "height": 832
   },
   {
     "src": "/images/behind/optimized/002.webp",
@@ -14,8 +14,8 @@
     "date": "26.05.14",
     "originalSrc": "/images/behind/002.png",
     "thumbnail": "/images/behind/thumbnails/002.webp",
-    "width": 360,
-    "height": 270
+    "width": 720,
+    "height": 540
   },
   {
     "src": "/images/behind/optimized/003.webp",
@@ -23,8 +23,8 @@
     "date": "26.10.15",
     "originalSrc": "/images/behind/003.png",
     "thumbnail": "/images/behind/thumbnails/003.webp",
-    "width": 360,
-    "height": 270
+    "width": 720,
+    "height": 540
   },
   {
     "src": "/images/behind/optimized/004.webp",
@@ -32,8 +32,8 @@
     "date": "26.10.15",
     "originalSrc": "/images/behind/004.png",
     "thumbnail": "/images/behind/thumbnails/004.webp",
-    "width": 361,
-    "height": 270
+    "width": 722,
+    "height": 540
   },
   {
     "src": "/images/behind/optimized/005.webp",
@@ -41,8 +41,8 @@
     "date": "26.10.18",
     "originalSrc": "/images/behind/005.png",
     "thumbnail": "/images/behind/thumbnails/005.webp",
-    "width": 438,
-    "height": 246
+    "width": 876,
+    "height": 492
   },
   {
     "src": "/images/behind/optimized/006.webp",
@@ -50,8 +50,8 @@
     "date": "26.06.01",
     "originalSrc": "/images/behind/006.png",
     "thumbnail": "/images/behind/thumbnails/006.webp",
-    "width": 464,
-    "height": 348
+    "width": 928,
+    "height": 696
   },
   {
     "src": "/images/behind/optimized/007.webp",
@@ -59,8 +59,8 @@
     "date": "26.05.14",
     "originalSrc": "/images/behind/007.png",
     "thumbnail": "/images/behind/thumbnails/007.webp",
-    "width": 504,
-    "height": 378
+    "width": 1008,
+    "height": 756
   },
   {
     "src": "/images/behind/optimized/008.webp",
@@ -68,8 +68,8 @@
     "date": "26.10.16",
     "originalSrc": "/images/behind/008.png",
     "thumbnail": "/images/behind/thumbnails/008.webp",
-    "width": 426,
-    "height": 319
+    "width": 852,
+    "height": 638
   },
   {
     "src": "/images/behind/optimized/009.webp",
@@ -77,8 +77,8 @@
     "date": "26.03.19",
     "originalSrc": "/images/behind/009.png",
     "thumbnail": "/images/behind/thumbnails/009.webp",
-    "width": 269,
-    "height": 358
+    "width": 538,
+    "height": 716
   },
   {
     "src": "/images/behind/optimized/010.webp",
@@ -86,7 +86,475 @@
     "date": "26.05.14",
     "originalSrc": "/images/behind/010.png",
     "thumbnail": "/images/behind/thumbnails/010.webp",
-    "width": 316,
-    "height": 421
+    "width": 632,
+    "height": 842
+  },
+  {
+    "src": "/images/behind/optimized/011.webp",
+    "title": "힙스터지수",
+    "date": "",
+    "thumbnail": "/images/behind/thumbnails/011.webp",
+    "width": 448,
+    "height": 796,
+    "originalSrc": "/images/behind/011.png"
+  },
+  {
+    "src": "/images/behind/optimized/012.webp",
+    "title": "흔들리는 풍경은 나의 눈물이었다.",
+    "date": "26.08.15",
+    "thumbnail": "/images/behind/thumbnails/012.webp",
+    "width": 830,
+    "height": 622,
+    "originalSrc": "/images/behind/012.png"
+  },
+  {
+    "src": "/images/behind/optimized/013.webp",
+    "title": "지수1호",
+    "date": "26.05.13",
+    "thumbnail": "/images/behind/thumbnails/013.webp",
+    "width": 632,
+    "height": 844,
+    "originalSrc": "/images/behind/013.png"
+  },
+  {
+    "src": "/images/behind/optimized/014.webp",
+    "title": "저희과실에는파라솔도있어요",
+    "thumbnail": "/images/behind/thumbnails/014.webp",
+    "width": 612,
+    "height": 816,
+    "date": "",
+    "originalSrc": "/images/behind/014.png"
+  },
+  {
+    "src": "/images/behind/optimized/015.webp",
+    "title": "ㅈㅏㄴㅎㅑㅇ",
+    "date": "26.05.14",
+    "thumbnail": "/images/behind/thumbnails/015.webp",
+    "width": 622,
+    "height": 830,
+    "originalSrc": "/images/behind/015.png"
+  },
+  {
+    "src": "/images/behind/optimized/016.webp",
+    "title": "수공업현장",
+    "date": "26.10.13",
+    "thumbnail": "/images/behind/thumbnails/016.webp",
+    "width": 612,
+    "height": 816,
+    "originalSrc": "/images/behind/016.png"
+  },
+  {
+    "src": "/images/behind/optimized/017.webp",
+    "title": "잔향이될곳",
+    "date": "26.10.19",
+    "thumbnail": "/images/behind/thumbnails/017.webp",
+    "width": 624,
+    "height": 830,
+    "originalSrc": "/images/behind/017.png"
+  },
+  {
+    "src": "/images/behind/optimized/018.webp",
+    "title": "아차차",
+    "date": "26.10.17",
+    "thumbnail": "/images/behind/thumbnails/018.webp",
+    "width": 534,
+    "height": 400,
+    "originalSrc": "/images/behind/018.png"
+  },
+  {
+    "src": "/images/behind/optimized/019.webp",
+    "title": "콘센㈋ㅡ ㅎ.. 뽑앗㉡ㅏ ㅋ",
+    "thumbnail": "/images/behind/thumbnails/019.webp",
+    "width": 612,
+    "height": 816,
+    "originalSrc": "/images/behind/019.png",
+    "date": ""
+  },
+  {
+    "src": "/images/behind/optimized/020.webp",
+    "title": "금주",
+    "thumbnail": "/images/behind/thumbnails/020.webp",
+    "width": 618,
+    "height": 824,
+    "originalSrc": "/images/behind/020.png",
+    "date": ""
+  },
+  {
+    "src": "/images/behind/optimized/021.webp",
+    "title": "홍보하러 가용",
+    "date": "26.10.16",
+    "thumbnail": "/images/behind/thumbnails/021.webp",
+    "width": 415,
+    "height": 311,
+    "originalSrc": "/images/behind/021.png"
+  },
+  {
+    "src": "/images/behind/optimized/022.webp",
+    "title": "디피 오브제가 좀 작아요",
+    "date": "26.05.14",
+    "thumbnail": "/images/behind/thumbnails/022.webp",
+    "width": 852,
+    "height": 638,
+    "originalSrc": "/images/behind/022.png"
+  },
+  {
+    "src": "/images/behind/optimized/023.webp",
+    "title": "예원 수현 성현 현수막 걸다",
+    "date": "26.10.13",
+    "thumbnail": "/images/behind/thumbnails/023.webp",
+    "width": 634,
+    "height": 846,
+    "originalSrc": "/images/behind/023.png"
+  },
+  {
+    "src": "/images/behind/optimized/024.webp",
+    "title": "하츄핑",
+    "thumbnail": "/images/behind/thumbnails/024.webp",
+    "width": 612,
+    "height": 816,
+    "originalSrc": "/images/behind/024.png",
+    "date": ""
+  },
+  {
+    "src": "/images/behind/optimized/025.webp",
+    "title": "옆 사람이 VR을 낀 후로 3시간째 움직이지 않는다",
+    "thumbnail": "/images/behind/thumbnails/025.webp",
+    "width": 622,
+    "height": 830,
+    "originalSrc": "/images/behind/025.png",
+    "date": ""
+  },
+  {
+    "src": "/images/behind/optimized/026.webp",
+    "title": "브레맨 음악대",
+    "thumbnail": "/images/behind/thumbnails/026.webp",
+    "width": 408,
+    "height": 726,
+    "originalSrc": "/images/behind/026.png",
+    "date": ""
+  },
+  {
+    "src": "/images/behind/optimized/027.webp",
+    "title": "샤라웃 투 간식천사들(고마우이 모두들)",
+    "date": "26.03. ~ 11.",
+    "thumbnail": "/images/behind/thumbnails/027.webp",
+    "width": 632,
+    "height": 844,
+    "originalSrc": "/images/behind/027.png"
+  },
+  {
+    "src": "/images/behind/optimized/028.webp",
+    "title": "예지 교수님 감사합니다 <3",
+    "date": "26.10.22",
+    "thumbnail": "/images/behind/thumbnails/028.webp",
+    "width": 612,
+    "height": 816,
+    "originalSrc": "/images/behind/028.png"
+  },
+  {
+    "src": "/images/behind/optimized/029.webp",
+    "title": "포스터다",
+    "date": "26.10.22",
+    "thumbnail": "/images/behind/thumbnails/029.webp",
+    "width": 610,
+    "height": 814,
+    "originalSrc": "/images/behind/029.png"
+  },
+  {
+    "src": "/images/behind/optimized/030.webp",
+    "title": "다음은 너희야 ㅎ",
+    "thumbnail": "/images/behind/thumbnails/030.webp",
+    "width": 624,
+    "height": 830,
+    "originalSrc": "/images/behind/030.png",
+    "date": ""
+  },
+  {
+    "src": "/images/behind/optimized/031.webp",
+    "title": "자는건가?",
+    "date": "26.09.13",
+    "thumbnail": "/images/behind/thumbnails/031.webp",
+    "width": 844,
+    "height": 634,
+    "originalSrc": "/images/behind/031.png"
+  },
+  {
+    "src": "/images/behind/optimized/032.webp",
+    "title": "Boom~ Operator~",
+    "date": "26.10.23",
+    "thumbnail": "/images/behind/thumbnails/032.webp",
+    "width": 708,
+    "height": 946,
+    "originalSrc": "/images/behind/032.png"
+  },
+  {
+    "src": "/images/behind/optimized/033.webp",
+    "title": "D-21 불꽃놀이 구경",
+    "date": "26.10.16",
+    "thumbnail": "/images/behind/thumbnails/033.webp",
+    "width": 830,
+    "height": 622,
+    "originalSrc": "/images/behind/033.png"
+  },
+  {
+    "src": "/images/behind/optimized/034.webp",
+    "title": "행위예술 버스킹 리허설 현상",
+    "date": "26.08.",
+    "thumbnail": "/images/behind/thumbnails/034.webp",
+    "width": 618,
+    "height": 824,
+    "originalSrc": "/images/behind/034.png"
+  },
+  {
+    "src": "/images/behind/optimized/035.webp",
+    "title": "고양이와 최냥진",
+    "date": "26.06.27",
+    "thumbnail": "/images/behind/thumbnails/035.webp",
+    "width": 624,
+    "height": 830,
+    "originalSrc": "/images/behind/035.png"
+  },
+  {
+    "src": "/images/behind/optimized/036.webp",
+    "title": "아이디어가 떠오르지 않아서 우주의 기운을 받기로 했다.",
+    "date": "26.08.15",
+    "thumbnail": "/images/behind/thumbnails/036.webp",
+    "width": 624,
+    "height": 832,
+    "originalSrc": "/images/behind/036.png"
+  },
+  {
+    "src": "/images/behind/optimized/037.webp",
+    "title": "언젠가는 그리워질지도 모를 과실",
+    "thumbnail": "/images/behind/thumbnails/037.webp",
+    "width": 534,
+    "height": 400,
+    "originalSrc": "/images/behind/037.png",
+    "date": ""
+  },
+  {
+    "src": "/images/behind/optimized/038.webp",
+    "title": "내가 이렇게 하라고 했다고??",
+    "date": "26.10.15",
+    "thumbnail": "/images/behind/thumbnails/038.webp",
+    "width": 844,
+    "height": 634,
+    "originalSrc": "/images/behind/038.png"
+  },
+  {
+    "src": "/images/behind/optimized/039.webp",
+    "title": "5층의 잔향",
+    "date": "26.10.12",
+    "thumbnail": "/images/behind/thumbnails/039.webp",
+    "width": 634,
+    "height": 846,
+    "originalSrc": "/images/behind/039.png"
+  },
+  {
+    "src": "/images/behind/optimized/040.webp",
+    "title": "타이타닉(리코더브금)",
+    "date": "2026.08.15",
+    "thumbnail": "/images/behind/thumbnails/040.webp",
+    "width": 622,
+    "height": 830,
+    "originalSrc": "/images/behind/040.png"
+  },
+  {
+    "src": "/images/behind/optimized/041.webp",
+    "title": "나니? 소~ 아리가토우",
+    "date": "26.10.21",
+    "thumbnail": "/images/behind/thumbnails/041.webp",
+    "width": 622,
+    "height": 830,
+    "originalSrc": "/images/behind/041.png"
+  },
+  {
+    "src": "/images/behind/optimized/042.webp",
+    "title": "밤티밤티개밤티",
+    "date": "26.06.27",
+    "thumbnail": "/images/behind/thumbnails/042.webp",
+    "width": 806,
+    "height": 572,
+    "originalSrc": "/images/behind/042.png"
+  },
+  {
+    "src": "/images/behind/optimized/043.webp",
+    "title": "???: \"야 옥상에 성현이랑 지수 싸움났대!\"",
+    "date": "26.05.14",
+    "thumbnail": "/images/behind/thumbnails/043.webp",
+    "width": 720,
+    "height": 540,
+    "originalSrc": "/images/behind/043.png"
+  },
+  {
+    "src": "/images/behind/optimized/044.webp",
+    "title": "디티 3대 미남 (3명있음)",
+    "date": "26.05.14",
+    "thumbnail": "/images/behind/thumbnails/044.webp",
+    "width": 1206,
+    "height": 678,
+    "originalSrc": "/images/behind/044.png"
+  },
+  {
+    "src": "/images/behind/optimized/045.webp",
+    "title": "디티 4학년 1짱 타이틀전",
+    "date": "26.10.16",
+    "thumbnail": "/images/behind/thumbnails/045.webp",
+    "width": 850,
+    "height": 638,
+    "originalSrc": "/images/behind/045.png"
+  },
+  {
+    "src": "/images/behind/optimized/046.webp",
+    "title": "영상팀 첫 회의",
+    "date": "26.02.05",
+    "thumbnail": "/images/behind/thumbnails/046.webp",
+    "width": 1302,
+    "height": 732,
+    "originalSrc": "/images/behind/046.png"
+  },
+  {
+    "src": "/images/behind/optimized/047.webp",
+    "title": "네잎클로버 천사님 ^^",
+    "thumbnail": "/images/behind/thumbnails/047.webp",
+    "width": 612,
+    "height": 816,
+    "originalSrc": "/images/behind/047.png",
+    "date": ""
+  },
+  {
+    "src": "/images/behind/optimized/048.webp",
+    "title": "Thanks to. 디자인학과",
+    "date": "26.10.13",
+    "thumbnail": "/images/behind/thumbnails/048.webp",
+    "width": 542,
+    "height": 722,
+    "originalSrc": "/images/behind/048.png"
+  },
+  {
+    "src": "/images/behind/optimized/049.webp",
+    "title": "교수님 산성 한번만 더 사주세요ㅠ",
+    "date": "26.03.19",
+    "thumbnail": "/images/behind/thumbnails/049.webp",
+    "width": 630,
+    "height": 840,
+    "originalSrc": "/images/behind/049.png"
+  },
+  {
+    "src": "/images/behind/optimized/050.webp",
+    "title": "조형관 벚꽃 그리우면 이사진 보면됨",
+    "date": "26.04.02",
+    "thumbnail": "/images/behind/thumbnails/050.webp",
+    "width": 906,
+    "height": 680,
+    "originalSrc": "/images/behind/050.png"
+  },
+  {
+    "src": "/images/behind/optimized/051.webp",
+    "title": "외계인들",
+    "date": "26.10.23",
+    "thumbnail": "/images/behind/thumbnails/051.webp",
+    "width": 1132,
+    "height": 702,
+    "originalSrc": "/images/behind/051.png"
+  },
+  {
+    "src": "/images/behind/optimized/052.webp",
+    "title": "<정성현의 애사비>, 정성현 (2026)",
+    "date": "26.10.14",
+    "thumbnail": "/images/behind/thumbnails/052.webp",
+    "width": 542,
+    "height": 722,
+    "originalSrc": "/images/behind/052.png"
+  },
+  {
+    "src": "/images/behind/optimized/053.webp",
+    "title": "라을라~~~~~",
+    "thumbnail": "/images/behind/thumbnails/053.webp",
+    "width": 1286,
+    "height": 724,
+    "originalSrc": "/images/behind/053.png",
+    "date": ""
+  },
+  {
+    "src": "/images/behind/optimized/054.webp",
+    "title": "34시간 무수면 작업중",
+    "date": "26.03.",
+    "thumbnail": "/images/behind/thumbnails/054.webp",
+    "width": 1304,
+    "height": 734,
+    "originalSrc": "/images/behind/054.png"
+  },
+  {
+    "src": "/images/behind/optimized/055.webp",
+    "title": "흑백요리사 시즌3",
+    "date": "26.09.13",
+    "thumbnail": "/images/behind/thumbnails/055.webp",
+    "width": 970,
+    "height": 728,
+    "originalSrc": "/images/behind/055.png"
+  },
+  {
+    "src": "/images/behind/optimized/056.webp",
+    "title": "한 밤의 옥상 결투",
+    "date": "26.08.15",
+    "thumbnail": "/images/behind/thumbnails/056.webp",
+    "width": 540,
+    "height": 720,
+    "originalSrc": "/images/behind/056.png"
+  },
+  {
+    "src": "/images/behind/optimized/057.webp",
+    "title": "아저씨 사랑해요",
+    "thumbnail": "/images/behind/thumbnails/057.webp",
+    "width": 628,
+    "height": 836,
+    "originalSrc": "/images/behind/057.png",
+    "date": ""
+  },
+  {
+    "src": "/images/behind/optimized/058.webp",
+    "title": "브랜딩 포에버",
+    "date": "26.09.13",
+    "thumbnail": "/images/behind/thumbnails/058.webp",
+    "width": 530,
+    "height": 708,
+    "originalSrc": "/images/behind/058.png"
+  },
+  {
+    "src": "/images/behind/optimized/059.webp",
+    "title": "브랜딩 포에버2",
+    "date": "26.09.13",
+    "thumbnail": "/images/behind/thumbnails/059.webp",
+    "width": 1078,
+    "height": 724,
+    "originalSrc": "/images/behind/059.png"
+  },
+  {
+    "src": "/images/behind/optimized/060.webp",
+    "title": "스파이더 예원(애완거미 삼전과 하이닉스)",
+    "date": "26.05.14",
+    "thumbnail": "/images/behind/thumbnails/060.webp",
+    "width": 734,
+    "height": 550,
+    "originalSrc": "/images/behind/060.png"
+  },
+  {
+    "src": "/images/behind/optimized/061.webp",
+    "title": "야작 그만하자",
+    "thumbnail": "/images/behind/thumbnails/061.webp",
+    "width": 814,
+    "height": 610,
+    "originalSrc": "/images/behind/061.png",
+    "date": ""
+  },
+  {
+    "src": "/images/behind/optimized/062.webp",
+    "title": "청사진 작업 중",
+    "date": "26.05.14",
+    "thumbnail": "/images/behind/thumbnails/062.webp",
+    "width": 1292,
+    "height": 726,
+    "originalSrc": "/images/behind/062.png"
   }
 ]

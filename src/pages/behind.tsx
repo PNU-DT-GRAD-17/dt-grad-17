@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import Footer from "../components/Footer";
 import behindCuts from "../data/behind.json";
@@ -19,15 +19,11 @@ type BCut = {
 // 사진 정보와 표시 순서는 src/data/behind.json에서 관리합니다.
 const B_CUTS: BCut[] = behindCuts;
 
-const MAX_STACK_SIZE = 5;
 const THUMBNAILS_PER_PAGE = 5;
 const CARD_ANGLES = [0, -2.4, 1.7, -1.1, 2.8] as const;
-
-type StackedCut = {
-  id: number;
-  cutIndex: number;
-  angle: number;
-};
+const CARD_PADDING = 16;
+const CARD_BORDER = 1;
+const STAGE_SIDE_PADDING = 16;
 
 const ArrowIcon = ({ direction }: { direction: "left" | "right" }) => {
   const blueArrow = direction === "left" ? "arrowLeftBlue.webp" : "arrowRightBlue.webp";
@@ -59,56 +55,35 @@ const ArrowIcon = ({ direction }: { direction: "left" | "right" }) => {
 };
 
 function Behind() {
-  const [cardStack, setCardStack] = useState<StackedCut[]>([
-    { id: 0, cutIndex: 0, angle: CARD_ANGLES[0] },
-  ]);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const [stageSize, setStageSize] = useState({ width: 0, height: 0 });
   const makingFilmEmbedUrl = getYoutubeEmbedUrl(MAKING_FILM_URL);
-  const activeIndex = cardStack.at(-1)?.cutIndex ?? 0;
   const thumbnailStart = Math.floor(activeIndex / THUMBNAILS_PER_PAGE) * THUMBNAILS_PER_PAGE;
   const visibleCuts = B_CUTS.slice(thumbnailStart, thumbnailStart + THUMBNAILS_PER_PAGE);
+  const cardStack = B_CUTS.slice(thumbnailStart, activeIndex + 1);
 
   const addCutToStack = useCallback((cutIndex: number) => {
-    setCardStack((currentStack) => {
-      const nextId = (currentStack.at(-1)?.id ?? 0) + 1;
-
-      if (currentStack.length >= MAX_STACK_SIZE) {
-        return [{ id: nextId, cutIndex, angle: CARD_ANGLES[0] }];
-      }
-
-      return [
-        ...currentStack,
-        {
-          id: nextId,
-          cutIndex,
-          angle: CARD_ANGLES[currentStack.length],
-        },
-      ];
-    });
+    setActiveIndex(cutIndex);
   }, []);
 
   const moveCut = useCallback((direction: -1 | 1) => {
-    setCardStack((currentStack) => {
-      const currentIndex = currentStack.at(-1)?.cutIndex ?? 0;
-      const cutIndex = (currentIndex + direction + B_CUTS.length) % B_CUTS.length;
-      const nextId = (currentStack.at(-1)?.id ?? 0) + 1;
-
-      if (currentStack.length >= MAX_STACK_SIZE) {
-        return [{ id: nextId, cutIndex, angle: CARD_ANGLES[0] }];
-      }
-
-      return [
-        ...currentStack,
-        {
-          id: nextId,
-          cutIndex,
-          angle: CARD_ANGLES[currentStack.length],
-        },
-      ];
-    });
+    setActiveIndex((currentIndex) => (currentIndex + direction + B_CUTS.length) % B_CUTS.length);
   }, []);
 
   const showPrevious = useCallback(() => moveCut(-1), [moveCut]);
   const showNext = useCallback(() => moveCut(1), [moveCut]);
+
+  useLayoutEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) return;
+
+    const observer = new ResizeObserver(([entry]) => {
+      setStageSize({ width: entry.contentRect.width, height: entry.contentRect.height });
+    });
+    observer.observe(stage);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const pageCount = Math.ceil(B_CUTS.length / THUMBNAILS_PER_PAGE);
@@ -198,37 +173,46 @@ function Behind() {
           </h2>
 
           <div className="relative mx-auto w-full max-w-[720px] min-w-0 px-2 [--b-cut-stage-height:clamp(500px,65svh,540px)] sm:px-10">
-            <div className="relative h-[var(--b-cut-stage-height)] w-full min-w-0">
-              {cardStack.map((stackedCut, stackIndex) => {
-                const cut = B_CUTS[stackedCut.cutIndex];
+            <div ref={stageRef} className="relative h-[var(--b-cut-stage-height)] w-full min-w-0">
+              {cardStack.map((cut, stackIndex) => {
+                const cutIndex = thumbnailStart + stackIndex;
                 const isActive = stackIndex === cardStack.length - 1;
+                const imageWidth = cut.width ?? 320;
+                const imageHeight = cut.height ?? 320;
+                const maxImageWidth = stageSize.width - STAGE_SIDE_PADDING * 2 - CARD_PADDING * 2 - CARD_BORDER * 2;
+                const maxImageHeight = stageSize.height - 80;
+                const scale = stageSize.width && stageSize.height
+                  ? Math.min(1, maxImageWidth / imageWidth, maxImageHeight / imageHeight)
+                  : 1;
+                const displayedWidth = imageWidth * Math.max(0, scale);
+                const frameWidth = displayedWidth + CARD_PADDING * 2 + CARD_BORDER * 2;
 
                 return (
                   <div
-                    key={stackedCut.id}
+                    key={cutIndex}
                     aria-hidden={!isActive}
                     className="absolute inset-0 flex min-w-0 items-center justify-center px-4"
                     style={{ zIndex: stackIndex + 1 }}
                   >
                     <article
-                      className="box-border min-w-0 shrink border border-[#A0A0A0] bg-[#fbfbfa] p-[clamp(14px,2vw,24px)] shadow-[0_12px_28px_rgba(0,0,0,0.02)] transition-transform duration-300 ease-out"
+                      className="box-border min-w-0 shrink border border-[#A0A0A0] bg-[#fbfbfa] p-4 shadow-[0_12px_28px_rgba(0,0,0,0.02)] transition-transform duration-300 ease-out"
                       style={{
-                        width: `min(100%, ${(cut.width ?? 320) + 50}px)`,
-                        transform: `rotate(${stackedCut.angle}deg)`,
+                        width: `${frameWidth}px`,
+                        transform: `rotate(${CARD_ANGLES[stackIndex]}deg)`,
                       }}
                     >
                       <img
                         src={cut.src}
                         width={cut.width}
                         height={cut.height}
-                        alt={isActive ? cut.title || `비하인드 사진 ${stackedCut.cutIndex + 1}` : ""}
+                        alt={isActive ? cut.title || `비하인드 사진 ${cutIndex + 1}` : ""}
                         decoding="async"
-                        className="mx-auto block h-auto max-h-[calc(var(--b-cut-stage-height)-80px)] w-auto max-w-full border border-[#A0A0A0] object-contain"
+                        className="block h-auto w-full border border-[#A0A0A0]"
                       />
 
-                      <div className="mt-[clamp(14px,2vw,24px)] flex w-full min-w-0 items-end justify-between gap-3 text-[clamp(7px,0.85vw,11px)] text-[#A0A0A0] sm:gap-6">
+                      <div className="mt-2 flex w-full min-w-0 items-end justify-between gap-3 text-[clamp(7px,0.85vw,11px)] text-[#A0A0A0] sm:mt-3 sm:gap-6">
                         <time className="shrink-0">{cut.date}</time>
-                        <p className="min-w-0 truncate text-right" title={cut.title}>
+                        <p className="min-w-0 truncate text-right font-semibold" title={cut.title}>
                           {cut.title}
                         </p>
                       </div>
@@ -239,7 +223,7 @@ function Behind() {
             </div>
           </div>
 
-          <div className="mx-auto mt-[clamp(16px,2vw,24px)] flex max-w-[930px] items-center justify-center gap-3 sm:gap-6">
+          <div className="mx-auto mt-8 flex max-w-[930px] items-center justify-center gap-3 sm:mt-12 sm:gap-6">
             <button
               type="button"
               onClick={showPrevious}

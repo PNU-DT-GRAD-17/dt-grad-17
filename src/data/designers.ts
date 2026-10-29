@@ -233,7 +233,7 @@ const designerSources: DesignerSource[] = [
     detail: {
       nameEn: "LEE EUNSOL",
       email: "congsol0906@naver.com",
-      instagram: "@unezzol",
+      instagram: "@une_zzol",
       phone: "010-4095-5195",
     },
   },
