@@ -8,6 +8,7 @@ import { ScenarioVideoLink, ScenarioVideoModal } from "../components/ScenarioVid
 import { getProjectNeighbors } from "../data/projectNavigation";
 import { teamProjects, type TeamCategory } from "../data/team";
 import { useDetailBack } from "../hooks/useDetailBack";
+import { getYoutubeEmbedUrl } from "../utils/youtube";
 
 const categories: TeamCategory[] = ["BRANDING", "DP", "OPENING", "WEB"];
 
@@ -37,6 +38,25 @@ const SectionTitle = ({ children }: { children: string }) => (
     {children}
   </h2>
 );
+
+const TeamFilm = ({ url, title }: { url?: string; title: string }) => {
+  const embedUrl = getYoutubeEmbedUrl(url);
+
+  return embedUrl ? (
+    <iframe
+      key={embedUrl}
+      src={embedUrl}
+      title={`${title} 팀 영상`}
+      className="aspect-video w-full"
+      loading="lazy"
+      referrerPolicy="strict-origin-when-cross-origin"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowFullScreen
+    />
+  ) : (
+    <MediaPanel src="/images/comingsoon.webp" alt={`${title} 팀 영상 준비 중`} className="aspect-video w-full" imageClassName="mx-auto h-full w-[37.5%] object-contain" transparent />
+  );
+};
 
 const TeamProjectDetail = () => {
   const goBack = useDetailBack("/project");
@@ -380,7 +400,7 @@ const TeamProjectDetail = () => {
             </section>
 
             <section id="mobile-team-film" className="h-full w-full shrink-0 snap-start touch-pan-x overflow-hidden pb-12" aria-label="팀 영상 및 소개">
-              <MediaPanel src="/images/comingsoon.webp" alt={`${project.videoTitle} 팀 영상 준비 중`} className="aspect-video w-full" imageClassName="mx-auto h-full w-[37.5%] object-contain" transparent />
+              <TeamFilm url={detail?.filmUrl} title={project.videoTitle} />
               <div className="px-5 pt-7">
               <h2 className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-3xl font-semibold">
                 <span>{project.videoTitle || "영상 제목"}</span>
@@ -461,7 +481,7 @@ const TeamProjectDetail = () => {
           </div>
 
           <div className="grid gap-8 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] md:items-start">
-            <MediaPanel src="/images/comingsoon.webp" alt={`${project.videoTitle} 팀 영상 준비 중`} className="aspect-video w-full" imageClassName="mx-auto h-full w-[37.5%] object-contain" transparent />
+            <TeamFilm url={detail?.filmUrl} title={project.videoTitle} />
             <section>
               <h3 className="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-2xl font-semibold">
                 {project.videoTitle || "영상 제목"}

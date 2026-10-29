@@ -65,6 +65,7 @@ export const teamProjects: Record<TeamCategory, TeamProject> = {
         "막대기를 들고 이리저리 휘둘러보며 브랜딩팀이 정의한 “청춘\" 글귀를 천천히 읽어본다.",
         "움직임이 멈추면 빛의 흔적이 서서히 사라진다.",
       ],
+      filmUrl: "https://www.youtube.com/watch?v=P6y_z-r32XI",
     },
   },
 
@@ -88,6 +89,7 @@ export const teamProjects: Record<TeamCategory, TeamProject> = {
         "번호와 서명란이 찍힌 도트 초상 사진이 출력된다.",
         "앞선 관람자들의 영수증 사이 벽면에 출력된 영수증을 부착한다.",
       ],
+      filmUrl: "https://www.youtube.com/watch?v=h72cRtFcUVY",
     },
   },
 
@@ -117,6 +119,7 @@ export const teamProjects: Record<TeamCategory, TeamProject> = {
         "명함을 인식 영역에 맞추어 웹캠에 인식시킵니다.",
         "그 사람의 비하인드를 감상합니다.",
       ],
+      filmUrl: "https://www.youtube.com/watch?v=TBmJwsOq_70",
     },
   },
 
@@ -136,7 +139,7 @@ export const teamProjects: Record<TeamCategory, TeamProject> = {
     link: "/project/team/web",
     members: getTeamMembers("WEB"),
     projectDetail: {
-      filmUrl: "https://www.youtube.com/watch?v=KIed24YqaL0",
+      filmUrl: "https://www.youtube.com/watch?v=-2BRfTSIaI4",
       interactionImages: getTeamInteractionImages("WEB"),
       scenarioDescriptions: [
         "개별 작품과 상호작용하며 도장판에 스티커를 하나씩 채워간다.",

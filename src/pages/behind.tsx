@@ -2,13 +2,10 @@ import { useCallback, useEffect, useState } from "react";
 
 import Footer from "../components/Footer";
 import behindCuts from "../data/behind.json";
+import { getYoutubeEmbedUrl } from "../utils/youtube";
 
-// 영상 공개 시 URL을 입력하고 이 값을 false로 바꿔 주세요.
-const SHOW_MAKING_FILM_COMING_SOON = true;
-
-// 유튜브 영상 주소가 정해지면 이 값만 교체해 주세요.
 // watch, youtu.be, shorts 주소를 모두 사용할 수 있습니다.
-const MAKING_FILM_URL = "";
+const MAKING_FILM_URL = "https://www.youtube.com/watch?v=kHyJ7CxcEA4";
 
 type BCut = {
   src: string;
@@ -30,21 +27,6 @@ type StackedCut = {
   id: number;
   cutIndex: number;
   angle: number;
-};
-
-const getYoutubeEmbedUrl = (url: string) => {
-  if (!url) return "";
-
-  try {
-    const parsedUrl = new URL(url);
-    const videoId = parsedUrl.hostname.includes("youtu.be")
-      ? parsedUrl.pathname.slice(1)
-      : parsedUrl.searchParams.get("v") ?? parsedUrl.pathname.split("/").filter(Boolean).pop();
-
-    return videoId ? `https://www.youtube-nocookie.com/embed/${videoId}` : "";
-  } catch {
-    return "";
-  }
 };
 
 const ArrowIcon = ({ direction }: { direction: "left" | "right" }) => {
@@ -186,11 +168,12 @@ function Behind() {
           </h2>
 
           <div className="mx-auto mt-12 flex aspect-video w-full max-w-[1080px] flex-col items-center justify-center overflow-hidden bg-[#E3E7ED]">
-            {!SHOW_MAKING_FILM_COMING_SOON && makingFilmEmbedUrl ? (
+            {makingFilmEmbedUrl ? (
               <iframe
                 src={makingFilmEmbedUrl}
                 title="졸업전시 Making Film"
                 className="h-full w-full"
+                referrerPolicy="strict-origin-when-cross-origin"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
               />
@@ -214,38 +197,43 @@ function Behind() {
             B-cut
           </h2>
 
-          <div className="relative mx-auto w-full max-w-[720px] px-2 [--b-cut-stage-height:clamp(340px,65svh,540px)] sm:px-10">
-            <div className="relative grid h-[var(--b-cut-stage-height)] grid-cols-1 grid-rows-[minmax(0,1fr)]">
+          <div className="relative mx-auto w-full max-w-[720px] min-w-0 px-2 [--b-cut-stage-height:clamp(500px,65svh,540px)] sm:px-10">
+            <div className="relative h-[var(--b-cut-stage-height)] w-full min-w-0">
               {cardStack.map((stackedCut, stackIndex) => {
                 const cut = B_CUTS[stackedCut.cutIndex];
                 const isActive = stackIndex === cardStack.length - 1;
 
                 return (
-                  <article
+                  <div
                     key={stackedCut.id}
                     aria-hidden={!isActive}
-                    className="relative col-start-1 row-start-1 w-fit max-w-full self-center justify-self-center border border-[#A0A0A0] bg-[#fbfbfa] p-[clamp(14px,2vw,24px)] shadow-[0_12px_28px_rgba(0,0,0,0.02)] transition-transform duration-300 ease-out"
-                    style={{
-                      zIndex: stackIndex + 1,
-                      transform: `rotate(${stackedCut.angle}deg)`,
-                    }}
+                    className="absolute inset-0 flex min-w-0 items-center justify-center px-4"
+                    style={{ zIndex: stackIndex + 1 }}
                   >
-                    <img
-                      src={cut.src}
-                      width={cut.width}
-                      height={cut.height}
-                      alt={isActive ? cut.title || `비하인드 사진 ${stackedCut.cutIndex + 1}` : ""}
-                      decoding="async"
-                      className="block h-auto max-h-[calc(var(--b-cut-stage-height)-128px)] w-auto max-w-full border border-[#A0A0A0] object-contain"
-                    />
+                    <article
+                      className="box-border min-w-0 shrink border border-[#A0A0A0] bg-[#fbfbfa] p-[clamp(14px,2vw,24px)] shadow-[0_12px_28px_rgba(0,0,0,0.02)] transition-transform duration-300 ease-out"
+                      style={{
+                        width: `min(100%, ${(cut.width ?? 320) + 50}px)`,
+                        transform: `rotate(${stackedCut.angle}deg)`,
+                      }}
+                    >
+                      <img
+                        src={cut.src}
+                        width={cut.width}
+                        height={cut.height}
+                        alt={isActive ? cut.title || `비하인드 사진 ${stackedCut.cutIndex + 1}` : ""}
+                        decoding="async"
+                        className="mx-auto block h-auto max-h-[calc(var(--b-cut-stage-height)-80px)] w-auto max-w-full border border-[#A0A0A0] object-contain"
+                      />
 
-                    <div className="mt-[clamp(14px,2vw,24px)] flex w-0 min-w-full items-end justify-between gap-3 text-[clamp(7px,0.85vw,11px)] text-[#A0A0A0] sm:gap-6">
-                      <time className="shrink-0">{cut.date}</time>
-                      <p className="min-w-0 truncate text-right" title={cut.title}>
-                        {cut.title}
-                      </p>
-                    </div>
-                  </article>
+                      <div className="mt-[clamp(14px,2vw,24px)] flex w-full min-w-0 items-end justify-between gap-3 text-[clamp(7px,0.85vw,11px)] text-[#A0A0A0] sm:gap-6">
+                        <time className="shrink-0">{cut.date}</time>
+                        <p className="min-w-0 truncate text-right" title={cut.title}>
+                          {cut.title}
+                        </p>
+                      </div>
+                    </article>
+                  </div>
                 );
               })}
             </div>
