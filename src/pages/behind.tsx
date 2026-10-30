@@ -125,7 +125,7 @@ function Behind() {
     <main
       className="min-h-screen bg-[url('/images/background.webp')] bg-[length:400%_auto] bg-top bg-repeat-y text-[#000101] lg:bg-cover lg:bg-center lg:bg-no-repeat"
     >
-      <div className="mx-auto w-full max-w-[1180px] px-5 pb-40 pt-[clamp(64px,8vw,118px)] sm:px-8 lg:px-12 lg:pb-48">
+      <div className="mx-auto w-full max-w-[1180px] px-5 pb-28 pt-[clamp(64px,8vw,118px)] sm:px-8 lg:px-12 lg:pb-[8.4rem]">
         <h1 className="flex justify-center">
           <img
             src="/images/label-behind.webp"
@@ -239,7 +239,7 @@ function Behind() {
               aria-atomic="true"
             >
               <span className="sr-only">현재 사진 </span>
-              <span className="text-[#0072c1]">{activeIndex + 1}</span>
+              <span className="font-semibold text-[#0072c1]">{activeIndex + 1}</span>
               <span className="mx-2">/</span>
               <span>{B_CUTS.length}</span>
             </p>
@@ -282,6 +282,17 @@ function Behind() {
               <ArrowIcon direction="right" />
             </button>
           </div>
+
+          <p
+            className="mt-8 hidden text-center text-xl font-medium tabular-nums text-[#000101] sm:block"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            <span className="sr-only">현재 사진 </span>
+            <span className="font-semibold text-[#0072c1]">{activeIndex + 1}</span>
+            <span className="mx-2">/</span>
+            <span>{B_CUTS.length}</span>
+          </p>
         </section>
       </div>
 
