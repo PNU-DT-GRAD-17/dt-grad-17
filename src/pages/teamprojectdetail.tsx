@@ -61,7 +61,6 @@ const TeamFilm = ({ url, title }: { url?: string; title: string }) => {
 const TeamProjectDetail = () => {
   const goBack = useDetailBack("/project");
   const [isScenarioVideoOpen, setIsScenarioVideoOpen] = useState(false);
-  const [isMobileConceptOpen, setIsMobileConceptOpen] = useState(false);
   const [mobileSlideIndex, setMobileSlideIndex] = useState(0);
   const [activeCreditId, setActiveCreditId] = useState<string | null>(null);
   const mobileGalleryRef = useRef<HTMLDivElement>(null);
@@ -313,67 +312,35 @@ const TeamProjectDetail = () => {
               }
             }}
           >
-            <section className="relative h-full w-full shrink-0 snap-start touch-pan-x overflow-hidden" aria-label="팀 컨셉 이미지">
-              <button
-                type="button"
-                className="h-full w-full cursor-pointer"
-                onClick={() => setIsMobileConceptOpen((isOpen) => !isOpen)}
-                aria-expanded={isMobileConceptOpen}
-                aria-controls="mobile-team-concept"
-                aria-label={`${project.conceptName || "컨셉"} 설명 ${isMobileConceptOpen ? "닫기" : "보기"}`}
-              >
-                <img src={backgroundImage} alt={`${project.title} 팀 컨셉 이미지`} className="h-full w-full object-cover" />
-              </button>
-              {isMobileConceptOpen ? (
-                <div
-                  id="mobile-team-concept"
-                  className="absolute inset-0 flex w-full flex-col items-start overflow-hidden bg-[#000101]/60 px-5 pb-[calc(52px+env(safe-area-inset-bottom))] pt-7 text-left text-white"
-                >
-                  <button
-                    type="button"
-                    className="absolute inset-0 h-full w-full cursor-pointer"
-                    onClick={() => {
-                      setIsMobileConceptOpen(false);
-                      setActiveCreditId(null);
-                    }}
-                    aria-label="컨셉 설명 닫고 이미지 보기"
-                  />
-                  <span className="pointer-events-none relative flex shrink-0 flex-wrap items-baseline gap-x-3 gap-y-1 text-3xl font-semibold">
-                    <span>{project.conceptName || "컨셉 제목"}</span>
-                    <span className="text-sm font-medium text-[#45BFE6]">concept</span>
-                  </span>
-                  <span className="pointer-events-none relative mt-6 shrink-0 whitespace-pre-line text-[16px] leading-[1.6] text-white/85">{conceptDescription}</span>
-                  <span className="pointer-events-none relative mt-auto flex w-full shrink-0 flex-col items-start pt-6">
-                    <span className="text-sm font-semibold text-[#45BFE6]">credit</span>
-                    <span className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-lg">
-                      {project.members.map((member) => (
-                        <Link
-                          key={member.id}
-                          to={`/designer/${member.id}`}
-                          className="exhibition-member-link mobile-project-designer-link pointer-events-auto inline-flex transition-colors"
-                          data-active={activeCreditId === member.id}
-                          onClick={(event) => {
-                            if (activeCreditId !== member.id) {
-                              event.preventDefault();
-                              setActiveCreditId(member.id);
-                            }
-                          }}
-                          onBlur={() => setActiveCreditId(null)}
-                        >
-                          {member.name}
-                        </Link>
-                      ))}
-                    </span>
-                    <span className="mt-3 whitespace-pre-line text-xs leading-relaxed text-white/60">
-                      {project.description}
-                    </span>
-                  </span>
+            <section id="mobile-team-concept" className="flex h-full w-full shrink-0 snap-start flex-col overflow-y-auto px-5 pb-[calc(52px+env(safe-area-inset-bottom))] pt-7" aria-label="팀 컨셉 설명">
+              <h2 className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-3xl font-semibold">
+                <span>{project.conceptName || "컨셉 제목"}</span>
+                <span className="text-sm font-medium text-[#45BFE6]">concept</span>
+              </h2>
+              <p className="mt-6 whitespace-pre-line text-[16px] leading-[1.6] text-white/85">{conceptDescription}</p>
+              <div className="mt-auto flex w-full flex-col items-start pt-6">
+                <span className="text-sm font-semibold text-[#45BFE6]">credit</span>
+                <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-lg">
+                  {project.members.map((member) => (
+                    <Link
+                      key={member.id}
+                      to={`/designer/${member.id}`}
+                      className="exhibition-member-link mobile-project-designer-link inline-flex transition-colors"
+                      data-active={activeCreditId === member.id}
+                      onClick={(event) => {
+                        if (activeCreditId !== member.id) {
+                          event.preventDefault();
+                          setActiveCreditId(member.id);
+                        }
+                      }}
+                      onBlur={() => setActiveCreditId(null)}
+                    >
+                      {member.name}
+                    </Link>
+                  ))}
                 </div>
-              ) : (
-                <div id="mobile-team-concept" className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/80 to-transparent px-5 pb-12 pt-16 text-center text-sm text-white/60">
-                  이미지를 터치하면 컨셉 설명이 보입니다.
-                </div>
-              )}
+                <p className="mt-3 whitespace-pre-line text-xs leading-relaxed text-white/60">{project.description}</p>
+              </div>
             </section>
 
             <section id="mobile-team-interaction" className="h-full w-full shrink-0 snap-start overflow-y-auto px-5 pb-12 pt-7">

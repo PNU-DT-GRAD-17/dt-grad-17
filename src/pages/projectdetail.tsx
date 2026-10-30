@@ -122,7 +122,6 @@ const MediaPlaceholder = ({
 const ProjectDetail = () => {
   const goBack = useDetailBack("/project");
   const [isScenarioVideoOpen, setIsScenarioVideoOpen] = useState(false);
-  const [isMobileConceptOpen, setIsMobileConceptOpen] = useState(false);
   const [mobileSlideIndex, setMobileSlideIndex] = useState(0);
   const scrollContainerRef = useRef<HTMLElement>(null);
   const mobileGalleryRef = useRef<HTMLDivElement>(null);
@@ -362,40 +361,12 @@ const ProjectDetail = () => {
               }
             }}
           >
-            <section className="relative h-full min-w-full snap-start touch-pan-x overflow-hidden" aria-label="모션 포스터 썸네일">
-              <button
-                type="button"
-                className="h-full w-full cursor-pointer"
-                onClick={() => setIsMobileConceptOpen((isOpen) => !isOpen)}
-                aria-expanded={isMobileConceptOpen}
-                aria-controls="mobile-project-concept"
-                aria-label={`${designer.conceptName || "컨셉"} 설명 ${isMobileConceptOpen ? "닫기" : "보기"}`}
-              >
-                <img
-                  src={backgroundImage}
-                  alt={`${designer.motionPosterTitle || designer.name} 모션 포스터`}
-                  className="h-full w-full object-cover"
-                />
-              </button>
-              {isMobileConceptOpen ? (
-                <button
-                  id="mobile-project-concept"
-                  type="button"
-                  className="absolute inset-0 flex w-full cursor-pointer flex-col items-start overflow-hidden bg-[#000101]/60 px-5 pb-8 pt-7 text-left text-white"
-                  onClick={() => setIsMobileConceptOpen(false)}
-                  aria-label="컨셉 설명 닫고 썸네일 보기"
-                >
-                  <span className="flex shrink-0 flex-wrap items-baseline gap-x-3 gap-y-1 text-3xl font-semibold">
-                    <span>{designer.conceptName || "컨셉 제목"}</span>
-                    <span className="text-sm font-medium text-[#45BFE6]">concept</span>
-                  </span>
-                  <span className="mt-6 shrink-0 whitespace-pre-line text-[16px] leading-[1.6] text-white/85">{conceptDescription}</span>
-                </button>
-              ) : (
-                <div id="mobile-project-concept" className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent px-5 pb-12 pt-24 text-center text-sm text-white/60">
-                  이미지를 터치하면 컨셉 설명이 보입니다.
-                </div>
-              )}
+            <section id="mobile-project-concept" className="h-full min-w-full snap-start overflow-y-auto px-5 pb-8 pt-7" aria-label="컨셉 설명">
+              <h2 className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-3xl font-semibold">
+                <span>{designer.conceptName || "컨셉 제목"}</span>
+                <span className="text-sm font-medium text-[#45BFE6]">concept</span>
+              </h2>
+              <p className="mt-6 whitespace-pre-line text-[16px] leading-[1.6] text-white/85">{conceptDescription}</p>
             </section>
 
             <section id="mobile-individual-interaction" className="h-full min-w-full snap-start overflow-y-auto px-5 pb-8 pt-7">
