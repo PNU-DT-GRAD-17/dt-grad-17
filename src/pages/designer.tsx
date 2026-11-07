@@ -26,7 +26,7 @@ const Designer = () => {
   );
 
   return (
-    <main className="min-h-screen bg-[url('/images/background.webp')] bg-[length:400%_auto] bg-top bg-repeat-y lg:bg-cover lg:bg-center lg:bg-no-repeat">
+    <main className="min-h-screen bg-[url('/images/background.webp')] bg-[length:400%_auto] bg-fixed bg-center bg-no-repeat lg:bg-[length:200%_auto]">
       <img
         src="/images/label-designer.webp"
         alt="label"

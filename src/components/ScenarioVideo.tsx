@@ -1,11 +1,15 @@
 import { useEffect, useRef } from "react";
+import { getYoutubeEmbedUrl } from "../utils/youtube";
 
 export const ScenarioVideoModal = ({
   onClose,
+  url,
 }: {
   onClose: () => void;
+  url?: string;
 }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const embedUrl = getYoutubeEmbedUrl(url);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -53,7 +57,17 @@ export const ScenarioVideoModal = ({
             />
           </svg>
         </button>
-        <img src="/images/comingsoon.webp" alt="시연 영상 준비 중" loading="lazy" decoding="async" className="aspect-video w-[37.5%] object-contain" />
+        {embedUrl ? (
+          <iframe
+            src={embedUrl}
+            title="시연 영상"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+            className="aspect-video w-full border-0"
+          />
+        ) : (
+          <img src="/images/comingsoon.webp" alt="시연 영상 준비 중" loading="lazy" decoding="async" className="aspect-video w-[37.5%] object-contain" />
+        )}
       </div>
     </dialog>
   );

@@ -59,6 +59,7 @@ export const teamProjects: Record<TeamCategory, TeamProject> = {
     link: "/project/team/branding",
     members: getTeamMembers("BRANDING"),
     projectDetail: {
+      scenarioUrl: "https://www.youtube.com/watch?v=BLVa-uw6dU4",
       interactionImages: getTeamInteractionImages("BRANDING"),
       scenarioDescriptions: [
         "준비된 Spark 막대기를 든다.",
@@ -83,6 +84,7 @@ export const teamProjects: Record<TeamCategory, TeamProject> = {
     link: "/project/team/dp",
     members: getTeamMembers("DP"),
     projectDetail: {
+      scenarioUrl: "https://www.youtube.com/watch?v=Akb27ojig54",
       interactionImages: getTeamInteractionImages("DP"),
       scenarioDescriptions: [
         "화면 앞에서 브이 포즈를 취한다",
@@ -113,6 +115,7 @@ export const teamProjects: Record<TeamCategory, TeamProject> = {
     link: "/project/team/opening",
     members: getTeamMembers("OPENING"),
     projectDetail: {
+      scenarioUrl: "https://www.youtube.com/watch?v=3ungTZzS7k8",
       interactionImages: getTeamInteractionImages("OPENING"),
       scenarioDescriptions: [
         "테이블에 놓여있는 명함을 고릅니다.",
@@ -139,6 +142,7 @@ export const teamProjects: Record<TeamCategory, TeamProject> = {
     link: "/project/team/web",
     members: getTeamMembers("WEB"),
     projectDetail: {
+      scenarioUrl: "https://www.youtube.com/watch?v=Rw5u0XoxhGI",
       filmUrl: "https://www.youtube.com/watch?v=-2BRfTSIaI4",
       interactionImages: getTeamInteractionImages("WEB"),
       scenarioDescriptions: [

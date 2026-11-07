@@ -526,7 +526,7 @@ const ProjectDetail = () => {
       </div>
 
       {isScenarioVideoOpen && (
-        <ScenarioVideoModal onClose={() => setIsScenarioVideoOpen(false)} />
+        <ScenarioVideoModal url={detail?.scenarioUrl} onClose={() => setIsScenarioVideoOpen(false)} />
       )}
 
       {/* 이전·다음 내비게이션은 데스크톱에서만 표시합니다. */}

@@ -497,6 +497,7 @@ const TeamProjectDetail = () => {
 
       {isScenarioVideoOpen && (
         <ScenarioVideoModal
+          url={detail?.scenarioUrl}
           onClose={() => setIsScenarioVideoOpen(false)}
         />
       )}

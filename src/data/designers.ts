@@ -48,6 +48,25 @@ const getIndividualInteractionImages = (index: number) => {
   ];
 };
 
+const individualScenarioUrls: Record<string, string> = {
+  "kang-yeju": "https://www.youtube.com/watch?v=u9Fl5Hamp18",
+  "bak-geonhui": "https://www.youtube.com/watch?v=0D_Iy09uEe8",
+  "park-boeun": "https://www.youtube.com/watch?v=ls1e5tf7yeU",
+  "park-jisu": "https://www.youtube.com/watch?v=K1t_F3SK744",
+  "bae-myeonghwan": "https://www.youtube.com/watch?v=FsT8kdtT5lo",
+  "an-seonju": "https://www.youtube.com/watch?v=nKIvMx-b6g0",
+  "yoon-seohyun": "https://www.youtube.com/watch?v=PIzOuo5kmcY",
+  "lee-suhyeon": "https://www.youtube.com/watch?v=kwGg1fz9_gI",
+  "lee-eunsol": "https://www.youtube.com/watch?v=3H3l4FQsAE0",
+  "lee-hyeonji": "https://www.youtube.com/watch?v=-oMbsIS83k4",
+  "jang-jaewon": "https://www.youtube.com/watch?v=ZFFppfmUGyA",
+  "jeon-subean": "https://www.youtube.com/watch?v=dh3vyqgvkd4",
+  "jung-miyeon": "https://www.youtube.com/watch?v=zCwAJzVA97w",
+  "jeong-sunghyun": "https://www.youtube.com/watch?v=NHrNRRs8cDI",
+  "choi-yangjin": "https://www.youtube.com/watch?v=Go4Jq-ynnUM",
+  "hwang-hyejeong": "https://www.youtube.com/watch?v=l7JnaTwMJ80",
+};
+
 const designerSources: DesignerSource[] = [
   {
     id: "kang-yeju",
@@ -378,6 +397,7 @@ export const designers: Designer[] = [
       selectedObjectImage: `/images/object/color/${imageNumber}.webp`,
       projectDetail: {
         ...designer.projectDetail,
+        scenarioUrl: designer.projectDetail?.scenarioUrl ?? individualScenarioUrls[designer.id],
         interactionImages: getIndividualInteractionImages(index),
         scenarioDescriptions: individualScenarioDescriptions[designer.id],
       },
