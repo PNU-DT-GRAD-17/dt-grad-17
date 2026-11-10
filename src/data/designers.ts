@@ -50,8 +50,10 @@ const getIndividualInteractionImages = (index: number) => {
 
 const individualScenarioUrls: Record<string, string> = {
   "kang-yeju": "https://www.youtube.com/watch?v=u9Fl5Hamp18",
+  "kim-yewon": "https://www.youtube.com/watch?v=WeOekqWAHY8",
   "bak-geonhui": "https://www.youtube.com/watch?v=0D_Iy09uEe8",
   "park-boeun": "https://www.youtube.com/watch?v=ls1e5tf7yeU",
+  "park-sumin": "https://www.youtube.com/watch?v=zjeRO7Kqwwk",
   "park-jisu": "https://www.youtube.com/watch?v=K1t_F3SK744",
   "bae-myeonghwan": "https://www.youtube.com/watch?v=FsT8kdtT5lo",
   "an-seonju": "https://www.youtube.com/watch?v=nKIvMx-b6g0",
