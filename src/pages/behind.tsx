@@ -123,7 +123,7 @@ function Behind() {
 
   return (
     <main
-      className="min-h-screen bg-[url('/images/background.webp')] bg-[length:400%_auto] bg-top bg-repeat-y text-[#000101] lg:bg-cover lg:bg-center lg:bg-no-repeat"
+      className="min-h-screen text-[#000101]"
     >
       <div className="mx-auto w-full max-w-[1180px] px-5 pb-28 pt-[clamp(64px,8vw,118px)] sm:px-8 lg:px-12 lg:pb-[8.4rem]">
         <h1 className="flex justify-center">

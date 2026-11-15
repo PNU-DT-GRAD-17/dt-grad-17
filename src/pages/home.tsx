@@ -864,7 +864,7 @@ function Home() {
     : {};
 
   return (
-    <main className="relative min-h-screen w-full bg-[url('/images/background.webp')] bg-[length:400%_auto] bg-top bg-repeat-y text-[#111] lg:bg-cover lg:bg-center lg:bg-no-repeat">
+    <main className="relative min-h-screen w-full bg-[url('/images/background.webp')] bg-[length:var(--mobile-paper-background-width)_auto] bg-top-left bg-repeat-y text-[#111] lg:bg-cover lg:bg-no-repeat">
       <HomeSectionNav />
       <section
         id="main-banner"

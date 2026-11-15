@@ -3,6 +3,8 @@
 
 :root {
   --header-height: clamp(72px, calc(3.15vw + 40px), 80px);
+  /* Keep the paper dots about 32px apart regardless of mobile viewport width. */
+  --mobile-paper-background-width: 5000px;
 }
 
 html,
@@ -37,6 +39,7 @@ html, body, #root{
   min-height: 100%;
   margin: 0;
   background-image: url("/images/background.webp");
+  background-position: left top;
 
 }
 
@@ -44,9 +47,8 @@ html, body, #root{
   html,
   body,
   #root {
-    background-position: center top;
     background-repeat: repeat-y;
-    background-size: 400% auto;
+    background-size: var(--mobile-paper-background-width) auto;
   }
 }
 
